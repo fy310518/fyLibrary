@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@android:color/transparent</item>     <!-- ActionBar、Toolbar 的颜色 -->
+        <item name="colorPrimaryDark">@android:color/transparent</item> <!-- 状态栏的颜色 -->
+        <item name="colorAccent">@color/colorAccent</item>    <!-- EditText编辑时、FloatingActionButton背景等颜色 -->
+        <item name="android:textAllCaps">false</item><!-- 所有字母是否大写 -->
+
+        <item name="windowActionBar">false</item><!-- 不显示标题栏 -->
+        <item name="windowNoTitle">true</item><!-- 无标题 -->
+
+        <item name="android:colorBackgroundCacheHint">@null</item><!-- 背景缓存颜色 -->
+         <!--背景-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <item name="android:windowAnimationStyle">@style/animfade</item>
+
+        <!--设置窗体内容背景-->
+        <item name="android:windowContentOverlay">@android:color/transparent</item>
+    </style>
+
+    <!-- 启动主题1 -->
+    <style name="SplashTheme" parent="BaseAppTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+
+        <!--窗体是否半透明-->
+        <item name="android:windowIsTranslucent">true</item>
+        <!--设置窗体内容背景-->
+        <item name="android:windowContentOverlay">@android:color/transparent</item>
+    </style>
+
+    <!-- 启动界面主题2 模板代码-->
+    <!--<style name="startUpTheme" parent="BaseAppTheme">-->
+        <!--<item name="android:windowBackground">@drawable/app_loading</item>-->
+        <!--<item name="android:windowFullscreen">false</item> &lt;!&ndash; 全屏 &ndash;&gt;-->
+    <!--</style>-->
+
+    <!-- 系统分割线 -->
+    <!--<item name="android:listDivider">@drawable/divider_bg</item>-->
+    <!-- 背景 -->
+    <!--<item name="android:windowBackground">@android:color/transparent</item>-->
+    <!-- 全屏 -->
+    <!--<item name="android:windowFullscreen">false</item> -->
+    <!-- 避免启动应用后，出现短暂的黑屏或白屏现象 -->
+    <!--窗体是否半透明-->
+    <!--<item name="android:windowIsTranslucent">true</item>-->
+    <!--设置窗体内容背景-->
+    <!--<item name="android:windowContentOverlay">@android:color/transparent</item>-->
+
+
+    <!-- dialog 样式 -->
+    <style name="commonDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <!-- activity 切换动画 -->
+    <style name="animfade" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/anim_slide_left_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/anim_slide_left_out</item>
+
+        <item name="android:activityCloseEnterAnimation">@anim/anim_slide_right_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/anim_slide_right_out</item>
+    </style>
+
+    <!-- 清理界面进出动画 -->
+    <style name="WindowAnimationFadeInOut">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style>
+
+    <!-- 菜单dialog 进出动画 （从界面底部进入 退出）-->
+    <style name="AnimUp" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_slide_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_slide_bottom_out</item>
+    </style>
+
+    <style name="AnimTop" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_top_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_top_out</item>
+    </style>
+
+    <style name="AnimDown" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_bottom_out</item>
+    </style>
+
+    <style name="AnimLeft" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_left_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_left_out</item>
+    </style>
+
+    <style name="AnimRight" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_right_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_right_out</item>
+    </style>
+
+</resources>

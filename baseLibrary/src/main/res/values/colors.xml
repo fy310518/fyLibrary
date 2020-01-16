@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorAccent">#FF4081</color>
+
+    <!-- UI设计原色之 红色 -->
+    <color name="red">#e84c3d</color>
+    <!-- UI设计原色之 粉色 -->
+    <color name="pink">#EF8994</color>
+    <!-- UI设计原色之 橙色 -->
+    <color name="orange">#f39b39</color>
+    <!-- UI设计原色之 绿色 -->
+    <color name="green">#93cc2f</color>
+    <!-- UI设计原色之 浅蓝 -->
+    <color name="lblue">#7ec4f5</color>
+    <!-- UI设计原色之 深蓝 -->
+    <color name="blue">#3ec2d9</color>
+    <!-- UI设计原色之 白色 -->
+    <color name="white">#ffffff</color>
+    <color name="personal_title_bg">#f5f5f5</color>
+    <!-- UI设计原色之 黑色 -->
+    <color name="black">#000000</color>
+    <!-- 透明 -->
+    <color name="transparent">#00000000</color>
+    <!-- 黑色半透明 -->
+    <color name="alphaBlack">#80000000</color>
+
+    <!-- 状态栏颜色 -->
+<!--    <color name="statusBar">#177ee6</color>-->
+    <!-- 标题栏颜色 -->
+    <color name="appHeadBg">#177ee6</color>
+
+    <!-- 界面字体颜色 深色-->
+    <color name="txtSuperColor">#333333</color>
+    <!-- 界面字体颜色 浅色-->
+    <color name="txtSecondColor">#666666</color>
+    <!-- 界面字体颜色 超浅色-->
+    <color name="txtLight">#999999</color>
+
+    <!-- 描边颜色 -->
+    <color name="stroke">#cacaca</color>
+
+    <!-- 下拉刷新 背景色 -->
+    <color name="transforTop">#333333</color>
+
+    <!-- 多状态布局背景色 -->
+    <color name="state_background">#f1f1f1</color>
+
+</resources>
+    <!-- 透明度 对比表 (全透明就是00(如：#00000000 即为透明)，完全不透明就是FF) -->
+    <!--100% -  00-->
+    <!--95%  -  0D-->
+    <!--90%  -  1A-->
+    <!--85%  -  26-->
+    <!--80%  -  33-->
+    <!--75%  -  40-->
+    <!--70%  -  4D-->
+    <!--65%  -  59-->
+    <!--60%  -  66-->
+    <!--55%  -  73-->
+    <!--50%  -  80-->
+    <!--45%  -  8C-->
+    <!--40%  -  99-->
+    <!--35%  -  A6-->
+    <!--30%  -  B3-->
+    <!--25%  -  BF-->
+    <!--20%  -  CC-->
+    <!--15%  -  D9-->
+    <!--10%  -  E6-->
+    <!--5%   -  F2-->
+    <!--0%   -  FF-->

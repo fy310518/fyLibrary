@@ -1,0 +1,87 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'github.com.fy310518'
+
+android {
+    compileSdkVersion var.compileSdkVersion
+    buildToolsVersion var.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion var.minSdkVersion
+        targetSdkVersion var.targetSdkVersion
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true//配置5.0 版本以下可以使用svg
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+        warning 'InvalidPackage'
+    }
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'publicsuffixes.gz'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation "com.android.support:appcompat-v7:$var.supportLibraryVersion"
+    implementation "com.android.support:recyclerview-v7:$var.supportLibraryVersion"
+    implementation "com.android.support:design:$var.supportLibraryVersion"
+    implementation "com.android.support.constraint:constraint-layout:$var.constraintLayout"
+
+    //    butterknife
+    implementation "com.jakewharton:butterknife:$var.butterknife"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$var.butterknife"
+
+    //    dagger2
+    implementation 'com.google.dagger:dagger:2.9'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.9'
+
+    api 'com.squareup.okhttp3:okhttp:3.10.0'
+    api 'com.google.code.gson:gson:2.7'
+
+    //    rxjava
+    api 'io.reactivex.rxjava2:rxjava:2.1.9'
+    api 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+    //    retrofit2
+    api ('com.squareup.retrofit2:retrofit:2.3.0')
+    implementation ('com.squareup.retrofit2:converter-gson:2.3.0')
+    implementation ('com.squareup.okhttp3:logging-interceptor:3.8.0')
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    //    glide
+    api 'com.github.bumptech.glide:glide:4.7.1'
+    implementation 'com.github.bumptech.glide:annotations:4.7.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    implementation ('com.github.bumptech.glide:okhttp3-integration:4.7.1'){
+        exclude group: 'com.squareup.okhttp3'
+    }
+
+    //aop
+    api 'org.aspectj:aspectjrt:1.8.13'
+
+
+}

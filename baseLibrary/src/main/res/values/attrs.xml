@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EasyPullLayout">
+        <!-- left、top、right、bottom location 加载动画布局高度-->
+        <attr name="trigger_offset_left" format="dimension" />
+        <attr name="trigger_offset_top" format="dimension" />
+        <attr name="trigger_offset_right" format="dimension" />
+        <attr name="trigger_offset_bottom" format="dimension" />
+
+        <!-- left、top、right、bottom location 最大拉动距离 -->
+        <attr name="max_offset_left" format="dimension" />
+        <attr name="max_offset_top" format="dimension" />
+        <attr name="max_offset_right" format="dimension" />
+        <attr name="max_offset_bottom" format="dimension" />
+
+        <!-- left、top、right、bottom location 拉动时候 "加载布局" 是否显示在 内容布局（listView、recycleView等）上面 默认为false -->
+        <attr name="fixed_content_left" format="boolean" />
+        <attr name="fixed_content_top" format="boolean" />
+        <attr name="fixed_content_right" format="boolean" />
+        <attr name="fixed_content_bottom" format="boolean" />
+
+        <!-- left、top、right、bottom location 加载动画回滚时间 默认300ms -->
+        <attr name="roll_back_duration" format="integer" />
+        <attr name="sticky_factor" format="float" />
+
+
+        <!-- left、top、right、bottom location 加载动画 类路径 -->
+        <attr name="pull_animator_left" format="string"/>
+        <attr name="pull_animator_top" format="string"/>
+        <attr name="pull_animator_right" format="string"/>
+        <attr name="pull_animator_bottom" format="string"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="EasyPullLayout_LayoutParams">
+        <!-- EasyPullLayout 包裹的控件 layout_type 属性 -->
+        <attr name="layout_type" format="enum">
+            <!-- 内容 -->
+            <enum name="content" value="4" />
+        </attr>
+    </declare-styleable>
+
+
+    <!-- 适配5.0以下系统 svg图标 不能直接在布局文件使用 -->
+    <declare-styleable name="svgCompat">
+        <!-- svg 图标资源id -->
+        <attr name="svgDrawable" format="reference" />
+        <!-- svg 图标替换颜色 -->
+        <attr name="svgTintColor" format="color" />
+        <!-- 图标类型-->
+        <attr name="drawableType" format="enum">
+            <enum name="imgType" value="0" /><!-- png、shape、jpg 图标等 -->
+            <enum name="svgType" value="1" /><!-- svg -->
+        </attr>
+
+        <!-- svg 图标显示在控件的位置，textView 类型控件 存在左、上、右、下。其它控件设置为背景 -->
+        <attr name="iconLocationType" format="enum">
+            <enum name="background" value="0" />
+            <enum name="locationLeft" value="1" />
+            <enum name="locationTop" value="2" />
+            <enum name="locationRight" value="3" />
+            <enum name="locationBottom" value="4" />
+        </attr>
+    </declare-styleable>
+
+
+    <!-- 自定义圆形进度条 控件 -->
+    <declare-styleable name="circleProgressBar">
+        <attr name="circleWidth" format="dimension" />
+        <attr name="betaAngle" format="integer" />
+        <attr name="firstColor" format="color" />
+        <attr name="secondColor" format="color" />
+    </declare-styleable>
+
+</resources>

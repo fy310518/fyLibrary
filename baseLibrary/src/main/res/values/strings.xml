@@ -1,0 +1,91 @@
+<resources>
+    <string name="easyPullAnimatorTop">com.fy.baselibrary.widget.refresh.EasyTopRefreshView</string>
+    <string name="easyPullAnimatorBottom">com.fy.baselibrary.widget.refresh.EasyBottomLoadMoreView</string>
+
+
+    <string name="srartUpTitle">欢迎</string>
+    <string name="permission">权限管理</string>
+    <string name="skip">%1$sS 后跳过</string>
+
+
+    <string name="idle">下拉有惊喜!!!</string>
+    <string name="ready">松开刷新!!!</string>
+
+    <!-- 适配字符串 后面有一个汉字宽度的空格 -->
+    <string name="space">%1$s&#160;&#160;&#8201;</string>
+    <string name="loadProgress">%1$d%%\n正在加载&#8230;</string>
+
+    <string name="data_loading">正在加载&#8230;</string>
+    <string name="upLoading">正在上传&#8230;</string>
+    <string name="publish_loading">正在发表&#8230;</string>
+    <string name="loading_modify">正在修改&#8230;</string>
+    <string name="loading_save">正在保存&#8230;</string>
+    <string name="loading_get">正在获取&#8230;</string>
+    <string name="register_loading">正在注册&#8230;</string>
+    <string name="user_login">正在登录&#8230;</string>
+    <string name="exit_loading">正在退出&#8230;</string>
+
+    <string name="loading_success">加载成功</string>
+    <string name="modify_success">修改成功</string>
+    <string name="get_success">获取成功</string>
+
+    <string name="numPass">账号密码不能为空!!!</string>
+    <string name="phoenError">手机号码错误！</string>
+    <string name="inputContentNoNull">输入内容不能为空！！！</string>
+
+    <string name="passError">密码错误！</string>
+    <string name="login_success">登录成功</string>
+    <string name="exit_app">再按一次退出程序！</string>
+
+
+    <string name="back">返回</string>
+    <string name="complete">完成</string>
+
+    <string name="save">保存</string>
+    <string name="delete">删除</string>
+
+    <string name="photograph">拍照</string>
+    <string name="album_selection">相册选择</string>
+
+    <string name="man">男</string>
+    <string name="woman">女</string>
+
+    <string name="daytimeMode">日间模式</string>
+    <string name="nightMode">夜间模式</string>
+
+    <string name="successs">成功</string>
+    <string name="error">错误</string>
+
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+
+    <string name="set">设置</string>
+    <string name="search">搜索</string>
+
+    <string name="dialog_title">提示</string>
+    <string name="default_first_message">为了您的安全，您需要授权该权限才可以正常使用相关功能哦。</string>
+    <string name="default_always_message">当前应用缺少相应的权限，您需要设置相应的权限后才可正常使用相关功能。</string>
+    <string name="permissionFail">权限请求失败</string>
+    <string name="permissionSuccess">权限请求成功</string>
+
+
+    <string name="dataNull">没有数据</string>
+    <string name="accessError">访问出错</string>
+    <string name="clickRetry">点击空白区域重试</string>
+    <string name="internetError">网络错误</string>
+    <string name="confirmInternetRetry">请确认网络连接后点击空白区域重试</string>
+
+
+</resources>
+
+    <!--&#32; == 普通的英文半角空格-->
+
+    <!--&#160; == &nbsp; == &#xA0; == no-break space （普通的英文半角空格但不换行）-->
+
+    <!--&#12288; == 中文全角空格 （一个中文宽度）-->
+
+    <!--&#8194; == &ensp; == en空格 （半个中文宽度）-->
+
+    <!--&#8195; == &emsp; == em空格 （一个中文宽度）-->
+
+    <!--&#8197; == 四分之一em空格 （四分之一中文宽度）-->

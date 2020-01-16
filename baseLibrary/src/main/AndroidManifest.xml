@@ -1,0 +1,21 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fy.baselibrary">
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+
+        <!-- Android 7.0 在应用间共享文件 -->
+        <provider
+            android:name=".base.BaseFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+    </application>
+
+</manifest>
