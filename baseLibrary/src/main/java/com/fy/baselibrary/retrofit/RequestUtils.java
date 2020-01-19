@@ -232,7 +232,7 @@ public class RequestUtils {
                 });
     }
 
-    interface OnRunUiThreadListener{
+    public interface OnRunUiThreadListener{
         void onRun();
     }
 
@@ -240,7 +240,7 @@ public class RequestUtils {
      * 定义 回调 UI线程
      * @param runUiThreadListener
      */
-    private static void runUiThread(OnRunUiThreadListener runUiThreadListener){
+    public static void runUiThread(OnRunUiThreadListener runUiThreadListener){
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(() -> {
             runUiThreadListener.onRun();

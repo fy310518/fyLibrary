@@ -2,14 +2,24 @@ package com.fy.baselibrary.utils.imgload;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.fy.baselibrary.R;
+import com.bumptech.glide.request.target.Target;
+import com.fy.baselibrary.retrofit.RequestUtils;
+import com.fy.baselibrary.utils.imgload.imgprogress.ImgLoadCallBack;
+import com.fy.baselibrary.utils.imgload.imgprogress.ProgressInterceptor;
+import com.fy.baselibrary.utils.imgload.imgprogress.ProgressListener;
+import com.fy.baselibrary.utils.notify.L;
 
 import java.io.File;
 
@@ -30,83 +40,20 @@ public class ImgLoadUtils {
         throw new UnsupportedOperationException("cannot be instantiated");
     }
 
-
     /**
      * 加载指定URL的图片
-     *
      * @param url
      * @param imageView
      */
     public static void loadImage(String url, int errorId, ImageView imageView) {
-
+        if (imageView == null) return;
         RequestOptions options = new RequestOptions()
-//                .fallback(R.mipmap.img_load_default)
-//                .error(R.mipmap.img_load_error)
+                .fallback(errorId)
                 .error(errorId)
-//                .placeholder(R.mipmap.img_loading)
-                ;
+                .placeholder(errorId)
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
 
         Glide.with(imageView.getContext())
-                .load(url)
-                .apply(options)
-                .into(imageView);
-    }
-
-    /**
-     * 加载指定 资源id 的图片
-     *
-     * @param resId
-     * @param imageView
-     */
-    public static void loadImage(int resId, int errorId, ImageView imageView) {
-
-        RequestOptions options = new RequestOptions()
-//                .fallback(R.mipmap.img_load_default)
-//                .error(R.mipmap.img_load_error)
-                .error(errorId)
-//                .placeholder(R.mipmap.img_loading)
-                ;
-
-        Glide.with(imageView.getContext())
-                .load(resId)
-                .apply(options)
-                .into(imageView);
-    }
-
-    /**
-     * 加载指定URL的图片
-     *
-     * @param url
-     * @param imageView
-     */
-    public static void loadImage(String url, ImageView imageView) {
-
-        RequestOptions options = new RequestOptions()
-                .fallback(R.mipmap.img_load_default)
-                .error(R.mipmap.img_load_error)
-                .placeholder(R.mipmap.img_loading);
-
-        Glide.with(imageView.getContext())
-                .load(url)
-                .apply(options)
-                .into(imageView);
-    }
-
-    /**
-     * 加载指定URL的图片 不要缓存
-     *
-     * @param url
-     * @param imageView
-     */
-    public static void loadImages(Context context, String url, ImageView imageView) {
-
-        RequestOptions options = new RequestOptions()
-                .fallback(R.mipmap.img_load_default)
-                .error(R.mipmap.img_load_error)
-                .placeholder(R.mipmap.img_loading)
-                .diskCacheStrategy(DiskCacheStrategy.NONE);
-
-        Glide.with(context)
                 .load(url)
                 .apply(options)
                 .into(imageView);
@@ -114,11 +61,11 @@ public class ImgLoadUtils {
 
     /**
      * 加载圆形 图片
-     *
      * @param url
      * @param imageView
      */
     public static void loadCircularBead(String url, int errorId, ImageView imageView) {
+        if (imageView == null) return;
         RequestOptions options = new RequestOptions()
                 .fallback(errorId)
                 .error(errorId)
@@ -140,22 +87,69 @@ public class ImgLoadUtils {
      * @param imageView
      */
     public static void loadRadiusImg(String url, int errorId, ImageView imageView) {
+        if (imageView == null) return;
+        //加载圆角图片 通过RequestOptions扩展功能
+        RequestOptions requestOptions = new RequestOptions()
+                .fallback(errorId)
+                .error(errorId)
+                .placeholder(errorId)
+                .transforms(new RoundedCorners(15))
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
 
-        if (imageView != null) {
-            //加载圆角图片 通过RequestOptions扩展功能
-            RequestOptions requestOptions = new RequestOptions()
-                    .fallback(errorId)
-                    .error(errorId)
-                    .placeholder(errorId)
-                    .transforms(new RoundedCorners(15))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL);
+        Glide.with(imageView.getContext())
+                .load(url)
+                .apply(requestOptions)
+                .into(imageView);
+    }
 
-            Glide.with(imageView.getContext())
-                    .load(url)
-                    .apply(requestOptions)
-                    .into(imageView);
-        }
+    /**
+     * 加载网络图片 带进度回调监听
+     */
+    public static void loadImgProgress(String url, int errorId, ImageView imageView, ImgLoadCallBack callBack) {
+        if (imageView == null) return;
+        ProgressInterceptor.addListener(url, new ProgressListener() {
+            @Override
+            public void onProgress(int progress) {
+                L.e("glide", progress + "%");
+                if (null != callBack) {
+                    RequestUtils.runUiThread(new RequestUtils.OnRunUiThreadListener() {
+                        @Override
+                        public void onRun() {
+                            callBack.onProgress(progress);
+                        }
+                    });
+                }
+            }
+        });
 
+        RequestOptions options = new RequestOptions()
+                .error(errorId)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+
+        Glide.with(imageView.getContext())
+                .load(url)
+                .apply(options)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
+                        ProgressInterceptor.removeListener(url);
+                        if (null != callBack)
+                            callBack.onLoadFailed(e, model, target, isFirstResource);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        ProgressInterceptor.removeListener(url);
+                        if (null != callBack)
+                            callBack.onResourceReady(resource, model, target, dataSource, isFirstResource);
+                        return false;
+                    }
+                })
+                .into(imageView);
     }
 
     /**
