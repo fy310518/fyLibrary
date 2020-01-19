@@ -43,10 +43,6 @@ public class H5RequestBean {
         this.requestMethod = requestMethod;
     }
 
-    public ArrayMap<String, Object> getHeader() {
-        return header;
-    }
-
     public void setHeader(ArrayMap<String, Object> header) {
         if (null == header || header.isEmpty()){
             this.header = new ArrayMap<>();
@@ -55,8 +51,12 @@ public class H5RequestBean {
         }
     }
 
+    public ArrayMap<String, Object> getHeader() {
+        return null == header ? new ArrayMap<>() : header;
+    }
+
     public ArrayMap<String, Object> getParams() {
-        return params;
+        return null == params ? new ArrayMap<>() : params;
     }
 
     public void setParams(ArrayMap<String, Object> params) {
