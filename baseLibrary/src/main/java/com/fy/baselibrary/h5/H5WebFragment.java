@@ -36,7 +36,7 @@ public abstract class H5WebFragment extends BaseFragment {
         if (null != initializer) {
             webView = initializer.setWebView();
             if (null == webView) {
-                getActivity().finish();
+                onBackPressed();
             } else {
                 //第一个参数把自身传给js 第二个参数是this的一个名字
                 webView.addJavascriptInterface(initializer.setJsInterface(), "android");
@@ -45,7 +45,7 @@ public abstract class H5WebFragment extends BaseFragment {
                 webView.setWebChromeClient(initializer.initWebChromeClient());
             }
         } else {
-            getActivity().finish();
+            onBackPressed();
         }
     }
 
@@ -120,7 +120,9 @@ public abstract class H5WebFragment extends BaseFragment {
     }
 
 
-
+    /**
+     * web页面 回退
+     */
     public void onBackPressed() {
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
