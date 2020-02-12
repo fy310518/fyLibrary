@@ -33,7 +33,7 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     private SparseArrayCompat<View> mFootViews = new SparseArrayCompat<>();
 
     protected SparseBooleanArray mSelectedPositions;//保存多选 数据
-    private RecyclerView mRv;
+    protected RecyclerView mRv;
     protected int mSelectedPos = -1;//实现单选  保存当前选中的position
 
     protected OnListener.OnitemClickListener itemClickListner;//列表条目点击事件
@@ -347,8 +347,23 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
         this.changeItemListener = changeItemListener;
     }
 
+    public void setmRv(RecyclerView mRv) {
+        this.mRv = mRv;
+    }
 
-//    单选 样板代码 https://www.cnblogs.com/zhujiabin/p/7569224.html
+    /**
+     * 获取 单选 的 条目位置
+     * @return
+     */
+    public int getSelectedPos(){
+        return mSelectedPos;
+    }
+
+    public void setmSelectedPos(int mSelectedPos) {
+        this.mSelectedPos = mSelectedPos;
+    }
+
+    //    单选 样板代码
 //    holder.ivSelect.setOnClickListener(new View.OnClickListener() {
 //        @Override
 //        public void onClick(View view) {
@@ -358,12 +373,12 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
 //                couponVH.ivSelect.setSelected(false);//此处注意判空
 //            }else {//add by 2016 11 22 for 一些极端情况，holder被缓存在Recycler的cacheView里，
 //                //此时拿不到ViewHolder，但是也不会回调onBindViewHolder方法。所以add一个异常处理
-//                notifyItemChanged(mSelectedPos);
+//                if (mSelectedPos > -1) notifyItemChanged(mSelectedPos);
 //            }
-//            mDatas.get(mSelectedPos).setSelected(false);//不管在不在屏幕里 都需要改变数据
+//            if (mSelectedPos > -1) mDatas.get(mSelectedPos).setSelected(false);//不管在不在屏幕里 都需要改变数据
 //            //设置新Item的勾选状态
 //            mSelectedPos = position;
-//            mDatas.get(mSelectedPos).setSelected(true);
+//            if (mSelectedPos > -1) mDatas.get(mSelectedPos).setSelected(true);
 //            holder.ivSelect.setSelected(true);
 //        }
 //    });
@@ -373,6 +388,13 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     private final Object mLock = new Object();
     //对象数组的备份，当调用 Filter 的时候初始化和使用。此时，对象数组只包含已经过滤的数据。
     private ArrayList<Item> mOriginalValues;
+
+    public ArrayList<Item> getmOriginalValues() {
+        if (mOriginalValues == null) {
+            return new ArrayList<>();
+        }
+        return mOriginalValues;
+    }
 
     @Override
     public Filter getFilter() {
