@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.fy.baselibrary.R;
 import com.fy.baselibrary.utils.AnimUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +42,16 @@ public class FragmentChangeManager {
     @StyleRes
     int styleResAnim;
 
+    //处理单fragment
+    public FragmentChangeManager(FragmentManager fm, int containerViewId, Fragment fragment) {
+        this.mFragmentManager = fm;
+        this.mContainerViewId = containerViewId;
+
+        mFragments = new ArrayList<>();
+        mFragments.add(fragment);
+    }
+
+    //处理多fragment
     public FragmentChangeManager(FragmentManager fm, int containerViewId, List<Fragment> fragments) {
         this.mFragmentManager = fm;
         this.mContainerViewId = containerViewId;
