@@ -2,6 +2,7 @@ package com.fy.baselibrary.h5;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.webkit.JavascriptInterface;
@@ -33,21 +34,29 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class BaseAndroidJSInterface {
 
-    protected Context context;
+    protected Activity context;
+    protected Fragment fragment;
     protected WebView view;
     private String host;
 
     private ArrayMap<String, String> defaultParams = new ArrayMap<>();
     private IProgressDialog progressDialog;
 
-    public BaseAndroidJSInterface(Context context, WebView view, String host) {
-        this.context = context;
+    public BaseAndroidJSInterface(Fragment fragment, WebView view, String host) {
+        this.fragment = fragment;
+        this.view = view;
+        this.host = host;
+    }
+
+    public BaseAndroidJSInterface(Activity activity, WebView view, String host) {
+        this.context = activity;
         this.view = view;
         this.host = host;
     }
 
     /**
      * 设置 加载弹窗
+     *
      * @param progressDialog
      */
     public void setProgressDialog(IProgressDialog progressDialog) {
@@ -56,6 +65,7 @@ public class BaseAndroidJSInterface {
 
     /**
      * 设置 请求参数
+     *
      * @param key
      * @param value
      * @return
@@ -67,6 +77,7 @@ public class BaseAndroidJSInterface {
 
     /**
      * 获取 指定 key 的参数
+     *
      * @param key
      * @param <T>
      */
@@ -75,7 +86,7 @@ public class BaseAndroidJSInterface {
     }
 
     //解析 H5RequestBean 获取 请求参数
-    private ArrayMap<String, Object> getHttpParams(H5RequestBean request){
+    private ArrayMap<String, Object> getHttpParams(H5RequestBean request) {
         ArrayMap<String, Object> oneParams = new ArrayMap<>();
         ArrayMap<String, Object> params = request.getParams();
 
@@ -100,9 +111,9 @@ public class BaseAndroidJSInterface {
     }
 
     //添加请求头
-    private ArrayMap<String, Object> getHeaderParams(H5RequestBean request){
+    private ArrayMap<String, Object> getHeaderParams(H5RequestBean request) {
         ArrayMap<String, Object> params = request.getHeader();
-        if (null == params){
+        if (null == params) {
             params = new ArrayMap<>();
 //            params.put("Content-Type", "multipart/form-data;charse=UTF-8");
 //            params.put("Connection", "keep-alive");
@@ -115,6 +126,7 @@ public class BaseAndroidJSInterface {
 
     /**
      * 定义本地网络请求方法 供 h5 调用
+     *
      * @param requestContent h5 传递的 网络请求 请求头，请求方法（get，post），请求参数，请求 url
      * @return ""
      */
@@ -125,8 +137,9 @@ public class BaseAndroidJSInterface {
 
     /**
      * 定义本地网络请求方法 供 h5 调用
-     * @param hostIp          请求的主机地址 可为空，为空则表示 使用构造方法传递的 host
-     * @param requestContent  h5 传递的 网络请求 请求头，请求方法（get，post），请求参数，请求 url
+     *
+     * @param hostIp         请求的主机地址 可为空，为空则表示 使用构造方法传递的 host
+     * @param requestContent h5 传递的 网络请求 请求头，请求方法（get，post），请求参数，请求 url
      * @return
      */
     @JavascriptInterface
@@ -170,7 +183,7 @@ public class BaseAndroidJSInterface {
                 .jsInAndroidGetRequest(url, headers, params)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.bindToLifecycle(context))
+                .compose(RxHelper.bindToLifecycle(null == context ? fragment.getActivity() : context))
                 .subscribe(getCallObserver(url, jsMethod));
     }
 
@@ -179,7 +192,7 @@ public class BaseAndroidJSInterface {
                 .jsInAndroidPostRequest(url, headers, params)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxHelper.bindToLifecycle(context))
+                .compose(RxHelper.bindToLifecycle(null == context ? fragment.getActivity() : context))
                 .subscribe(getCallObserver(url, jsMethod));
     }
 
@@ -196,7 +209,7 @@ public class BaseAndroidJSInterface {
                     public List<String> apply(ArrayList<String> base64List) throws Exception {
                         List<String> filePath = new ArrayList<>();
 
-                        for (String item : base64List){
+                        for (String item : base64List) {
                             File newFile = FileUtils.createFile("/DCIM/camera/", "IMG_", ".png", 2);
                             EncodeUtils.decoderBase64File(item, newFile.getPath());
 
@@ -214,7 +227,7 @@ public class BaseAndroidJSInterface {
 
                         return RequestUtils.create(LoadService.class)
                                 .uploadFile(url, headers, params)
-                                .compose(RxHelper.bindToLifecycle(context))
+                                .compose(RxHelper.bindToLifecycle(null == context ? fragment.getActivity() : context))
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread());
                     }
@@ -223,7 +236,7 @@ public class BaseAndroidJSInterface {
     }
 
     //定义网络请求 观察者，统一处理返回数据
-    private RequestBaseObserver<Object> getCallObserver(final String url, final String jsMethod){
+    private RequestBaseObserver<Object> getCallObserver(final String url, final String jsMethod) {
         return new RequestBaseObserver<Object>(progressDialog) {
             @Override
             protected void onSuccess(Object data) {
@@ -250,7 +263,7 @@ public class BaseAndroidJSInterface {
 
     @JavascriptInterface
     public void back() {
-        ((Activity)this.context).finish();
+        ((Activity) this.context).finish();
     }
 
     @JavascriptInterface
@@ -258,7 +271,7 @@ public class BaseAndroidJSInterface {
         if (this.view != null && this.view.canGoBack()) {
             this.view.goBack();
         } else {
-            ((Activity)this.context).finish();
+            ((Activity) this.context).finish();
         }
     }
 
