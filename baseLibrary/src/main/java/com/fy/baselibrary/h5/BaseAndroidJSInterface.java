@@ -263,7 +263,9 @@ public class BaseAndroidJSInterface {
 
     @JavascriptInterface
     public void back() {
-        ((Activity) this.context).finish();
+        Activity act = null == context ? fragment.getActivity() : context;
+        assert act != null;
+        act.finish();
     }
 
     @JavascriptInterface
@@ -271,7 +273,7 @@ public class BaseAndroidJSInterface {
         if (this.view != null && this.view.canGoBack()) {
             this.view.goBack();
         } else {
-            ((Activity) this.context).finish();
+            back();
         }
     }
 
