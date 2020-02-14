@@ -1,11 +1,14 @@
 package com.fy.baselibrary.utils;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -96,10 +99,10 @@ public class PhotoUtils {
     }
 
     /**
-     * 调用系统裁剪
+     * 调用系统裁剪  安卓7.0以下
      *
      * @param activity    当前activity
-     * @param orgUri      剪裁原图的Uri
+     * @param filePath     剪裁原图的 路径
      * @param desUri      剪裁后的图片的Uri
      * @param aspectX     X方向的比例
      * @param aspectY     Y方向的比例
@@ -107,8 +110,11 @@ public class PhotoUtils {
      * @param height      剪裁图片高度
      * @param requestCode 剪裁图片的请求码
      */
-    public static void cropImageUri(Activity activity, Uri orgUri, Uri desUri, int aspectX,
+    public static void cropImageUri(Activity activity, String filePath, Uri desUri, int aspectX,
                                     int aspectY, int width, int height, int requestCode) {
+
+        //剪裁原图的Uri
+        Uri orgUri = PhotoUtils.getUri(activity, new File(filePath));
 
         Intent intent = new Intent("com.android.camera.action.CROP");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -130,12 +136,53 @@ public class PhotoUtils {
     }
 
     /**
-     * 把图片保存到指定的文件夹 并 通知图库更新
-     *
+     * 获取 图片裁剪 Uri
+     */
+    public static Uri getUri(Context context, File file){
+        Uri sourceUri = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            sourceUri = PhotoUtils.getImageContentUri(context, file);
+        } else {
+            sourceUri = Uri.fromFile(file);
+        }
+
+        return sourceUri;
+    }
+
+    /**
+     * 获取文件的Content uri路径 安卓7.0获取setDataAndType裁剪后的照片
+     */
+    public static Uri getImageContentUri(Context context, File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID},
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[]{filePath}, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor
+                    .getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/images/media");
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
+    }
+
+    /**
+     * 把图片保存到指定的文件夹
      * @param bmp
      */
-    public static void saveImageToGallery(Bitmap bmp, int type) {
-        File file = FileUtils.createFile(FileUtils.IMG, "IMG_", ".jpg", type);
+    public static String saveImageToGallery(Bitmap bmp) {
+        File file = FileUtils.createFile(FileUtils.IMG, "IMG_", ".jpg", 0);
         try {
             FileOutputStream fos = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
@@ -147,16 +194,7 @@ public class PhotoUtils {
             e.printStackTrace();
         }
 
-        // 其次把文件插入到系统图库
-        try {
-            MediaStore.Images.Media.insertImage(ConfigUtils.getAppCtx().getContentResolver(),
-                    file.getAbsolutePath(), file.getName(), null);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        // 最后通知图库更新
-        new UpdateMedia(file.getPath()).runUpdate();
+        return file.getPath();
     }
 
 
@@ -210,19 +248,41 @@ public class PhotoUtils {
     /**
      * 将图片按照指定的角度进行旋转
      *
-     * @param bitmap 需要旋转的图片
+     * @param path 需要旋转的图片路径
      * @param degree 指定的旋转角度
      * @return 旋转后的图片
      */
-    public static Bitmap rotateBitmapByDegree(Bitmap bitmap, int degree) {
+    public static String rotateBitmapByDegree(String path, int degree) {
+        Bitmap bitmap;
+        try{
+            bitmap = BitmapFactory.decodeFile(path, getBitmapOption(1)); //将图片的长和宽缩小味原来的1/2
+        }catch(Exception e){
+            e.printStackTrace();
+            return "";
+        }
+
         // 根据旋转角度，生成旋转矩阵
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
         // 将原始图片按照旋转矩阵进行旋转，并得到新的图片
         Bitmap newBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        if (bitmap != null && !bitmap.isRecycled()) {
-            bitmap.recycle();
-        }
-        return newBitmap;
+
+        String targetPath = saveImageToGallery(newBitmap);
+
+        if (!bitmap.isRecycled()) bitmap.recycle();
+        if (!newBitmap.isRecycled()) newBitmap.recycle();
+
+        bitmap = null;
+        newBitmap = null;
+
+        return targetPath;
+    }
+
+
+    private static BitmapFactory.Options getBitmapOption(int inSampleSize){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPurgeable = true;
+        options.inSampleSize = inSampleSize;
+        return options;
     }
 }
