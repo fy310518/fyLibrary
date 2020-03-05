@@ -8,6 +8,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.fy.baselibrary.base.fragment.BaseFragment;
+import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.FileUtils;
 
 /**
@@ -77,9 +78,11 @@ public abstract class H5WebFragment extends BaseFragment {
 
 
 
-
-
-
+    @Override
+    public void onRetry() {
+        webView.reload();
+        showHideViewFlag(Constant.LAYOUT_CONTENT_ID);
+    }
 
     @Override
     public void onResume() {

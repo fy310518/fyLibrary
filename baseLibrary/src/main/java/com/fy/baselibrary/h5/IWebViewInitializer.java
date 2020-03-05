@@ -1,8 +1,6 @@
 package com.fy.baselibrary.h5;
 
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 /**
  * describe：定义接口 方便 H5WebFragment 获取 webView 以及 WebViewClient、WebChromeClient

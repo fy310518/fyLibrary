@@ -13,14 +13,14 @@ public interface OnSetStatusView {
      *
      * @return
      */
-    public View setStatusView();
+    View setStatusView();
 
     /**
      * 根据 flag 显示/隐藏 对应的状态视图
      *
      * @param flagId
      */
-    public void showHideViewFlag(int flagId);
+    void showHideViewFlag(int flagId);
 
     /**
      * 多布局 点击重试
