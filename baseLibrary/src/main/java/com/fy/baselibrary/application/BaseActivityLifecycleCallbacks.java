@@ -19,13 +19,12 @@ import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.base.mvp.BaseMVPActivity;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
-import com.fy.baselibrary.statuslayout.OnStatusAdapter;
 import com.fy.baselibrary.statuslayout.StatusLayoutManager;
 import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.JumpUtils;
+import com.fy.baselibrary.utils.ResUtils;
 import com.fy.baselibrary.utils.media.PlayUtils;
 import com.fy.baselibrary.utils.notify.L;
-import com.fy.baselibrary.utils.ResUtils;
 
 import butterknife.ButterKnife;
 import io.reactivex.subjects.BehaviorSubject;
