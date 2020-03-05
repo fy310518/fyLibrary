@@ -42,15 +42,9 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
     public static final String TAG = "lifeCycle --> ";
     public static int actNum;
     int designWidth;
-    OnStatusAdapter adapter;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
-
-    public BaseActivityLifecycleCallbacks(int designWidth, OnStatusAdapter adapter) {
-        this.designWidth = designWidth;
-        this.adapter = adapter;
     }
 
     @Override
@@ -62,8 +56,6 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
 //            activity.finish();
 //            return;
 //        }
-
-//        ScreenUtils.setCustomDensity(activity, designWidth);
 
         if (activity instanceof BaseMVPActivity) {
             ((BaseMVPActivity)activity).initPresenter();
