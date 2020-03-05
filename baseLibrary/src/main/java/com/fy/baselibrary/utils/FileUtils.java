@@ -18,13 +18,15 @@ import java.io.FileWriter;
  */
 public class FileUtils {
 
-    public static String cache = "fy.cache";
+    public static String cache = ConfigUtils.getFilePath() + ".cache";
     /** 文件下载目录 */
-    public static String DOWN = "fy.down";
+    public static String DOWN = ConfigUtils.getFilePath() + ".down";
     /** 图片保存目录 */
-    public static String IMG = "fy.picture";
+    public static String IMG = ConfigUtils.getFilePath() + ".picture";
     /** 压缩文件目录 */
-    public static String ZIP = "fy.zip";
+    public static String ZIP = ConfigUtils.getFilePath() + ".zip";
+    /** 錄音文件目录 */
+    public static String record = ConfigUtils.getFilePath() + ".record";
 
     private FileUtils() {
         /* cannot be instantiated */

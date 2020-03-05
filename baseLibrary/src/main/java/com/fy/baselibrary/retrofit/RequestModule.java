@@ -103,16 +103,18 @@ public class RequestModule {
             builder.addInterceptor(interceptor);
         }
 
-        InputStream is;
+        InputStream is = null;
         if (!TextUtils.isEmpty(ConfigUtils.getCer())){
             is = new Buffer().writeUtf8(ConfigUtils.getCer()).inputStream();
-        } else {
+        } else if (!TextUtils.isEmpty(ConfigUtils.getCerFileName())){
             is = ResUtils.getAssetsInputStream(ConfigUtils.getCerFileName());
         }
 
-        SSLSocketFactory sslSocketFactory = SSLUtil.getSSLSocketFactory(is);
-        if (null != sslSocketFactory) {
-            builder.sslSocketFactory(sslSocketFactory);
+        if (null != is){
+            SSLSocketFactory sslSocketFactory = SSLUtil.getSSLSocketFactory(is);
+            if (null != sslSocketFactory) {
+                builder.sslSocketFactory(sslSocketFactory);
+            }
         }
 
         return builder.build();

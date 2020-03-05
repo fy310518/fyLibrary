@@ -3,16 +3,22 @@ package com.fy.baselibrary.base.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.fy.baselibrary.R;
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
 import com.fy.baselibrary.statuslayout.StatusLayoutManager;
+import com.fy.baselibrary.utils.ResUtils;
 import com.fy.baselibrary.utils.notify.L;
 import com.fy.baselibrary.utils.cache.ACache;
 
@@ -43,8 +49,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @return
      */
     protected abstract int setContentLayout();
-
-    protected void baseInit() {}
+    /** 初始化 */
+    protected abstract void baseInit();
 
     /** 设置懒加载 */
     protected void lazyData() {}
@@ -155,6 +161,37 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         super.onDetach();
         L.e(TAG, "onDetach()");
     }
+
+    /**
+     * fragment 设置 toolbar
+     * @param title
+     * tips：重写 onCreateOptionsMenu 方法 可以设置 菜单
+     */
+    protected void setToolbar(@StringRes int title){
+        setToolbar(ResUtils.getStr(title));
+    }
+
+    protected void setToolbar(String title){
+        View titleBar = LayoutInflater.from(getActivity()).inflate(R.layout.activity_head, null);
+        Toolbar toolbar = titleBar.findViewById(R.id.toolbar);
+
+        if (ConfigUtils.isTitleCenter()) {
+            toolbar.setTitle("");
+            TextView toolbarTitle = titleBar.findViewById(R.id.toolbarTitle);
+            toolbarTitle.setText(title);
+            toolbarTitle.setTextColor(ResUtils.getColor(ConfigUtils.getTitleColor()));
+            toolbarTitle.setVisibility(View.VISIBLE);
+        } else {
+            toolbar.setTitle(title);
+        }
+
+        if (ConfigUtils.getBgColor() > 0)
+            toolbar.setBackgroundColor(ResUtils.getColor(ConfigUtils.getBgColor()));
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
+    }
+
 
     /**
      * 当前activity 是否显示
