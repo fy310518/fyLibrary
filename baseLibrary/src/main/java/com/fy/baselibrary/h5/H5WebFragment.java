@@ -3,6 +3,7 @@ package com.fy.baselibrary.h5;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -76,7 +77,8 @@ public abstract class H5WebFragment extends BaseFragment {
         }
     }
 
-
+    @Override
+    public View setStatusView(){return webView;}
 
     @Override
     public void onRetry() {

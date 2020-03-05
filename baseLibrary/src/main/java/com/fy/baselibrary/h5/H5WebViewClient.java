@@ -1,22 +1,17 @@
 package com.fy.baselibrary.h5;
 
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
-import android.view.View;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
-import com.fy.baselibrary.statuslayout.StatusLayoutManager;
 import com.fy.baselibrary.utils.Constant;
-import com.fy.baselibrary.utils.net.NetUtils;
 
 /**
  * describe：默认的 WebViewClient
@@ -66,13 +61,29 @@ public class H5WebViewClient extends WebViewClient {
     }
 
     //加载错误的时候会回调
-     @Override
-     public void onReceivedError(WebView webView, int i, String s, String s1) {
-         super.onReceivedError(webView, i, s, s1);
+    @Override
+    public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+        super.onReceivedError(view, errorCode, description, failingUrl);
+        // 断网或者网络连接超时
+        if (errorCode == ERROR_HOST_LOOKUP || errorCode == ERROR_CONNECT || errorCode == ERROR_TIMEOUT) {
+            view.loadUrl("about:blank"); // 避免出现默认的错误界面
+            if (null != onSetStatusView) {
+                onSetStatusView.showHideViewFlag(Constant.LAYOUT_NETWORK_ERROR_ID);
+            }
+        }
+    }
 
-         if (null != onSetStatusView) {
-             onSetStatusView.showHideViewFlag(!NetUtils.isConnected() ? Constant.LAYOUT_NETWORK_ERROR_ID : Constant.LAYOUT_ERROR_ID);
-         }
-     }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)// 这个方法在6.0才出现
+    @Override
+    public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+        super.onReceivedHttpError(view, request, errorResponse);
 
+        int statusCode = errorResponse.getStatusCode();
+        if (404 == statusCode || 500 == statusCode) {
+            view.loadUrl("about:blank");// 避免出现默认的错误界面
+            if (null != onSetStatusView) {
+                onSetStatusView.showHideViewFlag(Constant.LAYOUT_ERROR_ID);
+            }
+        }
+    }
 }

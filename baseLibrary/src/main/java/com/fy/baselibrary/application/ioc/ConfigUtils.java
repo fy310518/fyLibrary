@@ -2,6 +2,8 @@ package com.fy.baselibrary.application.ioc;
 
 import android.content.Context;
 
+import com.fy.baselibrary.statuslayout.OnStatusAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,8 @@ public class ConfigUtils {
     public static String getTokenKey(){return configComponent.getConfigBiuder().token;}
 
     public static List<Interceptor> getInterceptor(){return configComponent.getConfigBiuder().interceptors;}
+
+    public static OnStatusAdapter getOnStatusAdapter(){return configComponent.getConfigBiuder().statusAdapter;}
 
     public static String getCer() {
         return configComponent.getConfigBiuder().cer;
@@ -99,6 +103,8 @@ public class ConfigUtils {
         String token = "X-Access-Token";
         /** token 拦截器 */
         List<Interceptor> interceptors  = new ArrayList<>();
+        /** 多状态布局 适配器 */
+        OnStatusAdapter statusAdapter;
 
         public ConfigBiuder setDEBUG(boolean DEBUG) {
             this.DEBUG = DEBUG;
@@ -153,6 +159,11 @@ public class ConfigUtils {
 
         public ConfigBiuder addInterceptor(Interceptor interceptor) {
             interceptors.add(interceptor);
+            return this;
+        }
+
+        public ConfigBiuder setStatusAdapter(OnStatusAdapter statusAdapter) {
+            this.statusAdapter = statusAdapter;
             return this;
         }
 

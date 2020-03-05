@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fy.baselibrary.R;
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.utils.Constant;
 
 /**
@@ -66,11 +67,12 @@ public class LoadSirUtils {
         }
 
         //构造 StatusLayoutManager 并显示内容布局，
+        OnStatusAdapter statusAdapter = ConfigUtils.getOnStatusAdapter();
         return StatusLayoutManager.newBuilder(context, target)
-                .errorView(R.layout.state_include_error)
-                .netWorkErrorView(R.layout.state_include_networkerror)
-                .emptyDataView(R.layout.state_include_emptydata)
-                .retryViewId(R.id.tvTry)
+                .errorView(null !=statusAdapter ? statusAdapter.errorViewId() : R.layout.state_include_error)
+                .netWorkErrorView(null !=statusAdapter ? statusAdapter.netWorkErrorView() : R.layout.state_include_networkerror)
+                .emptyDataView(null !=statusAdapter ? statusAdapter.emptyDataView() : R.layout.state_include_emptydata)
+                .retryViewId(null !=statusAdapter ? statusAdapter.retryViewId() : R.id.tvTry)
                 .onRetryListener(listener)
                 .build()
                 .showHideViewFlag(Constant.LAYOUT_CONTENT_ID);
