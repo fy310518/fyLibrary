@@ -167,17 +167,14 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @param title
      * tips：重写 onCreateOptionsMenu 方法 可以设置 菜单
      */
-    protected void setToolbar(@StringRes int title){
-        setToolbar(ResUtils.getStr(title));
+    protected void setToolbar(Toolbar toolbar, @StringRes int title){
+        setToolbar(toolbar, ResUtils.getStr(title));
     }
 
-    protected void setToolbar(String title){
-        View titleBar = LayoutInflater.from(getActivity()).inflate(R.layout.activity_head, null);
-        Toolbar toolbar = titleBar.findViewById(R.id.toolbar);
-
+    protected void setToolbar(Toolbar toolbar, String title){
         if (ConfigUtils.isTitleCenter()) {
             toolbar.setTitle("");
-            TextView toolbarTitle = titleBar.findViewById(R.id.toolbarTitle);
+            TextView toolbarTitle = toolbar.findViewById(R.id.toolbarTitle);
             toolbarTitle.setText(title);
             toolbarTitle.setTextColor(ResUtils.getColor(ConfigUtils.getTitleColor()));
             toolbarTitle.setVisibility(View.VISIBLE);
