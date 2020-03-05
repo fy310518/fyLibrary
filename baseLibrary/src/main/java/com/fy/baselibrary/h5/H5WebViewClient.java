@@ -61,37 +61,18 @@ public class H5WebViewClient extends WebViewClient {
 //        if (Uri.parse(url).getHost().equals("www.baidu.com")) {
 //            return true;
 //        }
-//        view.loadUrl(url);
-//        return false;
-
-        WebView.HitTestResult hitTestResult = view.getHitTestResult();
-        //hitTestResult==null 解决重定向问题(刷新后不能退出的bug)
-        if (!TextUtils.isEmpty(url) && hitTestResult == null) {
-            return true;
-        }
-        return super.shouldOverrideUrlLoading(view, url);
+        view.loadUrl(url);
+        return false;
     }
 
     //加载错误的时候会回调
      @Override
      public void onReceivedError(WebView webView, int i, String s, String s1) {
          super.onReceivedError(webView, i, s, s1);
-         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) return;
 
          if (null != onSetStatusView) {
              onSetStatusView.showHideViewFlag(!NetUtils.isConnected() ? Constant.LAYOUT_NETWORK_ERROR_ID : Constant.LAYOUT_ERROR_ID);
          }
      }
-
-    //加载错误的时候会回调
-     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-     @Override
-     public void onReceivedError(WebView webView, WebResourceRequest webResourceRequest, WebResourceError webResourceError) {
-        super.onReceivedError(webView, webResourceRequest, webResourceError);
-        if (webResourceRequest.isForMainFrame()) {
-            if (null != onSetStatusView) onSetStatusView.showHideViewFlag(!NetUtils.isConnected() ? Constant.LAYOUT_NETWORK_ERROR_ID : Constant.LAYOUT_ERROR_ID);
-        }
-    }
-
 
 }
