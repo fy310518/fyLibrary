@@ -19,6 +19,7 @@ import com.fy.baselibrary.utils.FileUtils;
 public abstract class H5WebFragment extends BaseFragment {
 
     WebView webView;
+    IWebViewInitializer initializer;
 
     public abstract IWebViewInitializer setInitializer();
 
@@ -34,14 +35,14 @@ public abstract class H5WebFragment extends BaseFragment {
     @SuppressLint("JavascriptInterface")
     private void initWebView(){
         //获取子类回调传回来的接口实例
-        final IWebViewInitializer initializer = setInitializer();
+        initializer = setInitializer();
         if (null != initializer) {
-            webView = initializer.setWebView();
+            webView = initializer.getWebView();
             if (null == webView) {
                 onBackPressed();
             } else {
                 //第一个参数把自身传给js 第二个参数是this的一个名字
-                webView.addJavascriptInterface(initializer.setJsInterface(), "android");
+                webView.addJavascriptInterface(initializer.getJsInterface(), "android");
 
                 webView.setWebViewClient(initializer.initWebViewClient());
                 webView.setWebChromeClient(initializer.initWebChromeClient());
@@ -70,11 +71,14 @@ public abstract class H5WebFragment extends BaseFragment {
 
         settings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE); //关闭webview中缓存
+        settings.setSavePassword(false);// 关闭密码保存提醒功能
         settings.setDefaultTextEncodingName("utf-8");//设置编码格式
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
+
+        webView.loadUrl(initializer.getLoadUrl());
     }
 
     @Override
