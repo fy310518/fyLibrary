@@ -3,6 +3,8 @@ package com.fy.baselibrary.h5;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -87,7 +89,10 @@ public abstract class H5WebFragment extends BaseFragment {
     @Override
     public void onRetry() {
         webView.reload();
-        showHideViewFlag(Constant.LAYOUT_CONTENT_ID);
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.postDelayed(() -> {
+            showHideViewFlag(Constant.LAYOUT_CONTENT_ID);
+        }, 300);
     }
 
     @Override
