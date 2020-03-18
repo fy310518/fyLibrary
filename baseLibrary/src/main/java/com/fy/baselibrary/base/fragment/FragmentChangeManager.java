@@ -159,6 +159,29 @@ public class FragmentChangeManager {
         this.styleResAnim = styleResAnim;
     }
 
+    /**
+     * 向fragment 管理器 添加一个 fragment 并显示
+     * @param fragment
+     */
+    public void addFragment(Fragment fragment){
+        mFragments.add(fragment);
+        setFragments(mFragments.size() - 1);
+    }
+
+    /**
+     * 删除最后一个 fragment
+     */
+    public void removeLastFragment() {
+        if (currentIndex > 0) {
+            setFragments(currentIndex - 1);
+
+            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+            fragmentTransaction.remove(mFragments.get(mFragments.size() - 1)).commit();
+
+            mFragments.remove(mFragments.size() - 1);
+        }
+    }
+
     public int getCurrentTab() {
         return currentIndex;
     }
