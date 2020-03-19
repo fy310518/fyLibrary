@@ -104,6 +104,7 @@ public class FragmentChangeManager {
         if (!showFragment.isAdded()) {
             String fragmentTag = showFragment.getClass().getSimpleName();
             fragmentTransaction.add(mContainerViewId, showFragment, fragmentTag);
+            fragmentTransaction.addToBackStack(fragmentTag);
         } else {
             fragmentTransaction.show(showFragment);
         }
@@ -175,11 +176,15 @@ public class FragmentChangeManager {
         if (currentIndex > 0) {
             setFragments(currentIndex - 1);
 
-            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.remove(mFragments.get(mFragments.size() - 1)).commit();
-
+            mFragmentManager.popBackStack(null, 0);
             mFragments.remove(mFragments.size() - 1);
         }
+    }
+
+    //https://blog.csdn.net/qq_16247851/article/details/52793061
+    public void popLastFragment(){
+        mFragmentManager.popBackStack(null, 0);
+        mFragments.remove(mFragments.size() - 1);
     }
 
     public int getCurrentTab() {
