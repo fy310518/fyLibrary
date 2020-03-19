@@ -171,20 +171,16 @@ public class FragmentChangeManager {
 
     /**
      * 删除最后一个 fragment
+     * https://blog.csdn.net/qq_16247851/article/details/52793061
      */
-    public void removeLastFragment() {
-        if (currentIndex > 0) {
-            setFragments(currentIndex - 1);
-
-            mFragmentManager.popBackStack(null, 0);
-            mFragments.remove(mFragments.size() - 1);
-        }
-    }
-
-    //https://blog.csdn.net/qq_16247851/article/details/52793061
     public void popLastFragment(){
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        setFragmentTransition(fragmentTransaction, currentIndex, currentIndex - 1);
+        
         mFragmentManager.popBackStack(null, 0);
-        mFragments.remove(mFragments.size() - 1);
+        mFragments.remove(currentIndex);
+
+        currentIndex--;
     }
 
     public int getCurrentTab() {
