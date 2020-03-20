@@ -1,4 +1,4 @@
-package com.fy.baselibrary.base.fragment;
+package com.gcstorage.chat;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.AnimRes;
@@ -7,9 +7,6 @@ import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-
-import com.fy.baselibrary.R;
-import com.fy.baselibrary.utils.AnimUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +64,7 @@ public class FragmentChangeManager {
         for (int position : positions) {
             Fragment showFragment = mFragments.get(position);
 
-            setCommitTransaction(null, showFragment, position);
+            setCommitTransaction(null, showFragment, position, false, 0);
         }
     }
 
@@ -76,22 +73,23 @@ public class FragmentChangeManager {
      *
      * @param position
      */
-    public void setFragments(int position) {
+    public void setFragments(int position, boolean isRemove, int count) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         setFragmentTransition(fragmentTransaction, currentIndex, position);
 
         Fragment showFragment = mFragments.get(position);
 
-        setCommitTransaction(fragmentTransaction, showFragment, position);
+        setCommitTransaction(fragmentTransaction, showFragment, position, isRemove, count);
     }
 
     /**
-     * 解决 fragment重影
-     *
+     * fragment 回退 , 解决 fragment重影
+     * @param fragmentTransaction
      * @param showFragment
      * @param position
+     * @param isRemove   是否 移除最后 count 个 fragment
      */
-    private void setCommitTransaction(FragmentTransaction fragmentTransaction, Fragment showFragment, int position) {
+    private void setCommitTransaction(FragmentTransaction fragmentTransaction, Fragment showFragment, int position, boolean isRemove, int count) {
         if (null == fragmentTransaction) fragmentTransaction = mFragmentManager.beginTransaction();
 
         //判断当前的Fragment是否为空，不为空则隐藏
@@ -100,6 +98,7 @@ public class FragmentChangeManager {
         }
 
         if (null == showFragment) return;
+
         //判断此Fragment是否已经添加到FragmentTransaction事物中
         if (!showFragment.isAdded()) {
             String fragmentTag = showFragment.getClass().getSimpleName();
@@ -109,11 +108,20 @@ public class FragmentChangeManager {
             fragmentTransaction.show(showFragment);
         }
 
+        if (isRemove){
+            for (int i = 0; i < count; i++) {
+                fragmentTransaction.remove(mFragments.get(mFragments.size() - 1));
+                mFragments.remove(currentIndex--);
+            }
+        }
+
         //保存当前显示的那个Fragment
         mCurrentFrgment = showFragment;
         currentIndex = position;
         fragmentTransaction.commitAllowingStateLoss();
     }
+
+
 
     /**
      * 设置fragment 转场动画
@@ -166,21 +174,18 @@ public class FragmentChangeManager {
      */
     public void addFragment(Fragment fragment){
         mFragments.add(fragment);
-        setFragments(mFragments.size() - 1);
+        setFragments(mFragments.size() - 1, false, 0);
     }
 
     /**
-     * 删除最后一个 fragment
+     * fragment 回退 删除最后一个 fragment
      * https://blog.csdn.net/qq_16247851/article/details/52793061
      */
     public void popLastFragment(){
-        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        setFragmentTransition(fragmentTransaction, currentIndex, currentIndex - 1);
-        
         mFragmentManager.popBackStack(null, 0);
-        mFragments.remove(currentIndex);
+        mFragments.remove(currentIndex--);
 
-        currentIndex--;
+        setFragments(currentIndex, false, 0);
     }
 
     public int getCurrentTab() {
@@ -190,4 +195,10 @@ public class FragmentChangeManager {
     public Fragment getCurrentFragment() {
         return mCurrentFrgment;
     }
+
+    public int getFmCount(){
+        return mFragments.size();
+    }
+
+
 }
