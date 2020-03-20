@@ -1,4 +1,4 @@
-package com.gcstorage.chat;
+package com.fy.baselibrary.base.fragment;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.AnimRes;
