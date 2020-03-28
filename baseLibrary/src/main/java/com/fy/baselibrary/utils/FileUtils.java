@@ -145,7 +145,7 @@ public class FileUtils {
                     dirpath = new File(getExternalCacheDir(), fDirStr);
                     break;
                 default:
-                    dirpath = new File(getSDCardPath(), fDirStr);//需要存储权限
+                    dirpath = new File(getExternalFiles(), fDirStr);//需要存储权限
                     break;
             }
         else
@@ -272,7 +272,7 @@ public class FileUtils {
     public static File createFile(String folderPath, String prefix, String suffix, int type) {
         File folder = folderIsExists(folderPath, type);
 
-        String name = TimeUtils.Long2DataString(System.currentTimeMillis(), "yyyyMMdd_HHmmss");
+        String name = TimeUtils.Long2DataString(System.currentTimeMillis(), "yyyyMMdd_HHmmssSSS");
         String filename = prefix + name + suffix;
 
         return fileIsExists(new File(folder, filename).getPath());

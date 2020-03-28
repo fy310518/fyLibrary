@@ -177,7 +177,7 @@ public class ResUtils {
 
     /**
      * 读取 assets 目录下指定文件名的 InputStream
-     * @param fileName
+     * @param fileName 【aa.txt 或 img/semll.jpg】
      * @return
      */
     public static InputStream getAssetsInputStream(String fileName){

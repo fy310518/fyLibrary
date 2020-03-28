@@ -5,6 +5,7 @@ import com.fy.baselibrary.utils.notify.L;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,60 +27,40 @@ public class ZipUtils {
     }
 
     /**
-     * 获取 指定 zip文件 的输入流
-     * @param zipFileString zip的名称
-     * @param fileString    ZIP的文件名
+     * 解压zip到指定的路径
+     * @param zipFileString  要解压的 文件（可以是 手机sd卡 中的文件，也可以是 assets 目录下的文件）
+     * @param outPathString
      */
-    public static InputStream upZip(String zipFileString, String fileString) throws Exception {
-        ZipFile zipFile = new ZipFile(zipFileString);
-        ZipEntry zipEntry = zipFile.getEntry(fileString);
-        return zipFile.getInputStream(zipEntry);
+    public static void unZipFolder(String zipFileString, String outPathString) {
+        InputStream is = null;
+        try {
+            if (FileUtils.fileIsExist(zipFileString)) {
+                is = new FileInputStream(zipFileString);
+            } else {
+                is = ResUtils.getAssetsInputStream(zipFileString);
+            }
+
+            unZipFolder(is, outPathString);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (null != is) is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
      * 解压zip到指定的路径
-     * @param zipFileString ZIP的名称
+     * @param is            要解压的 文件 输入流
      * @param outPathString 要解压缩路径
      */
-    public static void unZipFolder(String zipFileString, String outPathString) throws Exception {
-        ZipInputStream inZip = new ZipInputStream(new FileInputStream(zipFileString));
+    public static void unZipFolder(InputStream is, String outPathString) throws Exception {
+        ZipInputStream inZip = new ZipInputStream(is);
         ZipEntry zipEntry;
         String szName = "";
-        while ((zipEntry = inZip.getNextEntry()) != null) {
-            szName = zipEntry.getName();
-            if (zipEntry.isDirectory()) {
-                //获取部件的文件夹名
-                szName = szName.substring(0, szName.length() - 1);
-                File folder = new File(outPathString + File.separator + szName);
-                folder.mkdirs();
-            } else {
-                L.e(TAG, outPathString + File.separator + szName);
-                File file = new File(outPathString + File.separator + szName);
-                if (!file.exists()) {
-                    L.e(TAG, "Create the file:" + outPathString + File.separator + szName);
-                    file.getParentFile().mkdirs();
-                    file.createNewFile();
-                }
-
-                // 获取文件的输出流
-                FileOutputStream out = new FileOutputStream(file);
-                int len;
-                byte[] buffer = new byte[1024];
-                // 读取（字节）字节到缓冲区
-                while ((len = inZip.read(buffer)) != -1) {
-                    // 从缓冲区（0）位置写入（字节）字节
-                    out.write(buffer, 0, len);
-                    out.flush();
-                }
-                out.close();
-            }
-        }
-        inZip.close();
-    }
-
-    public static void unZipFolder(String zipFileString, String outPathString, String szName) throws Exception {
-        ZipInputStream inZip = new ZipInputStream(new FileInputStream(zipFileString));
-        ZipEntry zipEntry;
         while ((zipEntry = inZip.getNextEntry()) != null) {
             szName = zipEntry.getName();
             if (zipEntry.isDirectory()) {
