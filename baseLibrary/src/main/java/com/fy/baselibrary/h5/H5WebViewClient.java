@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -58,6 +59,18 @@ public class H5WebViewClient extends WebViewClient {
 //        }
         view.loadUrl(url);
         return false;
+    }
+
+    @Nullable
+    @Override//webView 请求 拦截方法【下同】
+    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        return super.shouldInterceptRequest(view, request);
+    }
+
+    @Nullable
+    @Override//此 API 21后 过时
+    public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+        return super.shouldInterceptRequest(view, url);
     }
 
     //加载错误的时候会回调
