@@ -50,14 +50,12 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
         // 获得每个Item的位置
         int itemPosition = parent.getChildAdapterPosition(view);
-
         if (itemPosition < builder.rvHeaderNum) return;
-
 
         itemPosition -= builder.rvHeaderNum;
 
+        // 列 只计算 左右
         int left = 0, right = 0;
-
         if(itemPosition % builder.column == 0){//第一列
             left = builder.mSpace;
         } else if (itemPosition % builder.column == builder.column - 1) {//最后一列
@@ -65,10 +63,21 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
             right = builder.mSpace;
         } else {//中间若干列
             left = builder.mSpace;
+            right = 0;
         }
 
-        //第一行, 最后一行 不处理
-        outRect.set(left, 0, right, builder.mSpace);
+        //行 只计算 上下
+        int top = 0;
+        if(itemPosition / builder.column == 0) {//第一行
+            top = builder.mSpace;
+        }
+
+        if (builder.isSingleLine){
+            outRect.set(left, builder.mSpace, right, builder.mSpace);
+        } else {
+            //第一行, 最后一行 不处理
+            outRect.set(left, top, right, builder.mSpace);
+        }
     }
 
     @Override
@@ -142,6 +151,11 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
         private boolean isDraw = true;
 
         /**
+         * 是否 单行
+         */
+        private boolean isSingleLine = false;
+
+        /**
          * 设置间隔 宽度 单位是dp;
          * （如果参数不为 0，则表示 只设置间隔；
          * 为 0，则表示按系统配置的 listDivider 设置间隔，和绘制分割线）
@@ -179,6 +193,11 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
             return this;
         }
 
+        public Builder setSingleLine(boolean isSingleLine) {
+            this.isSingleLine = isSingleLine;
+            return this;
+        }
+
         /**
          * 入口
          * @return
@@ -189,6 +208,14 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
         /**
          * 创建 ItemDecoration
+         *         // 计算item 边长【GridLayoutManager】
+         *         int itemWidth = (int) (ScreenUtils.getScreenWidth() - 2 * column * ResUtils.getDimen(R.dimen.spacing_medium_small));
+         *         itemWidth /= column;//item 边长
+         *         // 创建 LayoutParams 动态 设置 recycleView 的高度【仅recycleView 单行显示 数据时候，全屏显示 则不需要】
+         *         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) (itemWidth + 2 * ResUtils.getDimen(R.dimen.spacing_medium_small)));
+         *         int space = (int) ResUtils.getDimen(R.dimen.spacing_small_much);
+         *         lp.setMargins(0, space, 0, space);
+         *         // 最后 创建 recycleView 适配器 时候 把计算的 item 边长 传递过去，在 适配器里面 动态设置 item 边长
          * @param context
          * @return
          */
