@@ -52,4 +52,6 @@
     <!-- 下拉刷新 加载动画 图片 宽度、高度 -->
     <dimen name="rvRefreshAnim">30dp</dimen>
 
+    <!-- 选项文字大小 -->
+    <dimen name="pickerview_textsize">20sp</dimen>
 </resources>
