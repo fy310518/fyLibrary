@@ -76,6 +76,9 @@ public abstract class H5WebFragment extends BaseFragment {
         settings.setSavePassword(false);// 关闭密码保存提醒功能
         settings.setDefaultTextEncodingName("utf-8");//设置编码格式
 
+        settings.setSupportZoom(true);//缩放支持缩放
+        webView.setInitialScale(100);//设置缩放等级
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
