@@ -80,7 +80,7 @@ public abstract class H5WebFragment extends BaseFragment {
         webView.setHorizontalScrollBarEnabled(false);//滚动条水平不显示
         webView.setVerticalScrollBarEnabled(false); //滚动条垂直不显示
         settings.setSupportZoom(true);//缩放支持缩放
-        webView.setInitialScale(100);//设置缩放等级
+//        webView.setInitialScale(100);//设置缩放等级
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
