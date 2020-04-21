@@ -22,6 +22,7 @@ import com.fy.baselibrary.utils.imgload.imgprogress.ProgressListener;
 import com.fy.baselibrary.utils.notify.L;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -119,17 +120,13 @@ public class ImgLoadUtils {
      * @param url
      */
     @SuppressLint("CheckResult")
-    public static Observable<File> getImgCachePath(Context context, String url) {
-        return Observable.just(url)
-                .map(url1 -> {
-                    FutureTarget<File> target = Glide.with(context)
-                            .asFile()
-                            .load(url1)
-                            .submit();//必须要用在子线程当中
+    public static File getImgCachePath(Context context, String url) throws ExecutionException, InterruptedException {
+        FutureTarget<File> target = Glide.with(context)
+                .asFile()
+                .load(url)
+                .submit();//必须要用在子线程当中
 
-                    return target.get();
-                })
-                .subscribeOn(Schedulers.io());
+        return target.get();
     }
 
     /**
