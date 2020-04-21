@@ -103,6 +103,36 @@ public class ImgLoadUtils {
     }
 
     /**
+     * 预加载 （把指定URL地址的图片 的原始尺寸保存到缓存中）
+     * @param url
+     */
+    public static void preloadImg(Context context, String url) {
+        Glide.with(context)
+                .load(url)
+                .preload();
+    }
+
+
+    /**
+     * 异步获取 glide 缓存在磁盘的图片 的 被观察者
+     * @param context
+     * @param url
+     */
+    @SuppressLint("CheckResult")
+    public static Observable<File> getImgCachePath(Context context, String url) {
+        return Observable.just(url)
+                .map(url1 -> {
+                    FutureTarget<File> target = Glide.with(context)
+                            .asFile()
+                            .load(url1)
+                            .submit();//必须要用在子线程当中
+
+                    return target.get();
+                })
+                .subscribeOn(Schedulers.io());
+    }
+
+    /**
      * 加载网络图片 带进度回调监听
      */
     public static void loadImgProgress(String url, int errorId, ImageView imageView, ImgLoadCallBack callBack) {
@@ -151,41 +181,5 @@ public class ImgLoadUtils {
                 })
                 .into(imageView);
     }
-
-    /**
-     * 预加载 （把指定URL地址的图片 的原始尺寸保存到缓存中）
-     *
-     * @param url
-     */
-    public static void preloadImg(Context context, String url) {
-        Glide.with(context)
-                .load(url)
-                .preload();
-    }
-
-
-    /**
-     * 异步获取 glide 缓存在磁盘的图片
-     *
-     * @param context
-     * @param url
-     * @param consumer
-     */
-    @SuppressLint("CheckResult")
-    public static void getImgCachePath(Context context, String url, Consumer<File> consumer) {
-        Observable.just(url)
-                .map(url1 -> {
-                    FutureTarget<File> target = Glide.with(context)
-                            .asFile()
-                            .load(url1)
-                            .submit();
-
-                    return target.get();
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumer);
-    }
-
 
 }
