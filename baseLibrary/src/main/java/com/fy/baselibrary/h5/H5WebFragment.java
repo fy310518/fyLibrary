@@ -95,7 +95,6 @@ public abstract class H5WebFragment extends BaseFragment {
 
     @Override
     public void onRetry() {
-        webView.goBack();
         webView.reload();
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.postDelayed(() -> {

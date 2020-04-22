@@ -100,7 +100,8 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-        view.loadUrl(blank); // 避免出现默认的错误界面
+
+//        view.loadUrl(blank); // 避免出现默认的错误界面
         // 断网或者网络连接超时
         if (errorCode == ERROR_HOST_LOOKUP || errorCode == ERROR_CONNECT || errorCode == ERROR_TIMEOUT) {
             setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
@@ -114,7 +115,7 @@ public abstract class H5WebViewClient extends WebViewClient {
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
 
-        view.loadUrl(blank);// 避免出现默认的错误界面
+//        view.loadUrl(blank);// 避免出现默认的错误界面
         int statusCode = errorResponse.getStatusCode();
         if (404 == statusCode || 500 == statusCode) {
             setTips(Constant.LAYOUT_ERROR_ID);
