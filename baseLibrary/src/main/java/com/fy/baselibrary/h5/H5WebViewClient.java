@@ -192,7 +192,7 @@ public abstract class H5WebViewClient extends WebViewClient {
                 e.printStackTrace();
             }
         } else {
-            cacheH5Res();
+            cacheH5Res(url);
         }
 
         return webResourceResponse;
@@ -201,6 +201,6 @@ public abstract class H5WebViewClient extends WebViewClient {
     /**
      * 缓存 需要下载的 网页资源【如：js文件，css文件 】
      */
-    protected abstract void cacheH5Res();
+    protected abstract void cacheH5Res(String url);
 
 }
