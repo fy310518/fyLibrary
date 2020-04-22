@@ -5,20 +5,35 @@ import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
 import com.fy.baselibrary.utils.Constant;
+import com.fy.baselibrary.utils.FileUtils;
+import com.fy.baselibrary.utils.imgload.ImgLoadUtils;
+import com.fy.baselibrary.utils.notify.L;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * describe：默认的 WebViewClient
  * Created by fangs on 2020/1/9 0009 下午 14:28.
  */
-public class H5WebViewClient extends WebViewClient {
+public abstract class H5WebViewClient extends WebViewClient {
+
+    public static String blank = "about:blank";
+
+//    当前url
+    private String currentUrl;
 
     private OnSetStatusView onSetStatusView;
 
@@ -57,6 +72,8 @@ public class H5WebViewClient extends WebViewClient {
 //        if (Uri.parse(url).getHost().equals("www.baidu.com")) {
 //            return true;
 //        }
+        if (!blank.equals(url)) currentUrl = url;
+
         view.loadUrl(url);
         return false;
     }
@@ -70,14 +87,24 @@ public class H5WebViewClient extends WebViewClient {
     @Nullable
     @Override//此 API 21后 过时
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-        return super.shouldInterceptRequest(view, url);
+        WebResourceResponse webResourceResponse;
+        if (isImgUrl(url)){//1、如果是图片
+            webResourceResponse = getImgWebResResponse(url);
+            if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
+            return webResourceResponse;
+        } else {
+            webResourceResponse = getFileWebResResponse(url);
+            if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
+
+            return webResourceResponse;
+        }
     }
 
     //加载错误的时候会回调
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-//        view.loadUrl("about:blank"); // 避免出现默认的错误界面
+        view.loadUrl(blank); // 避免出现默认的错误界面
         // 断网或者网络连接超时
         if (errorCode == ERROR_HOST_LOOKUP || errorCode == ERROR_CONNECT || errorCode == ERROR_TIMEOUT) {
             setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
@@ -91,7 +118,7 @@ public class H5WebViewClient extends WebViewClient {
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
 
-//        view.loadUrl("about:blank");// 避免出现默认的错误界面
+        view.loadUrl(blank);// 避免出现默认的错误界面
         int statusCode = errorResponse.getStatusCode();
         if (404 == statusCode || 500 == statusCode) {
             setTips(Constant.LAYOUT_ERROR_ID);
@@ -105,4 +132,75 @@ public class H5WebViewClient extends WebViewClient {
             onSetStatusView.showHideViewFlag(status);
         }
     }
+
+
+    public String getCurrentUrl() {
+        return currentUrl == null ? "" : currentUrl;
+    }
+
+
+
+
+    //判断是否是 图片
+    private boolean isImgUrl(String url){
+        if (TextUtils.isEmpty(url)) return false;
+
+        url = url.toLowerCase();
+        if (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".gif")) return true;
+
+        return false;
+    }
+
+//    new WebResourceResponse("image/png","UTF-8",new FileInputStream(imgFile)) 第一个参数对应的如下：
+//    js:mimeType ="application/x-javascript";
+//    css:mimeType ="text/css";
+//    html:mimeType ="text/html";
+//    jpg/png: mimeType = "image/png";
+    private WebResourceResponse getImgWebResResponse(String url){
+        WebResourceResponse webResourceResponse = null;
+        File imgFile = null;
+        try {
+            imgFile = ImgLoadUtils.getImgCachePath(ConfigUtils.getAppCtx(), url);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != imgFile) {
+                try {
+                    L.e("H5 图片地址", imgFile.getPath() + "------");
+                    webResourceResponse = new WebResourceResponse("image/png", "UTF-8", new FileInputStream(imgFile));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return webResourceResponse;
+    }
+
+    private WebResourceResponse getFileWebResResponse(String url){
+        WebResourceResponse webResourceResponse = null;
+
+        final String filePath = FileUtils.folderIsExists(ConfigUtils.getFilePath()+ ".down", ConfigUtils.getType()).getPath();
+
+        File targetFile = FileUtils.getFile(url, filePath);
+        if (targetFile.exists()) {
+            try {
+                String mimeType = url.endsWith(".js") ? "application/x-javascript" : url.endsWith(".css") ? "text/css" : "text/html";
+                L.e("H5 图片地址", targetFile.getPath() + "------");
+                webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", new FileInputStream(targetFile));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            cacheH5Res();
+        }
+
+        return webResourceResponse;
+    }
+
+    /**
+     * 缓存 需要下载的 网页资源【如：js文件，css文件 】
+     */
+    protected abstract void cacheH5Res();
+
 }
