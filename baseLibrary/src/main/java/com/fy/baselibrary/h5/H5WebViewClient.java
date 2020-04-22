@@ -32,9 +32,6 @@ public abstract class H5WebViewClient extends WebViewClient {
 
     public static String blank = "about:blank";
 
-//    当前url
-    private String currentUrl;
-
     private OnSetStatusView onSetStatusView;
 
     public H5WebViewClient(OnSetStatusView onSetStatusView) {
@@ -72,7 +69,6 @@ public abstract class H5WebViewClient extends WebViewClient {
 //        if (Uri.parse(url).getHost().equals("www.baidu.com")) {
 //            return true;
 //        }
-        if (!blank.equals(url)) currentUrl = url;
 
         view.loadUrl(url);
         return false;
@@ -131,11 +127,6 @@ public abstract class H5WebViewClient extends WebViewClient {
         if (null != onSetStatusView) {
             onSetStatusView.showHideViewFlag(status);
         }
-    }
-
-
-    public String getCurrentUrl() {
-        return currentUrl == null ? "" : currentUrl;
     }
 
 
