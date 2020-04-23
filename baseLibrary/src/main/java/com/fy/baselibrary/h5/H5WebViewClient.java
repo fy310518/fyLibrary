@@ -43,6 +43,7 @@ public abstract class H5WebViewClient extends WebViewClient {
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
         view.getSettings().setBlockNetworkImage(true);
+        onSetStatusView.showHideViewFlag(Constant.LAYOUT_CONTENT_ID);
     }
 
     //加载完成的时候会回调
@@ -66,9 +67,11 @@ public abstract class H5WebViewClient extends WebViewClient {
     //并且return true意味着主程序接管网页加载，如果返回false让webview自己处理。
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//        if (Uri.parse(url).getHost().equals("www.baidu.com")) {
-//            return true;
-//        }
+        WebView.HitTestResult hitTestResult = view.getHitTestResult();
+        //hitTestResult==null解决重定向问题(刷新后不能退出的bug)
+        if (!TextUtils.isEmpty(url) && hitTestResult == null) {
+            return true;
+        }
 
         view.loadUrl(url);
         return false;
