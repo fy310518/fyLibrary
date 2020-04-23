@@ -185,6 +185,22 @@ public class JumpUtils {
     }
 
     /**
+     * 从fragment 跳转到指定 action 的 activity; 带回调结果的跳转
+     * @param fragment
+     * @param action
+     * @param bundle
+     * @param requestCode
+     */
+    public static void jump(Fragment fragment, String action, Bundle bundle, int requestCode) {
+        Intent intent = new Intent(action);
+        if (null != bundle) {
+            intent.putExtras(bundle);
+        }
+
+        fragment.startActivityForResult(intent, requestCode);//原生默认
+    }
+
+    /**
      * 从fragment 跳转到指定的 activity; 带回调结果的跳转
      * @param fragment
      * @param actClass
