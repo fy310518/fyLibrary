@@ -43,7 +43,7 @@ public abstract class H5WebViewClient extends WebViewClient {
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
         view.getSettings().setBlockNetworkImage(true);
-        onSetStatusView.showHideViewFlag(Constant.LAYOUT_CONTENT_ID);
+        setTips(Constant.LAYOUT_CONTENT_ID);
     }
 
     //加载完成的时候会回调

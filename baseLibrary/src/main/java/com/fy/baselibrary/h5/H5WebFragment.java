@@ -96,10 +96,6 @@ public abstract class H5WebFragment extends BaseFragment {
     @Override
     public void onRetry() {
         webView.reload();
-        Handler mainHandler = new Handler(Looper.getMainLooper());
-        mainHandler.postDelayed(() -> {
-            showHideViewFlag(Constant.LAYOUT_CONTENT_ID);
-        }, 300);
     }
 
     @Override
