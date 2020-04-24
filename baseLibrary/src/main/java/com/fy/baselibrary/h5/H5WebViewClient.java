@@ -91,11 +91,13 @@ public abstract class H5WebViewClient extends WebViewClient {
             webResourceResponse = getImgWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
             return webResourceResponse;
-        } else {
+        } else if (isJsOrCssUrl(url)){
             webResourceResponse = getFileWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
 
             return webResourceResponse;
+        } else {
+            return super.shouldInterceptRequest(view, url);
         }
     }
 
@@ -142,6 +144,16 @@ public abstract class H5WebViewClient extends WebViewClient {
 
         url = url.toLowerCase();
         if (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".gif")) return true;
+
+        return false;
+    }
+
+    //判断是否是 js css文件
+    private boolean isJsOrCssUrl(String url){
+        if (TextUtils.isEmpty(url)) return false;
+
+        url = url.toLowerCase();
+        if (url.endsWith("js") || url.endsWith(".css")) return true;
 
         return false;
     }
