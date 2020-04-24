@@ -67,7 +67,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void showHideViewFlag(int flagId) {
-        slManager.showHideViewFlag(flagId);
+        if (null != slManager) slManager.showHideViewFlag(flagId);
     }
 
     @Override//Fragment和Activity建立关联的时候调用
@@ -92,10 +92,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             if (setContentLayout() > 0){
                 mRootView = inflater.inflate(setContentLayout(), container, false);
                 unbinder = ButterKnife.bind(this, mRootView);
+                slManager = LoadSirUtils.initStatusLayout(this);
             }
 
             baseInit();
-            slManager = LoadSirUtils.initStatusLayout(this);
             isViewCreated = true;
         } else {
             ViewGroup parent = (ViewGroup) mRootView.getParent();
