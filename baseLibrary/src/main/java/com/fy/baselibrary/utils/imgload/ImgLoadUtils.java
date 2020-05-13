@@ -2,6 +2,7 @@ package com.fy.baselibrary.utils.imgload;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -132,7 +133,7 @@ public class ImgLoadUtils {
     /**
      * 加载网络图片 带进度回调监听
      */
-    public static void loadImgProgress(String url, int errorId, ImageView imageView, ImgLoadCallBack callBack) {
+    public static void loadImgProgress(String url, int errorId, ImageView imageView, ImgLoadCallBack<Bitmap> callBack) {
         if (imageView == null) return;
         ProgressInterceptor.addListener(url, new ProgressListener() {
             @Override
@@ -155,12 +156,12 @@ public class ImgLoadUtils {
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
 
         Glide.with(imageView.getContext())
+                .asBitmap()
                 .load(url)
                 .apply(options)
-                .listener(new RequestListener<Drawable>() {
+                .listener(new RequestListener<Bitmap>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
                         ProgressInterceptor.removeListener(url);
                         if (null != callBack)
                             callBack.onLoadFailed(e, model, target, isFirstResource);
@@ -168,8 +169,7 @@ public class ImgLoadUtils {
                     }
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model,
-                                                   Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
                         ProgressInterceptor.removeListener(url);
                         if (null != callBack)
                             callBack.onResourceReady(resource, model, target, dataSource, isFirstResource);
