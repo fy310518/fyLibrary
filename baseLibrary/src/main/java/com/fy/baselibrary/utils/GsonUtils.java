@@ -28,11 +28,24 @@ public class GsonUtils {
     /**
      * 将bean转换成Json字符串
      * @param bean
-     * @return
      */
     public static String toJson(Object bean) {
         return new Gson().toJson(bean);
     }
+
+    /**
+     * 没有被 @Expose 标注的字段会被排除
+     * @param bean
+     */
+    public static String toJsonExclude(Object bean) {
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+
+        return gson.toJson(bean);
+    }
+
+
 
     /**
      * 将Json字符串转换成对象

@@ -3,7 +3,6 @@ package com.fy.baselibrary.utils.imgload;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
@@ -24,11 +23,6 @@ import com.fy.baselibrary.utils.notify.L;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * 图片加载工具类(目前使用 Glide)

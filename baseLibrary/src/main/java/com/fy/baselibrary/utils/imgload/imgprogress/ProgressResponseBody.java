@@ -18,13 +18,10 @@ import okio.Source;
  * 下载进度的具体计算
  */
 public class ProgressResponseBody extends ResponseBody {
-
     private static final String TAG = "Glide";
 
+    private final ResponseBody responseBody;
     private BufferedSource bufferedSource;
-
-    private ResponseBody responseBody;
-
     private ProgressListener listener;
 
     public ProgressResponseBody(String url, ResponseBody responseBody) {
@@ -48,24 +45,23 @@ public class ProgressResponseBody extends ResponseBody {
         if (bufferedSource == null) {
             bufferedSource = Okio.buffer(new ProgressSource(responseBody.source()));
         }
+
         return bufferedSource;
     }
 
-
     private class ProgressSource extends ForwardingSource {
-
+        long fullLength;
         long totalBytesRead = 0L;
-
         int currentProgress;
 
         ProgressSource(Source source) {
             super(source);
+            fullLength = responseBody.contentLength();
         }
 
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
             long bytesRead = super.read(sink, byteCount);
-            long fullLength = responseBody.contentLength();
 
             if (bytesRead == -1) {
                 totalBytesRead = fullLength;

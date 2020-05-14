@@ -29,12 +29,12 @@ public class ProgressInterceptor implements Interceptor {
     @Override
     public Response intercept(Interceptor.Chain chain) throws IOException {
         Request request = chain.request();
-        Response response = chain.proceed(request);
         String url = request.url().toString();
-        ResponseBody body = response.body();
+
+        Response response = chain.proceed(request);
 
         return response.newBuilder()
-                .body(new ProgressResponseBody(url, body))
+                .body(new ProgressResponseBody(url, response.body()))
                 .build();
     }
 
