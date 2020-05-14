@@ -58,6 +58,18 @@ public class GsonUtils {
     }
 
     /**
+     * 没有被 @Expose 标注的字段会被排除
+     * @param json
+     * @param type
+     */
+    public static<T> T fromJsonExclude(String json, Class<T> type) {
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+        return gson.fromJson(json, type);
+    }
+
+    /**
      * 将Json字符串转换成对象
      * @param json
      * @param typeOfT  Type type = new TypeToken<BeanModule<CaseInfoBean>>(){}.getType();
