@@ -283,7 +283,7 @@ public class NotifyUtils {
         /**
          * 修改 知道渠道 id的 渠道设置【在 createManager() 方法前调用】
          */
-        private FyBuild modifyChannel(Context act) {
+        public FyBuild modifyChannel(Context act) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return this;
             if (defaults == AppNotifyUtils.DEFAULT_CUSTOM) {
                 channelName = AppNotifyUtils.initNotificationChannel(act, channelId + "", true,
