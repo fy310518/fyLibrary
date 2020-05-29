@@ -49,26 +49,26 @@ public class PhotoUtils {
         if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
 
             Uri uri;
+            int fileType = 2;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                uri = createImageUri();
+                fileType = 0;
+            }
+            File takeImageFile = FileUtils.createFile(FileUtils.IMG, "IMG_", ".png", fileType);
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+                uri = Uri.fromFile(takeImageFile);
             } else {
-                File takeImageFile = FileUtils.createFile("/DCIM/camera/", "IMG_", ".png", 2);
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-                    uri = Uri.fromFile(takeImageFile);
-                } else {
-                    /**
-                     * 7.0 调用系统相机拍照不再允许使用Uri方式，应该替换为 FileProvider
-                     * 并且这样可以解决MIUI系统上拍照返回size为0的情况
-                     */
-                    uri = FileProvider.getUriForFile(activity, AppUtils.getFileProviderName(), takeImageFile);
-                    //加入uri权限 要不三星手机不能拍照
-                    List<ResolveInfo> resInfoList = activity.getPackageManager()
-                            .queryIntentActivities(takePictureIntent, PackageManager.MATCH_DEFAULT_ONLY);
-                    for (ResolveInfo resolveInfo : resInfoList) {
-                        String packageName = resolveInfo.activityInfo.packageName;
-                        activity.grantUriPermission(packageName, uri,
-                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    }
+                /**
+                 * 7.0 调用系统相机拍照不再允许使用Uri方式，应该替换为 FileProvider
+                 * 并且这样可以解决MIUI系统上拍照返回size为0的情况
+                 */
+                uri = FileProvider.getUriForFile(activity, AppUtils.getFileProviderName(), takeImageFile);
+                //加入uri权限 要不三星手机不能拍照
+                List<ResolveInfo> resInfoList = activity.getPackageManager()
+                        .queryIntentActivities(takePictureIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                for (ResolveInfo resolveInfo : resInfoList) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    activity.grantUriPermission(packageName, uri,
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 }
             }
 
@@ -77,6 +77,7 @@ public class PhotoUtils {
             // 可以通过dat extra能够得到原始图片位置。即，如果指定了目标uri，data就没有数据，
             // 如果没有指定uri，则data就返回有数据！
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            takePictureIntent.putExtra("newFilePath", takeImageFile.getPath());
             takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         }
 
