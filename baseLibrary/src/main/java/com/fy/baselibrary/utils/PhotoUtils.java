@@ -49,7 +49,7 @@ public class PhotoUtils {
         if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
 
             Uri uri;
-            if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 uri = createImageUri();
             } else {
                 File takeImageFile = FileUtils.createFile("/DCIM/camera/", "IMG_", ".png", 2);
