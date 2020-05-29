@@ -92,7 +92,7 @@ public class UpdateMedia implements MediaScannerConnection.MediaScannerConnectio
     /**
      * AndroidQ以上保存图片到公共目录
      * @param imageName 图片名称
-     * @param relativePath 缓存路径
+     * @param relativePath 路径
      */
     private static Uri insertImageFileIntoMediaStore (String imageName, String relativePath) {
         if (TextUtils.isEmpty(relativePath)) return null;
@@ -105,11 +105,16 @@ public class UpdateMedia implements MediaScannerConnection.MediaScannerConnectio
         values.put(MediaStore.Images.Media.DISPLAY_NAME, imageName);
         //设置文件描述，这里以文件名代替
         values.put(MediaStore.Images.Media.DESCRIPTION, imageName);
+
         //设置文件类型为image/*
+        String mimeType = getMimeType(imageName);
         values.put(MediaStore.Images.Media.MIME_TYPE, getMimeType(imageName));
-        //注意：MediaStore.Images.Media.RELATIVE_PATH需要targetSdkVersion=29,
-        //故该方法只可在Android10的手机上执行
-        values.put(MediaStore.Images.Media.RELATIVE_PATH, relativePath);
+
+        //注意：MediaStore.Images.Media.RELATIVE_PATH 需要targetSdkVersion=29,
+        //故该方法只可在Android10的手机上执行；Environment.DIRECTORY_DCIM  DIRECTORY_PICTURES、DIRECTORY_MOVIES、DIRECTORY_MUSIC等，
+        // 分别表示相册、图片、电影、音乐等目录
+        String RELATIVE_PATH = mimeType.startsWith("image") ? Environment.DIRECTORY_DCIM : mimeType.startsWith("audio") ? Environment.DIRECTORY_MUSIC : Environment.DIRECTORY_MOVIES;
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, RELATIVE_PATH);
         //EXTERNAL_CONTENT_URI代表外部存储器
         Uri external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         //insertUri表示文件保存的uri路径
