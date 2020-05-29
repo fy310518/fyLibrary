@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -39,10 +41,10 @@ public class ImgLoadUtils {
 
     /**
      * 加载指定URL的图片
-     * @param url
+     * @param model
      * @param imageView
      */
-    public static void loadImage(String url, int errorId, ImageView imageView) {
+    public static void loadImage(Object model, int errorId, ImageView imageView) {
         if (imageView == null) return;
         RequestOptions options = new RequestOptions()
                 .fallback(errorId)
@@ -51,17 +53,17 @@ public class ImgLoadUtils {
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
 
         Glide.with(imageView.getContext())
-                .load(url)
+                .load(model)
                 .apply(options)
                 .into(imageView);
     }
 
     /**
      * 加载圆形 图片
-     * @param url
+     * @param model
      * @param imageView
      */
-    public static void loadCircularBead(String url, int errorId, ImageView imageView) {
+    public static void loadCircularBead(Object model, int errorId, ImageView imageView) {
         if (imageView == null) return;
         RequestOptions options = new RequestOptions()
                 .fallback(errorId)
@@ -71,7 +73,7 @@ public class ImgLoadUtils {
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
 
         Glide.with(imageView.getContext())
-                .load(url)
+                .load(model)
                 .apply(options)
                 .into(imageView);
     }
@@ -79,11 +81,11 @@ public class ImgLoadUtils {
     /**
      * 加载圆角图片
      *
-     * @param url
+     * @param model
      * @param errorId
      * @param imageView
      */
-    public static void loadRadiusImg(String url, int errorId, ImageView imageView) {
+    public static void loadRadiusImg(Object model, int errorId, ImageView imageView) {
         if (imageView == null) return;
         //加载圆角图片 通过RequestOptions扩展功能
         RequestOptions requestOptions = new RequestOptions()
@@ -94,7 +96,7 @@ public class ImgLoadUtils {
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
 
         Glide.with(imageView.getContext())
-                .load(url)
+                .load(model)
                 .apply(requestOptions)
                 .into(imageView);
     }
@@ -108,7 +110,6 @@ public class ImgLoadUtils {
                 .load(url)
                 .preload();
     }
-
 
     /**
      * 异步获取 glide 缓存在磁盘的图片 的 被观察者

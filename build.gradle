@@ -31,11 +31,11 @@ task clean(type: Delete) {
 
 ext {
     var = [
-            compileSdkVersion    : 27,
+            compileSdkVersion    : 29,
             buildToolsVersion    : "28.0.3",
 
             minSdkVersion        : 19,
-            targetSdkVersion     : 27,
+            targetSdkVersion     : 29,
 
             supportLibraryVersion: "27.1.1",
             constraintLayout     : "1.1.3",
