@@ -56,11 +56,11 @@ public class FileUtils {
 
     /**
      * 获取 内置SD卡 指定目录类型的 路径
-     * @param directoryTpye 目录类型 如：Environment.DIRECTORY_DCIM --》 /storage/sdcard0/DCIM
+     * @param directoryType 目录类型 如：Environment.DIRECTORY_DCIM --》 /storage/sdcard0/DCIM
      * @return
      */
-    public static String getSDCardDirectoryTpye(String directoryTpye){
-        return Environment.getExternalStoragePublicDirectory(directoryTpye)
+    public static String getSDCardDirectoryTpye(String directoryType){
+        return Environment.getExternalStoragePublicDirectory(directoryType)
                 .getAbsolutePath() + File.separator;
     }
 
@@ -148,7 +148,7 @@ public class FileUtils {
                     dirpath = new File(getExternalCacheDir(), fDirStr);
                     break;
                 default:
-                    dirpath = new File(getExternalFiles(), fDirStr);//需要存储权限
+                    dirpath = new File(getSDCardPath(), fDirStr);//需要存储权限
                     break;
             }
         else

@@ -210,7 +210,7 @@ public class BaseAndroidJSInterface {
                         List<String> filePath = new ArrayList<>();
 
                         for (String item : base64List) {
-                            File newFile = FileUtils.createFile("/DCIM/camera/", "IMG_", ".png", 2);
+                            File newFile = FileUtils.createFile("/DCIM/camera/", "IMG_", ".png", 0);
                             EncodeUtils.decoderBase64File(item, newFile.getPath());
 
                             filePath.add(newFile.getPath());

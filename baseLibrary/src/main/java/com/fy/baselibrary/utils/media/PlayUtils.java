@@ -2,6 +2,7 @@ package com.fy.baselibrary.utils.media;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -18,6 +19,7 @@ public class PlayUtils {
     private volatile static PlayUtils instance = null;
     private MediaPlayer mMediaPlayer;
     private boolean isPause;
+    private AnimationDrawable animation;//播放语音的 帧动画
 
     public static synchronized PlayUtils getInstance() {
         if (null == instance) {
@@ -48,7 +50,10 @@ public class PlayUtils {
 //            mMediaPlayer.prepare();
 //            mMediaPlayer.start();
             mMediaPlayer.prepareAsync();
-            mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
+            mMediaPlayer.setOnPreparedListener(mp -> {
+                mp.start();
+                playAnimation();
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +72,10 @@ public class PlayUtils {
             mMediaPlayer.setOnCompletionListener(onCompletionListener);
             mMediaPlayer.setDataSource(url);
             mMediaPlayer.prepareAsync();
-            mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
+            mMediaPlayer.setOnPreparedListener(mp -> {
+                mp.start();
+                playAnimation();
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,6 +142,8 @@ public class PlayUtils {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
         }
+
+        closeAnimation();
     }
 
     /**
@@ -144,6 +154,27 @@ public class PlayUtils {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
+
+        closeAnimation();
+    }
+
+    //关闭动画
+    private void closeAnimation(){
+        if (null != animation) {
+            animation.selectDrawable(animation.getNumberOfFrames() - 1);//设置到最后帧动画
+            animation.stop();
+            animation = null;
+        }
+    }
+
+    //播放动画
+    private void playAnimation(){
+        if (null != animation) animation.start();
+    }
+
+    //设置动画
+    public void setAnimation(AnimationDrawable animation) {
+        this.animation = animation;
     }
 
     //初始化 MediaPlayer
@@ -162,7 +193,6 @@ public class PlayUtils {
             mMediaPlayer.reset();
         }
     }
-
 
 
     /****************************************************************/

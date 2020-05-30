@@ -321,5 +321,15 @@ public class NotifyUtils {
             return this;
         }
 
+        /**
+         * 同上
+         * @param intents
+         */
+        public FyBuild createManager(Context act, @NonNull Intent[] intents) {
+            this.pendingIntent = PendingIntent.getActivities(act, AppNotifyUtils.requestCode, intents, PendingIntent.FLAG_UPDATE_CURRENT);
+            createManager(act);
+            return this;
+        }
     }
+
 }
