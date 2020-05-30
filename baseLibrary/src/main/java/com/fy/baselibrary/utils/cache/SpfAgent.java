@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.text.TextUtils;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
@@ -27,6 +28,10 @@ final public class SpfAgent {
         this.editor = spf.edit();
     }
 
+
+    public static synchronized SpfAgent init() {
+        return init("");
+    }
 
     public static synchronized SpfAgent init(final String fileName) {
         if (null == instance) {
@@ -215,14 +220,6 @@ final public class SpfAgent {
 
     public boolean getBoolean(String key){
         return getSpf().getBoolean(key, false);
-    }
-
-    /**
-     * 同上
-     * @return
-     */
-    public boolean getBoolean(String fileName, String key, boolean def){
-        return getSpf(fileName).getBoolean(key, def);
     }
 
     public boolean getBoolean(String key, boolean def){

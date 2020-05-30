@@ -18,6 +18,7 @@ import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
 import com.fy.baselibrary.statuslayout.StatusLayoutManager;
+import com.fy.baselibrary.utils.JumpUtils;
 import com.fy.baselibrary.utils.ResUtils;
 import com.fy.baselibrary.utils.notify.L;
 import com.fy.baselibrary.utils.cache.ACache;
@@ -169,10 +170,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * tips：重写 onCreateOptionsMenu 方法 可以设置 菜单
      */
     protected void setToolbar(Toolbar toolbar, @StringRes int title){
-        setToolbar(toolbar, ResUtils.getStr(title));
+        setToolbar(toolbar, ResUtils.getStr(title), null);
     }
 
-    protected void setToolbar(Toolbar toolbar, String title){
+    protected void setToolbar(Toolbar toolbar, String title, View.OnClickListener listener){
         if (ConfigUtils.isTitleCenter()) {
             toolbar.setTitle("");
             TextView toolbarTitle = toolbar.findViewById(R.id.toolbarTitle);
@@ -187,6 +188,16 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             toolbar.setBackgroundColor(ResUtils.getColor(ConfigUtils.getBgColor()));
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        //在Toolbar左边显示一个返回按钮
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //替换toolbar 自带的返回按钮
+        if (ConfigUtils.getBackImg() > 0) toolbar.setNavigationIcon(ConfigUtils.getBackImg());
+
+        //设置返回按钮监听事件
+        if (null == listener) listener = v -> JumpUtils.exitActivity(getActivity());
+        toolbar.setNavigationOnClickListener(listener);
+
         setHasOptionsMenu(true);
     }
 
