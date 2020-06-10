@@ -363,23 +363,25 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
         this.mSelectedPos = mSelectedPos;
     }
 
-    //    单选 样板代码
-//    holder.ivSelect.setOnClickListener(new View.OnClickListener() {
+//    单选样板代码
+//    holder.setOnClickListener(R.id.llHostRoot, new View.OnClickListener() {
 //        @Override
 //        public void onClick(View view) {
 //            //实现单选方法三： RecyclerView另一种定向刷新方法：不会有白光一闪动画 也不会重复onBindVIewHolder
-//            CouponVH couponVH = (CouponVH) mRv.findViewHolderForLayoutPosition(mSelectedPos);
+//            ViewHolder couponVH = (ViewHolder) mRv.findViewHolderForLayoutPosition(mSelectedPos);
 //            if (couponVH != null) {//还在屏幕里
-//                couponVH.ivSelect.setSelected(false);//此处注意判空
-//            }else {//add by 2016 11 22 for 一些极端情况，holder被缓存在Recycler的cacheView里，
+//                setSelectedImg(couponVH, false);//这个方法是 子adapter 定义的，根据选中状态设置不同的样式
+//            } else {//add by 2016 11 22 for 一些极端情况，holder被缓存在Recycler的cacheView里，
 //                //此时拿不到ViewHolder，但是也不会回调onBindViewHolder方法。所以add一个异常处理
-//                if (mSelectedPos > -1) notifyItemChanged(mSelectedPos);
+//                if (mSelectedPos > -1)notifyItemChanged(mSelectedPos);
 //            }
 //            if (mSelectedPos > -1) mDatas.get(mSelectedPos).setSelected(false);//不管在不在屏幕里 都需要改变数据
 //            //设置新Item的勾选状态
 //            mSelectedPos = position;
 //            if (mSelectedPos > -1) mDatas.get(mSelectedPos).setSelected(true);
-//            holder.ivSelect.setSelected(true);
+//            setSelectedImg(holder, true);
+//
+//            if (null != onClickListener) onClickListener.onItemClick();
 //        }
 //    });
 

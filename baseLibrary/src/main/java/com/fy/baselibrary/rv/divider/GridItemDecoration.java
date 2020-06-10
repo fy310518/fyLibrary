@@ -1,4 +1,4 @@
-package com.fy.baselibrary.rv.divider;
+package com.cxy.police.home;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.fy.baselibrary.utils.ResUtils;
+import com.fy.baselibrary.utils.ScreenUtils;
 
 /**
  * RecycleView GridLayoutManager 样式分割线 (注意：既然使用了 GridLayoutManager 默认每一行的 item 是大于 1 的)
@@ -57,10 +58,10 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
         // 列 只计算 左右
         int left = 0, right = 0;
         if(itemPosition % builder.column == 0){//第一列
-            left = builder.mSpace;
+            left = 0;
         } else if (itemPosition % builder.column == builder.column - 1) {//最后一列
             left = builder.mSpace;
-            right = builder.mSpace;
+            right = 0;
         } else {//中间若干列
             left = builder.mSpace;
             right = 0;
@@ -208,13 +209,7 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
         /**
          * 创建 ItemDecoration
-         *         // 计算item 边长【GridLayoutManager】
-         *         int itemWidth = (int) (ScreenUtils.getScreenWidth() - 2 * column * ResUtils.getDimen(R.dimen.spacing_medium_small));
-         *         itemWidth /= column;//item 边长
-         *         // 创建 LayoutParams 动态 设置 recycleView 的高度【仅recycleView 单行显示 数据时候，全屏显示 则不需要】
-         *         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) (itemWidth + 2 * ResUtils.getDimen(R.dimen.spacing_medium_small)));
-         *         int space = (int) ResUtils.getDimen(R.dimen.spacing_small_much);
-         *         lp.setMargins(0, space, 0, space);
+         *         // 使用 getItemWidth() 计算item 边长【GridLayoutManager】
          *         // 最后 创建 recycleView 适配器 时候 把计算的 item 边长 传递过去，在 适配器里面 动态设置 item 边长
          * @param context
          * @return
@@ -222,5 +217,18 @@ public class GridItemDecoration extends RecyclerView.ItemDecoration {
         public GridItemDecoration create(Context context){
             return new GridItemDecoration(context, this);
         }
+    }
+
+
+    /**
+     * GridLayoutManager 计算列表边长
+     * @param column                列表 列数
+     * @param leftAndRightPadding   列表 左右间隔，没有传 0dp
+     * @param itemSpace             列表 item 之间的间隔
+     */
+    public static int getItemWidth(int column, @DimenRes int leftAndRightPadding, @DimenRes int itemSpace){
+        int itemWidth = (int) (ScreenUtils.getScreenWidth() - 2 * ResUtils.getDimen(leftAndRightPadding) - (column - 1) * ResUtils.getDimen(itemSpace));
+        itemWidth /= column;//item 边长
+        return itemWidth;
     }
 }
