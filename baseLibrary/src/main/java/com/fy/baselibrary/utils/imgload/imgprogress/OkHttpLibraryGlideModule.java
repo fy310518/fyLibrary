@@ -10,6 +10,7 @@ import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.AppGlideModule;
+import com.fy.baselibrary.retrofit.RequestUtils;
 
 import java.io.InputStream;
 
@@ -26,7 +27,7 @@ public class OkHttpLibraryGlideModule extends AppGlideModule {
         super.registerComponents(context, glide, registry);
 
         //添加拦截器到Glide
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        OkHttpClient.Builder builder = RequestUtils.getOkBuilder();
         builder.addInterceptor(new ProgressInterceptor());
         OkHttpClient okHttpClient = builder.build();
 

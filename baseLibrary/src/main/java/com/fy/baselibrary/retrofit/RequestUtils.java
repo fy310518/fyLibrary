@@ -9,7 +9,6 @@ import com.fy.baselibrary.retrofit.load.LoadCallBack;
 import com.fy.baselibrary.retrofit.load.LoadOnSubscribe;
 import com.fy.baselibrary.retrofit.load.LoadService;
 import com.fy.baselibrary.retrofit.load.down.DownLoadListener;
-import com.fy.baselibrary.retrofit.load.down.FileResponseBody;
 import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.FileUtils;
 import com.fy.baselibrary.utils.cache.ACache;
@@ -18,7 +17,6 @@ import com.fy.baselibrary.utils.notify.L;
 
 import java.io.File;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 
 import javax.inject.Inject;
 
@@ -32,6 +30,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 
@@ -45,6 +44,9 @@ public class RequestUtils {
 
     @Inject
     protected Retrofit netRetrofit;
+
+    @Inject
+    protected OkHttpClient.Builder okBuilder;//使 上层依赖 可以获得唯一的 OkHttpClient；
 
     protected CompositeDisposable mCompositeDisposable;
 
@@ -64,6 +66,10 @@ public class RequestUtils {
         }
 
         return instance;
+    }
+
+    public static OkHttpClient.Builder getOkBuilder() {
+        return getInstance().okBuilder;
     }
 
     /**

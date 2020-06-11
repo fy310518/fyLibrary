@@ -2,7 +2,6 @@ package com.fy.baselibrary.retrofit;
 
 import android.text.TextUtils;
 
-import com.fy.baselibrary.BuildConfig;
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.converter.file.FileConverterFactory;
 import com.fy.baselibrary.retrofit.interceptor.FileDownInterceptor;
@@ -48,13 +47,13 @@ public class RequestModule {
     @Singleton
     @Provides
     protected Retrofit getService(RxJava2CallAdapterFactory callAdapterFactory, GsonConverterFactory
-            gsonConverterFactory, OkHttpClient client) {
+            gsonConverterFactory, OkHttpClient.Builder okBuilder) {
         return new Retrofit.Builder()
                 .addCallAdapterFactory(callAdapterFactory)
                 .addConverterFactory(new FileConverterFactory())
                 .addConverterFactory(gsonConverterFactory)
                 .baseUrl(ConfigUtils.getBaseUrl())
-                .client(client)
+                .client(okBuilder.build())
                 .build();
     }
 
@@ -79,7 +78,7 @@ public class RequestModule {
 
     @Singleton
     @Provides
-    protected OkHttpClient getClient(HttpLoggingInterceptor logInterceptor) {
+    protected OkHttpClient.Builder getClient(HttpLoggingInterceptor logInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
                 .readTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
@@ -117,7 +116,7 @@ public class RequestModule {
             }
         }
 
-        return builder.build();
+        return builder;
     }
 
     @Singleton

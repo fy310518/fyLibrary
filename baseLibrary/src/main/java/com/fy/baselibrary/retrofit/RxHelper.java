@@ -46,7 +46,7 @@ public class RxHelper {
      * @param <Item> 泛型
      * @return  ObservableTransformer
      */
-    public static <Item> ObservableTransformer<BaseBean<Item>, Item> biuld(Class<Item> clazz) {
+    private static <Item> ObservableTransformer<BaseBean<Item>, Item> biuld(Class<Item> clazz) {
         return new ObservableTransformer<BaseBean<Item>, Item>() {
             @Override
             public ObservableSource<Item> apply(@NonNull Observable<BaseBean<Item>> upstream) {
