@@ -9,7 +9,7 @@ public class Constant {
     /**
      * 默认的超时时间
      */
-    public static int DEFAULT_MILLISECONDS = 15000;
+    public static int DEFAULT_MILLISECONDS = 60;
     /**
      * 操作令牌 key
      */

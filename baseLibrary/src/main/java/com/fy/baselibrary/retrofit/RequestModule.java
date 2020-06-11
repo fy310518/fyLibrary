@@ -80,9 +80,9 @@ public class RequestModule {
     @Provides
     protected OkHttpClient.Builder getClient(HttpLoggingInterceptor logInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
-                .readTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
-                .writeTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
+                .connectTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.SECONDS)
+                .readTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.SECONDS)
+                .writeTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)//错误重连
                 .addInterceptor(new RequestHeaderInterceptor())
                 .addInterceptor(new FileDownInterceptor())
