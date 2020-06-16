@@ -2,9 +2,8 @@ package com.fy.baselibrary.retrofit.load;
 
 import android.util.ArrayMap;
 
+import com.fy.baselibrary.retrofit.BaseBean;
 import com.fy.baselibrary.retrofit.load.up.UpLoadFileType;
-
-import java.io.File;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
@@ -28,22 +27,59 @@ import retrofit2.http.Url;
  */
 public interface LoadService {
 
+    //普通get 请求
+    @GET
+    <R extends BaseBean, T> Observable<BaseBean<T>> getCompose(@Url String apiUrl, @QueryMap ArrayMap<String, Object> params);
+
+    //普通post 请求【请求参数 json格式 】
+    @POST
+    <T> Observable<BaseBean<T>> postCompose(@Url String apiUrl, @Body ArrayMap<String, Object> params);
+
+    //普通post 请求【表单提交】
+    @FormUrlEncoded
+    @POST
+    <T> Observable<BaseBean<T>> postFormCompose(@Url String apiUrl, @FieldMap ArrayMap<String, Object> params);
+
+
+    @GET
+    <T> Observable<T> get(@Url String apiUrl, @QueryMap ArrayMap<String, Object> params);
+
+    //普通post 请求【请求参数 json格式 】
+    @POST
+    <T> Observable<T> post(@Url String apiUrl, @Body ArrayMap<String, Object> params);
+
+    //普通post 请求【表单提交】
+    @FormUrlEncoded
+    @POST
+    <T> Observable<T> postForm(@Url String apiUrl, @FieldMap ArrayMap<String, Object> params);
+
+
+
     /**
      * h5调用本地 请求封装 之 GET请求
      */
     @GET
     Observable<Object> jsInAndroidGetRequest(@Url String apiUrl,
-                                                   @HeaderMap ArrayMap<String, Object> heads,
-                                                   @QueryMap ArrayMap<String, Object> params);
+                                             @HeaderMap ArrayMap<String, Object> heads,
+                                             @QueryMap ArrayMap<String, Object> params);
 
     /**
      * h5调用本地 请求封装 之 POST请求
      */
     @FormUrlEncoded
     @POST
-    Observable<Object> jsInAndroidPostRequest(@Url String apiUrl,
-                                              @HeaderMap ArrayMap<String, Object> heads,
-                                              @FieldMap ArrayMap<String, Object> params);
+    Observable<Object> jsInAndroidPostForm(@Url String apiUrl,
+                                           @HeaderMap ArrayMap<String, Object> heads,
+                                           @FieldMap ArrayMap<String, Object> params);
+
+    /**
+     * h5调用本地 请求封装 之 POST请求
+     */
+    @FormUrlEncoded
+    @POST
+    Observable<Object> jsInAndroidPostJson(@Url String apiUrl,
+                                           @HeaderMap ArrayMap<String, Object> heads,
+                                           @Body ArrayMap<String, Object> params);
 
     /**
      * 通用 图文上传 (支持多图片) （参数注解：@Body；参数类型：MultipartBody）
