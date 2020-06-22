@@ -2,7 +2,6 @@ package com.fy.baselibrary.retrofit.load;
 
 import android.util.ArrayMap;
 
-import com.fy.baselibrary.retrofit.BaseBean;
 import com.fy.baselibrary.retrofit.load.up.UpLoadFileType;
 
 import io.reactivex.Observable;
@@ -27,31 +26,19 @@ import retrofit2.http.Url;
  */
 public interface LoadService {
 
-    //普通get 请求
-    @GET
-    <R extends BaseBean, T> Observable<BaseBean<T>> getCompose(@Url String apiUrl, @QueryMap ArrayMap<String, Object> params);
-
-    //普通post 请求【请求参数 json格式 】
-    @POST
-    <T> Observable<BaseBean<T>> postCompose(@Url String apiUrl, @Body ArrayMap<String, Object> params);
-
-    //普通post 请求【表单提交】
-    @FormUrlEncoded
-    @POST
-    <T> Observable<BaseBean<T>> postFormCompose(@Url String apiUrl, @FieldMap ArrayMap<String, Object> params);
-
-
-    @GET
-    <T> Observable<T> get(@Url String apiUrl, @QueryMap ArrayMap<String, Object> params);
-
-    //普通post 请求【请求参数 json格式 】
-    @POST
-    <T> Observable<T> post(@Url String apiUrl, @Body ArrayMap<String, Object> params);
-
-    //普通post 请求【表单提交】
-    @FormUrlEncoded
-    @POST
-    <T> Observable<T> postForm(@Url String apiUrl, @FieldMap ArrayMap<String, Object> params);
+//    应用层 新建 一个 xxService 接口，复杂下面 三个接口方法，beanModle 修改成 自己的
+//    //普通get 请求
+//    @GET
+//    Observable<BeanModule<Object>> getCompose(@Url String apiUrl, @QueryMap ArrayMap<String, Object> params);
+//
+//    //普通post 请求【请求参数 json格式 】
+//    @POST
+//    Observable<BeanModule<Object>> postCompose(@Url String apiUrl, @Body ArrayMap<String, Object> params);
+//
+//    //普通post 请求【表单提交】
+//    @FormUrlEncoded
+//    @POST
+//    Observable<BeanModule<Object>> postFormCompose(@Url String apiUrl, @FieldMap ArrayMap<String, Object> params);
 
 
 
@@ -64,7 +51,7 @@ public interface LoadService {
                                              @QueryMap ArrayMap<String, Object> params);
 
     /**
-     * h5调用本地 请求封装 之 POST请求
+     * h5调用本地 请求封装 之 POST请求【表单】
      */
     @FormUrlEncoded
     @POST
@@ -73,9 +60,8 @@ public interface LoadService {
                                            @FieldMap ArrayMap<String, Object> params);
 
     /**
-     * h5调用本地 请求封装 之 POST请求
+     * h5调用本地 请求封装 之 POST请求【json】
      */
-    @FormUrlEncoded
     @POST
     Observable<Object> jsInAndroidPostJson(@Url String apiUrl,
                                            @HeaderMap ArrayMap<String, Object> heads,
