@@ -9,6 +9,9 @@ import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.GsonUtils;
 import com.fy.baselibrary.utils.notify.L;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -100,7 +103,7 @@ public class RxHelper {
      * @param clazz
      * @param <Item>
      */
-    public static <Item> ObservableTransformer<Object, Item> build(Class<Item> clazz) {
+    public static <Item> ObservableTransformer<Object, Item> buildObj(Class<Item> clazz) {
         return new ObservableTransformer<Object, Item>() {
             @Override
             public ObservableSource<Item> apply(@NonNull Observable<Object> upstream) {
@@ -108,6 +111,25 @@ public class RxHelper {
                     @Override
                     public Item apply(Object o) throws Exception {
                         return GsonUtils.fromJson(GsonUtils.toJson(o), clazz);
+                    }
+                });
+            }
+        };
+    }
+
+    /**
+     * 构造最终的 数据 集合
+     * @param clazz
+     * @param <Item>
+     */
+    public static <Item> ObservableTransformer<Object, List<Item>> buildList(Class<Item> clazz) {
+        return new ObservableTransformer<Object, List<Item>>() {
+            @Override
+            public ObservableSource<List<Item>> apply(@NonNull Observable<Object> upstream) {
+                return upstream.map(new Function<Object, List<Item>>() {
+                    @Override
+                    public List<Item> apply(Object o) throws Exception {
+                        return GsonUtils.jsonToList(GsonUtils.toJson(o), clazz);
                     }
                 });
             }
