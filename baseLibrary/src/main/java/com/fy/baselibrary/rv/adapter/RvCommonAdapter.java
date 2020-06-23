@@ -65,7 +65,10 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
 
     @Override
     public int getItemCount() {
-        return getHeadersCount() + getFootersCount() + getRealItemCount();
+        int count = getHeadersCount() + getFootersCount() + getRealItemCount();
+        if (showEmptyView && getRealItemCount() == 0 ) count++;//增加一个 item，显示 空布局
+
+        return count;
     }
 
     @Override
