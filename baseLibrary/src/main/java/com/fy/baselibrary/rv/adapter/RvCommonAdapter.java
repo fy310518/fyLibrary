@@ -12,6 +12,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.fy.baselibrary.aop.annotation.ClickFilter;
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.base.ViewHolder;
 import com.fy.baselibrary.rv.utils.WrapperUtils;
 
@@ -26,6 +27,10 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     private final static int TYPE_HEAD = 100000;
     private final static int TYPE_FOOTER = 200000;
 
+    private static final int TYPE_EMPTY = -2;// 空布局的ViewType
+    // 是否显示空布局，默认不显示
+    private boolean showEmptyView = false;
+
     protected Context mContext;
     protected int mLayoutId;
     protected List<Item> mDatas;
@@ -36,6 +41,7 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     protected RecyclerView mRv;
     protected int mSelectedPos = -1;//实现单选  保存当前选中的position
 
+    protected OnListener.OnEmptyClickListener OnEmptyClickListener;//列表条目点击事件
     protected OnListener.OnitemClickListener itemClickListner;//列表条目点击事件
     protected OnListener.OnRemoveItemListener removeItemListener;
     public OnListener.OnChangeItemListener changeItemListener;
@@ -68,6 +74,8 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
             return mHeaderViews.keyAt(position);
         } else if (isFooterViewPos(position)) {
             return mFootViews.keyAt(position - getHeadersCount() - getRealItemCount());
+        } else if (isShowEmpty(position)){
+            return TYPE_EMPTY;
         } else {
             return super.getItemViewType(position - getHeadersCount());
         }
@@ -79,16 +87,24 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
             return ViewHolder.createViewHolder(parent.getContext(), mHeaderViews.get(viewType));
         } else if (null != mFootViews.get(viewType)) {//尾
             return ViewHolder.createViewHolder(parent.getContext(), mFootViews.get(viewType));
-        } else {//主体
-            ViewHolder viewHolder = ViewHolder.createViewHolder(mContext, parent, mLayoutId);
-            bindOnClick(viewHolder);
+        } else {
+            ViewHolder viewHolder;
+            if (viewType == TYPE_EMPTY) {//空布局
+                viewHolder = ViewHolder.createViewHolder(mContext, parent, ConfigUtils.getOnStatusAdapter().emptyDataView());
+                viewHolder.itemView.setOnClickListener(view -> {
+                    if (null != OnEmptyClickListener) OnEmptyClickListener.onRetry();
+                });
+            } else {//主体
+                viewHolder = ViewHolder.createViewHolder(mContext, parent, mLayoutId);
+                bindOnClick(viewHolder);
+            }
             return viewHolder;
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (isHeaderViewPos(position) || isFooterViewPos(position)) {
+        if (isHeaderViewPos(position) || isFooterViewPos(position) || isShowEmpty(position)) {
             return;
         }
 
@@ -276,6 +292,16 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
         return position >= getHeadersCount() + getRealItemCount();
     }
 
+    //判断是否显示空布局
+    public boolean isShowEmpty(int position) {
+        return showEmptyView && getRealItemCount() == 0 && getHeadersCount() - position == 0;
+    }
+
+    //设置是否显示空布局
+    public void setShowEmptyView(boolean showEmptyView){
+        this.showEmptyView = showEmptyView;
+    }
+
     /**
      * 定义 添加 头部布局 方法
      * @param view
@@ -319,6 +345,12 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     }
 
 
+    /**
+     * 设置空布局 点击事件 回调接口
+     */
+    public void setOnEmptyClickListener(OnListener.OnEmptyClickListener onEmptyClickListener) {
+        OnEmptyClickListener = onEmptyClickListener;
+    }
 
     /**
      * 设置 item 点击事件 监听

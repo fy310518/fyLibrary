@@ -45,4 +45,11 @@ public interface OnListener {
          */
         void onChange(int position);
     }
+
+    interface OnEmptyClickListener {
+        /**
+         * recycelview 空布局 点击刷新
+         */
+        void onRetry();
+    }
 }
