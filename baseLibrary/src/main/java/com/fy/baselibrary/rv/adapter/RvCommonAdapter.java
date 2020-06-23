@@ -14,6 +14,7 @@ import android.widget.Filterable;
 import com.fy.baselibrary.aop.annotation.ClickFilter;
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.base.ViewHolder;
+import com.fy.baselibrary.rv.adapter.OnListener;
 import com.fy.baselibrary.rv.utils.WrapperUtils;
 
 import java.util.ArrayList;
@@ -292,12 +293,12 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     }
 
     private boolean isFooterViewPos(int position) {
-        return position >= getHeadersCount() + getRealItemCount();
+        return position >= getHeadersCount() + getRealItemCount() + getEmptyCount();
     }
 
     //判断是否显示空布局
     public boolean isShowEmpty(int position) {
-        return showEmptyView && getRealItemCount() == 0 && getHeadersCount() - position == 0;
+        return showEmptyView && getRealItemCount() == 0 && position >= getHeadersCount();
     }
 
     //设置是否显示空布局
@@ -333,6 +334,11 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
 
     public int getHeadersCount() {
         return mHeaderViews.size();
+    }
+
+    /** 空布局 数目 */
+    public int getEmptyCount(){
+        return showEmptyView && getRealItemCount() == 0 ? 1 : 0;
     }
 
     public int getFootersCount() {
