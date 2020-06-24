@@ -42,6 +42,10 @@ public class ConfigUtils {
         return configComponent.getConfigBiuder().DEBUG;
     }
 
+    public static boolean isEnableCacheInterceptor() {
+        return configComponent.getConfigBiuder().isEnableCacheInterceptor;
+    }
+
     public static String getBaseUrl() {
         return configComponent.getConfigBiuder().BASE_URL;
     }
@@ -83,6 +87,8 @@ public class ConfigUtils {
     public static class ConfigBiuder {
         /** 是否  DEBUG 环境*/
         boolean DEBUG;
+        /** 是否  启用缓存拦截器 */
+        boolean isEnableCacheInterceptor;
 
         /** 应用 文件根目录 名称（文件夹） */
         String filePath = "";
@@ -107,6 +113,7 @@ public class ConfigUtils {
         String token = "X-Access-Token";
         /** 网络请求 请求头 Content-Type 为了适配不同的 后台服务，Content-Type 不一致导致post请求失败 */
         String contTentType = "application/x-www-form-urlencoded;charse=UTF-8";
+
         /** token 拦截器 */
         List<Interceptor> interceptors  = new ArrayList<>();
 
@@ -116,6 +123,11 @@ public class ConfigUtils {
 
         public ConfigBiuder setDEBUG(boolean DEBUG) {
             this.DEBUG = DEBUG;
+            return this;
+        }
+
+        public ConfigBiuder setEnableCacheInterceptor(boolean enableCacheInterceptor) {
+            isEnableCacheInterceptor = enableCacheInterceptor;
             return this;
         }
 

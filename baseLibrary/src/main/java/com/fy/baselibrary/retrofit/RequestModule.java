@@ -89,13 +89,16 @@ public class RequestModule {
                 .addNetworkInterceptor(logInterceptor)
                 .addInterceptor(new CacheCookiesInterceptor())
                 .addNetworkInterceptor(new AddCookiesInterceptor())
-                .addInterceptor(new IsUseCacheInterceptor())
-                .addNetworkInterceptor(new CacheNetworkInterceptor())
                 .cache(new Cache(FileUtils.folderIsExists(FileUtils.cache + ".ok-cache", 1), 1024 * 1024 * 30L))
                 .hostnameVerifier((hostname, session) -> {
                     return true;//强行返回true 即验证成功
                 })
                 .protocols(Collections.singletonList(Protocol.HTTP_1_1));
+
+        if (ConfigUtils.isEnableCacheInterceptor()) {//是否执行缓存
+            builder.addInterceptor(new IsUseCacheInterceptor())
+                    .addNetworkInterceptor(new CacheNetworkInterceptor());
+        }
 
         List<Interceptor> interceptors = ConfigUtils.getInterceptor();
         for (Interceptor interceptor : interceptors) {
