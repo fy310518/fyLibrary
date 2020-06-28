@@ -12,7 +12,9 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import com.fy.baselibrary.aop.annotation.ClickFilter;
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.base.ViewHolder;
+import com.fy.baselibrary.rv.adapter.OnListener;
 import com.fy.baselibrary.rv.utils.WrapperUtils;
 
 import java.util.ArrayList;
@@ -26,6 +28,10 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     private final static int TYPE_HEAD = 100000;
     private final static int TYPE_FOOTER = 200000;
 
+    private static final int TYPE_EMPTY = -2;// 空布局的ViewType
+    // 是否显示空布局，默认不显示
+    private boolean showEmptyView = false;
+
     protected Context mContext;
     protected int mLayoutId;
     protected List<Item> mDatas;
@@ -36,6 +42,7 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     protected RecyclerView mRv;
     protected int mSelectedPos = -1;//实现单选  保存当前选中的position
 
+    protected OnListener.OnEmptyClickListener OnEmptyClickListener;//列表条目点击事件
     protected OnListener.OnitemClickListener itemClickListner;//列表条目点击事件
     protected OnListener.OnRemoveItemListener removeItemListener;
     public OnListener.OnChangeItemListener changeItemListener;
@@ -59,7 +66,10 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
 
     @Override
     public int getItemCount() {
-        return getHeadersCount() + getFootersCount() + getRealItemCount();
+        int count = getHeadersCount() + getFootersCount() + getRealItemCount();
+        if (showEmptyView && getRealItemCount() == 0 ) count++;//增加一个 item，显示 空布局
+
+        return count;
     }
 
     @Override
@@ -68,6 +78,8 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
             return mHeaderViews.keyAt(position);
         } else if (isFooterViewPos(position)) {
             return mFootViews.keyAt(position - getHeadersCount() - getRealItemCount());
+        } else if (isShowEmpty(position)){
+            return TYPE_EMPTY;
         } else {
             return super.getItemViewType(position - getHeadersCount());
         }
@@ -79,16 +91,24 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
             return ViewHolder.createViewHolder(parent.getContext(), mHeaderViews.get(viewType));
         } else if (null != mFootViews.get(viewType)) {//尾
             return ViewHolder.createViewHolder(parent.getContext(), mFootViews.get(viewType));
-        } else {//主体
-            ViewHolder viewHolder = ViewHolder.createViewHolder(mContext, parent, mLayoutId);
-            bindOnClick(viewHolder);
+        } else {
+            ViewHolder viewHolder;
+            if (viewType == TYPE_EMPTY) {//空布局
+                viewHolder = ViewHolder.createViewHolder(mContext, parent, ConfigUtils.getOnStatusAdapter().emptyDataView());
+                viewHolder.itemView.setOnClickListener(view -> {
+                    if (null != OnEmptyClickListener) OnEmptyClickListener.onRetry();
+                });
+            } else {//主体
+                viewHolder = ViewHolder.createViewHolder(mContext, parent, mLayoutId);
+                bindOnClick(viewHolder);
+            }
             return viewHolder;
         }
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (isHeaderViewPos(position) || isFooterViewPos(position)) {
+        if (isHeaderViewPos(position) || isFooterViewPos(position) || isShowEmpty(position)) {
             return;
         }
 
@@ -273,7 +293,17 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     }
 
     private boolean isFooterViewPos(int position) {
-        return position >= getHeadersCount() + getRealItemCount();
+        return position >= getHeadersCount() + getRealItemCount() + getEmptyCount();
+    }
+
+    //判断是否显示空布局
+    public boolean isShowEmpty(int position) {
+        return showEmptyView && getRealItemCount() == 0 && position >= getHeadersCount();
+    }
+
+    //设置是否显示空布局
+    public void setShowEmptyView(boolean showEmptyView){
+        this.showEmptyView = showEmptyView;
     }
 
     /**
@@ -306,6 +336,11 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
         return mHeaderViews.size();
     }
 
+    /** 空布局 数目 */
+    public int getEmptyCount(){
+        return showEmptyView && getRealItemCount() == 0 ? 1 : 0;
+    }
+
     public int getFootersCount() {
         return mFootViews.size();
     }
@@ -319,6 +354,12 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     }
 
 
+    /**
+     * 设置空布局 点击事件 回调接口
+     */
+    public void setOnEmptyClickListener(OnListener.OnEmptyClickListener onEmptyClickListener) {
+        OnEmptyClickListener = onEmptyClickListener;
+    }
 
     /**
      * 设置 item 点击事件 监听
@@ -363,23 +404,25 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
         this.mSelectedPos = mSelectedPos;
     }
 
-    //    单选 样板代码
-//    holder.ivSelect.setOnClickListener(new View.OnClickListener() {
+//    单选样板代码
+//    holder.setOnClickListener(R.id.llHostRoot, new View.OnClickListener() {
 //        @Override
 //        public void onClick(View view) {
 //            //实现单选方法三： RecyclerView另一种定向刷新方法：不会有白光一闪动画 也不会重复onBindVIewHolder
-//            CouponVH couponVH = (CouponVH) mRv.findViewHolderForLayoutPosition(mSelectedPos);
+//            ViewHolder couponVH = (ViewHolder) mRv.findViewHolderForLayoutPosition(mSelectedPos);
 //            if (couponVH != null) {//还在屏幕里
-//                couponVH.ivSelect.setSelected(false);//此处注意判空
-//            }else {//add by 2016 11 22 for 一些极端情况，holder被缓存在Recycler的cacheView里，
+//                setSelectedImg(couponVH, false);//这个方法是 子adapter 定义的，根据选中状态设置不同的样式
+//            } else {//add by 2016 11 22 for 一些极端情况，holder被缓存在Recycler的cacheView里，
 //                //此时拿不到ViewHolder，但是也不会回调onBindViewHolder方法。所以add一个异常处理
-//                if (mSelectedPos > -1) notifyItemChanged(mSelectedPos);
+//                if (mSelectedPos > -1)notifyItemChanged(mSelectedPos);
 //            }
 //            if (mSelectedPos > -1) mDatas.get(mSelectedPos).setSelected(false);//不管在不在屏幕里 都需要改变数据
 //            //设置新Item的勾选状态
 //            mSelectedPos = position;
 //            if (mSelectedPos > -1) mDatas.get(mSelectedPos).setSelected(true);
-//            holder.ivSelect.setSelected(true);
+//            setSelectedImg(holder, true);
+//
+//            if (null != onClickListener) onClickListener.onItemClick();
 //        }
 //    });
 

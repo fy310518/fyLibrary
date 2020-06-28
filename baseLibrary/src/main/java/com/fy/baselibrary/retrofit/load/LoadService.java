@@ -4,8 +4,6 @@ import android.util.ArrayMap;
 
 import com.fy.baselibrary.retrofit.load.up.UpLoadFileType;
 
-import java.io.File;
-
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -28,22 +26,46 @@ import retrofit2.http.Url;
  */
 public interface LoadService {
 
+//    应用层 新建 一个 xxService 接口，复杂下面 三个接口方法，beanModle 修改成 自己的
+//    //普通get 请求
+//    @GET
+//    Observable<BeanModule<Object>> getCompose(@Url String apiUrl, @QueryMap ArrayMap<String, Object> params);
+//
+//    //普通post 请求【请求参数 json格式 】
+//    @POST
+//    Observable<BeanModule<Object>> postCompose(@Url String apiUrl, @Body ArrayMap<String, Object> params);
+//
+//    //普通post 请求【表单提交】
+//    @FormUrlEncoded
+//    @POST
+//    Observable<BeanModule<Object>> postFormCompose(@Url String apiUrl, @FieldMap ArrayMap<String, Object> params);
+
+
+
     /**
      * h5调用本地 请求封装 之 GET请求
      */
     @GET
     Observable<Object> jsInAndroidGetRequest(@Url String apiUrl,
-                                                   @HeaderMap ArrayMap<String, Object> heads,
-                                                   @QueryMap ArrayMap<String, Object> params);
+                                             @HeaderMap ArrayMap<String, Object> heads,
+                                             @QueryMap ArrayMap<String, Object> params);
 
     /**
-     * h5调用本地 请求封装 之 POST请求
+     * h5调用本地 请求封装 之 POST请求【表单】
      */
     @FormUrlEncoded
     @POST
-    Observable<Object> jsInAndroidPostRequest(@Url String apiUrl,
-                                              @HeaderMap ArrayMap<String, Object> heads,
-                                              @FieldMap ArrayMap<String, Object> params);
+    Observable<Object> jsInAndroidPostForm(@Url String apiUrl,
+                                           @HeaderMap ArrayMap<String, Object> heads,
+                                           @FieldMap ArrayMap<String, Object> params);
+
+    /**
+     * h5调用本地 请求封装 之 POST请求【json】
+     */
+    @POST
+    Observable<Object> jsInAndroidPostJson(@Url String apiUrl,
+                                           @HeaderMap ArrayMap<String, Object> heads,
+                                           @Body ArrayMap<String, Object> params);
 
     /**
      * 通用 图文上传 (支持多图片) （参数注解：@Body；参数类型：MultipartBody）

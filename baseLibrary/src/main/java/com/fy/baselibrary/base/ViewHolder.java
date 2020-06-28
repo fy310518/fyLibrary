@@ -2,6 +2,7 @@ package com.fy.baselibrary.base;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.fy.baselibrary.utils.ResUtils;
 
 /**
  * 通用 ViewHolder
@@ -70,7 +73,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
      * 设置指定 viewID 的TextView 的文本
      * @param viewId
      * @param strId
-     * @return
      */
     public ViewHolder setText(int viewId, int strId) {
         TextView tv = getView(viewId);
@@ -78,7 +80,16 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         return this;
     }
 
-
+    /**
+     * 设置指定 viewID 的TextView 的 字体颜色
+     * @param viewId
+     * @param colorId
+     */
+    public ViewHolder setTextColor(int viewId, @ColorRes int colorId) {
+        TextView tv = getView(viewId);
+        tv.setTextColor(ResUtils.getColor(colorId));
+        return this;
+    }
 
     /**
      * 设置指定 viewID 的ImageView 的图片（资源图片）

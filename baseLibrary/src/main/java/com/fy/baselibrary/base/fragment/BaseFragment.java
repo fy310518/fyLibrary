@@ -189,14 +189,14 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-        //在Toolbar左边显示一个返回按钮
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //替换toolbar 自带的返回按钮
-        if (ConfigUtils.getBackImg() > 0) toolbar.setNavigationIcon(ConfigUtils.getBackImg());
+        if (null != listener){
+            //在Toolbar左边显示一个返回按钮
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            //替换toolbar 自带的返回按钮
+            if (ConfigUtils.getBackImg() > 0) toolbar.setNavigationIcon(ConfigUtils.getBackImg());
 
-        //设置返回按钮监听事件
-        if (null == listener) listener = v -> JumpUtils.exitActivity(getActivity());
-        toolbar.setNavigationOnClickListener(listener);
+            toolbar.setNavigationOnClickListener(listener);
+        }
 
         setHasOptionsMenu(true);
     }

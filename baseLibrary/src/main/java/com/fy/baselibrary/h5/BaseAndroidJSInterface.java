@@ -169,6 +169,9 @@ public class BaseAndroidJSInterface {
             case "POST":
                 httpPost(headers, params, hostAddress + request.getUrl(), request.getJsMethod());
                 break;
+            case "POSTJSON":
+                httpPostJson(headers, params, hostAddress + request.getUrl(), request.getJsMethod());
+                break;
             case "UPLOAD":
                 httpUpload(headers, params, hostAddress + request.getUrl(), request.getJsMethod(), request.getBase64());
                 break;
@@ -189,7 +192,16 @@ public class BaseAndroidJSInterface {
 
     private void httpPost(ArrayMap<String, Object> headers, ArrayMap<String, Object> params, final String url, final String jsMethod) {
         RequestUtils.create(LoadService.class)
-                .jsInAndroidPostRequest(url, headers, params)
+                .jsInAndroidPostForm(url, headers, params)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(RxHelper.bindToLifecycle(null == context ? fragment.getActivity() : context))
+                .subscribe(getCallObserver(url, jsMethod));
+    }
+
+    private void httpPostJson(ArrayMap<String, Object> headers, ArrayMap<String, Object> params, final String url, final String jsMethod) {
+        RequestUtils.create(LoadService.class)
+                .jsInAndroidPostJson(url, headers, params)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(RxHelper.bindToLifecycle(null == context ? fragment.getActivity() : context))

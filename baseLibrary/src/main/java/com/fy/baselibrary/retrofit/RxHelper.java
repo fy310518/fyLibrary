@@ -6,7 +6,11 @@ import android.content.Context;
 
 import com.fy.baselibrary.application.BaseActivityBean;
 import com.fy.baselibrary.utils.Constant;
+import com.fy.baselibrary.utils.GsonUtils;
 import com.fy.baselibrary.utils.notify.L;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -31,14 +35,14 @@ public class RxHelper {
      * @param clazz  传递了这个参数 说明返回的数据不能是 空 或者是 Object
      */
     public static <Item> ObservableTransformer<BaseBean<Item>, Item> handleResult(Class<Item> clazz) {
-        return biuld(clazz);
+        return resultPretreatment(clazz);
     }
 
     /**
      * 对结果进行预处理
      */
     public static <Item> ObservableTransformer<BaseBean<Item>, Item> handleResult() {
-        return biuld(null);
+        return resultPretreatment(null);
     }
 
     /**
@@ -46,7 +50,7 @@ public class RxHelper {
      * @param <Item> 泛型
      * @return  ObservableTransformer
      */
-    public static <Item> ObservableTransformer<BaseBean<Item>, Item> biuld(Class<Item> clazz) {
+    private static <Item> ObservableTransformer<BaseBean<Item>, Item> resultPretreatment(Class<Item> clazz) {
         return new ObservableTransformer<BaseBean<Item>, Item>() {
             @Override
             public ObservableSource<Item> apply(@NonNull Observable<BaseBean<Item>> upstream) {
@@ -70,11 +74,9 @@ public class RxHelper {
     }
 
     /**
-     * 创建成功的数据
-     *
+     * 发射成功的数据
      * @param data
      * @param <T>
-     * @return
      */
     private static <T> Observable<T> createData(final T data, Class<T> clazz) {
         return Observable.create(new ObservableOnSubscribe<T>() {
@@ -95,6 +97,45 @@ public class RxHelper {
             }
         });
     }
+
+    /**
+     * 构造最终的 数据 对象
+     * @param clazz
+     * @param <Item>
+     */
+    public static <Item> ObservableTransformer<Object, Item> buildObj(Class<Item> clazz) {
+        return new ObservableTransformer<Object, Item>() {
+            @Override
+            public ObservableSource<Item> apply(@NonNull Observable<Object> upstream) {
+                return upstream.map(new Function<Object, Item>() {
+                    @Override
+                    public Item apply(Object o) throws Exception {
+                        return GsonUtils.fromJson(GsonUtils.toJson(o), clazz);
+                    }
+                });
+            }
+        };
+    }
+
+    /**
+     * 构造最终的 数据 集合
+     * @param clazz
+     * @param <Item>
+     */
+    public static <Item> ObservableTransformer<Object, List<Item>> buildList(Class<Item> clazz) {
+        return new ObservableTransformer<Object, List<Item>>() {
+            @Override
+            public ObservableSource<List<Item>> apply(@NonNull Observable<Object> upstream) {
+                return upstream.map(new Function<Object, List<Item>>() {
+                    @Override
+                    public List<Item> apply(Object o) throws Exception {
+                        return GsonUtils.jsonToList(GsonUtils.toJson(o), clazz);
+                    }
+                });
+            }
+        };
+    }
+
 
     /**
      * 绑定activity 或 fragment生命周期，在生命周期结束后断开 rxjava 请求

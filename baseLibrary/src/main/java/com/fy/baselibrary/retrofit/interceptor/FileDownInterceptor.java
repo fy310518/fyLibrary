@@ -16,7 +16,7 @@ public class FileDownInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        L.e("fy_file_FileDownInterceptor", "文件下载---" + Thread.currentThread().getName());
+        L.e("fy_file_FileDownInterceptor", "---" + Thread.currentThread().getName());
 
         Response originalResponse = chain.proceed(chain.request());
 

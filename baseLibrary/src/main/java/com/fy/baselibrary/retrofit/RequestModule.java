@@ -2,7 +2,6 @@ package com.fy.baselibrary.retrofit;
 
 import android.text.TextUtils;
 
-import com.fy.baselibrary.BuildConfig;
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.converter.file.FileConverterFactory;
 import com.fy.baselibrary.retrofit.interceptor.FileDownInterceptor;
@@ -48,13 +47,13 @@ public class RequestModule {
     @Singleton
     @Provides
     protected Retrofit getService(RxJava2CallAdapterFactory callAdapterFactory, GsonConverterFactory
-            gsonConverterFactory, OkHttpClient client) {
+            gsonConverterFactory, OkHttpClient.Builder okBuilder) {
         return new Retrofit.Builder()
                 .addCallAdapterFactory(callAdapterFactory)
                 .addConverterFactory(new FileConverterFactory())
                 .addConverterFactory(gsonConverterFactory)
                 .baseUrl(ConfigUtils.getBaseUrl())
-                .client(client)
+                .client(okBuilder.build())
                 .build();
     }
 
@@ -79,24 +78,27 @@ public class RequestModule {
 
     @Singleton
     @Provides
-    protected OkHttpClient getClient(HttpLoggingInterceptor logInterceptor) {
+    protected OkHttpClient.Builder getClient(HttpLoggingInterceptor logInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
-                .readTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
-                .writeTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.MILLISECONDS)
+                .connectTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.SECONDS)
+                .readTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.SECONDS)
+                .writeTimeout(Constant.DEFAULT_MILLISECONDS, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)//错误重连
                 .addInterceptor(new RequestHeaderInterceptor())
                 .addInterceptor(new FileDownInterceptor())
                 .addNetworkInterceptor(logInterceptor)
                 .addInterceptor(new CacheCookiesInterceptor())
                 .addNetworkInterceptor(new AddCookiesInterceptor())
-                .addInterceptor(new IsUseCacheInterceptor())
-                .addNetworkInterceptor(new CacheNetworkInterceptor())
-                .cache(new Cache(FileUtils.folderIsExists(FileUtils.cache + ".ok-cache", 1), 1024 * 1024 * 30L))
                 .hostnameVerifier((hostname, session) -> {
                     return true;//强行返回true 即验证成功
                 })
                 .protocols(Collections.singletonList(Protocol.HTTP_1_1));
+
+        if (ConfigUtils.isEnableCacheInterceptor()) {//是否 添加缓存拦截器
+            builder.addInterceptor(new IsUseCacheInterceptor())
+                    .addNetworkInterceptor(new CacheNetworkInterceptor())
+                    .cache(new Cache(FileUtils.folderIsExists(FileUtils.cache + ".ok-cache", 1), 1024 * 1024 * 30L));
+        }
 
         List<Interceptor> interceptors = ConfigUtils.getInterceptor();
         for (Interceptor interceptor : interceptors) {
@@ -117,7 +119,7 @@ public class RequestModule {
             }
         }
 
-        return builder.build();
+        return builder;
     }
 
     @Singleton

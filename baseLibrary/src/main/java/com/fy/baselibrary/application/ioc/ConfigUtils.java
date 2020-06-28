@@ -7,6 +7,8 @@ import com.fy.baselibrary.statuslayout.OnStatusAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 import okhttp3.Interceptor;
 
 
@@ -40,8 +42,16 @@ public class ConfigUtils {
         return configComponent.getConfigBiuder().DEBUG;
     }
 
+    public static boolean isEnableCacheInterceptor() {
+        return configComponent.getConfigBiuder().isEnableCacheInterceptor;
+    }
+
     public static String getBaseUrl() {
         return configComponent.getConfigBiuder().BASE_URL;
+    }
+
+    public static String getContentType() {
+        return configComponent.getConfigBiuder().contTentType;
     }
     public static String getTokenKey(){return configComponent.getConfigBiuder().token;}
 
@@ -77,17 +87,12 @@ public class ConfigUtils {
     public static class ConfigBiuder {
         /** 是否  DEBUG 环境*/
         boolean DEBUG;
-        /** 网络请求 服务器地址 url */
-        String BASE_URL = "";
+        /** 是否  启用缓存拦截器 */
+        boolean isEnableCacheInterceptor;
 
         /** 应用 文件根目录 名称（文件夹） */
         String filePath = "";
         int type = 2;
-
-        /** https 公钥证书字符串 */
-        String cer = "";
-        /** https 公钥证书 文件字符串（放在 assets 目录下） */
-        String cerFileName = "";
 
         /** 标题栏背景色 */
         int bgColor;
@@ -95,19 +100,34 @@ public class ConfigUtils {
         boolean isTitleCenter;
         /** 标题字体颜色 */
         int titleColor;
-
-        /** 标题栏返回按钮 图片 */
+        /** 标题栏 返回按钮 图片 */
         int backImg;
 
+        /** 网络请求 服务器地址 url */
+        String BASE_URL = "";
+        /** https 公钥证书字符串 */
+        String cer = "";
+        /** https 公钥证书 文件字符串（放在 assets 目录下） */
+        String cerFileName = "";
         /** token key */
         String token = "X-Access-Token";
+        /** 网络请求 请求头 Content-Type 为了适配不同的 后台服务，Content-Type 不一致导致post请求失败 */
+        String contTentType = "application/x-www-form-urlencoded;charse=UTF-8";
+
         /** token 拦截器 */
         List<Interceptor> interceptors  = new ArrayList<>();
+
+
         /** 多状态布局 适配器 */
         OnStatusAdapter statusAdapter;
 
         public ConfigBiuder setDEBUG(boolean DEBUG) {
             this.DEBUG = DEBUG;
+            return this;
+        }
+
+        public ConfigBiuder setEnableCacheInterceptor(boolean enableCacheInterceptor) {
+            isEnableCacheInterceptor = enableCacheInterceptor;
             return this;
         }
 
@@ -154,6 +174,11 @@ public class ConfigUtils {
 
         public ConfigBiuder setToken(String token) {
             this.token = token == null ? "" : token;
+            return this;
+        }
+
+        public ConfigBiuder setContTentType(@NonNull String contTentType) {
+            this.contTentType = contTentType == null ? "" : contTentType;
             return this;
         }
 
