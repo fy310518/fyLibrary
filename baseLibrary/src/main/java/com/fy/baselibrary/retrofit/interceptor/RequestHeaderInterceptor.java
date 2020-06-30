@@ -24,7 +24,7 @@ public class RequestHeaderInterceptor implements Interceptor {
         //获取request
         Request request = chain.request()
                 .newBuilder()
-                .addHeader("Content-Type", ConfigUtils.getContentType())
+                .addHeader("Content-Type", "application/x-www-form-urlencoded;charse=UTF-8")
 //                .addHeader("Accept-Encoding", "gzip, deflate")//根据服务器要求添加（避免重复压缩乱码）
                 .addHeader("Connection", "keep-alive")
                 .addHeader("Accept", "*/*")

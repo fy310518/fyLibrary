@@ -31,18 +31,18 @@ import io.reactivex.subjects.BehaviorSubject;
 public class RxHelper {
 
     /**
-     * 对结果进行预处理
+     * 对结果进行预处理，返回结果是 对象
      * @param clazz  传递了这个参数 说明返回的数据不能是 空 或者是 Object
      */
-    public static <Item> ObservableTransformer<BaseBean<Item>, Item> handleResult(Class<Item> clazz) {
-        return resultPretreatment(clazz);
+    public static <Item> ObservableTransformer<BaseBean<Object>, Item> handleObj(Class<Item> clazz) {
+        return objResultPretreatment(clazz);
     }
 
     /**
-     * 对结果进行预处理
+     * 对结果进行预处理，返回结果是 集合
      */
-    public static <Item> ObservableTransformer<BaseBean<Item>, Item> handleResult() {
-        return resultPretreatment(null);
+    public static <Item> ObservableTransformer<BaseBean<Object>, List<Item>> handleList(@NonNull Class<Item> clazz) {
+        return listResultPretreatment(clazz);
     }
 
     /**
@@ -50,16 +50,44 @@ public class RxHelper {
      * @param <Item> 泛型
      * @return  ObservableTransformer
      */
-    private static <Item> ObservableTransformer<BaseBean<Item>, Item> resultPretreatment(Class<Item> clazz) {
-        return new ObservableTransformer<BaseBean<Item>, Item>() {
+    private static <Item> ObservableTransformer<BaseBean<Object>, Item> objResultPretreatment(Class<Item> clazz) {
+        return new ObservableTransformer<BaseBean<Object>, Item>() {
             @Override
-            public ObservableSource<Item> apply(@NonNull Observable<BaseBean<Item>> upstream) {
-                return upstream.flatMap(new Function<BaseBean<Item>, ObservableSource<Item>>() {
+            public ObservableSource<Item> apply(@NonNull Observable<BaseBean<Object>> upstream) {
+                return upstream.flatMap(new Function<BaseBean<Object>, ObservableSource<Item>>() {
                     @SuppressLint("CheckResult")
                     @Override
-                    public ObservableSource<Item> apply(@NonNull BaseBean<Item> baseBean) throws Exception {
+                    public ObservableSource<Item> apply(@NonNull BaseBean<Object> baseBean) throws Exception {
                         if (baseBean.isSuccess()) {
-                            return createData(baseBean.getData(), clazz);
+                            return createObjData(baseBean.getData(), clazz);
+                        } else {
+                            return Observable.error(new ServerException(baseBean.getMsg(), baseBean.getCode()));
+                        }
+                    }
+                })
+                        .subscribeOn(Schedulers.io())//指定的是上游发送事件的线程
+                        .observeOn(AndroidSchedulers.mainThread());//指定的是下游接收事件的线程
+//              多次指定上游的线程只有第一次指定的有效, 也就是说多次调用subscribeOn() 只有第一次的有效, 其余的会被忽略.
+//              多次指定下游的线程是可以的, 也就是说每调用一次observeOn() , 下游的线程就会切换一次.
+            }
+        };
+    }
+
+    /**
+     * 对结果进行预处理
+     * @param <Item> 泛型
+     * @return  ObservableTransformer
+     */
+    private static <Item> ObservableTransformer<BaseBean<Object>, List<Item>> listResultPretreatment(Class<Item> clazz) {
+        return new ObservableTransformer<BaseBean<Object>, List<Item>>() {
+            @Override
+            public ObservableSource<List<Item>> apply(@NonNull Observable<BaseBean<Object>> upstream) {
+                return upstream.flatMap(new Function<BaseBean<Object>, ObservableSource<List<Item>>>() {
+                    @SuppressLint("CheckResult")
+                    @Override
+                    public ObservableSource<List<Item>> apply(@NonNull BaseBean<Object> baseBean) throws Exception {
+                        if (baseBean.isSuccess()) {
+                            return createListData(baseBean.getData(), clazz);
                         } else {
                             return Observable.error(new ServerException(baseBean.getMsg(), baseBean.getCode()));
                         }
@@ -78,16 +106,22 @@ public class RxHelper {
      * @param data
      * @param <T>
      */
-    private static <T> Observable<T> createData(final T data, Class<T> clazz) {
+    private static <T> Observable<T> createObjData(final Object data, Class<T> clazz) {
         return Observable.create(new ObservableOnSubscribe<T>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<T> subscriber) throws Exception {
                 try {
                     L.e("net", "成功 _ onNext");
                     if (null == data) {
-                        if (null == clazz)subscriber.onNext((T) new Object());
-                        else subscriber.onNext(clazz.newInstance());
-                    } else subscriber.onNext(data);
+                        if (null == clazz){
+                            subscriber.onNext((T) new Object());
+                        } else {
+                            subscriber.onNext(clazz.newInstance());
+                        }
+                    } else {
+                        String jsonData = GsonUtils.toJson(data);
+                        subscriber.onNext(GsonUtils.fromJson(jsonData, clazz));
+                    }
 
                     subscriber.onComplete();
                 } catch (Exception e) {
@@ -98,44 +132,27 @@ public class RxHelper {
         });
     }
 
-    /**
-     * 构造最终的 数据 对象
-     * @param clazz
-     * @param <Item>
-     */
-    public static <Item> ObservableTransformer<Object, Item> buildObj(Class<Item> clazz) {
-        return new ObservableTransformer<Object, Item>() {
+    private static <T> Observable<List<T>> createListData(final Object data, Class<T> clazz) {
+        return Observable.create(new ObservableOnSubscribe<List<T>>() {
             @Override
-            public ObservableSource<Item> apply(@NonNull Observable<Object> upstream) {
-                return upstream.map(new Function<Object, Item>() {
-                    @Override
-                    public Item apply(Object o) throws Exception {
-                        return GsonUtils.fromJson(GsonUtils.toJson(o), clazz);
+            public void subscribe(@NonNull ObservableEmitter<List<T>> subscriber) throws Exception {
+                try {
+                    L.e("net", "成功 _ onNext");
+                    if (null == data) {
+                        subscriber.onNext(new ArrayList<>());
+                    } else {
+                        String jsonData = GsonUtils.toJson(data);
+                        subscriber.onNext(GsonUtils.jsonToList(jsonData, clazz));
                     }
-                });
-            }
-        };
-    }
 
-    /**
-     * 构造最终的 数据 集合
-     * @param clazz
-     * @param <Item>
-     */
-    public static <Item> ObservableTransformer<Object, List<Item>> buildList(Class<Item> clazz) {
-        return new ObservableTransformer<Object, List<Item>>() {
-            @Override
-            public ObservableSource<List<Item>> apply(@NonNull Observable<Object> upstream) {
-                return upstream.map(new Function<Object, List<Item>>() {
-                    @Override
-                    public List<Item> apply(Object o) throws Exception {
-                        return GsonUtils.jsonToList(GsonUtils.toJson(o), clazz);
-                    }
-                });
+                    subscriber.onComplete();
+                } catch (Exception e) {
+                    L.e("net", "异常 _ onError");
+                    subscriber.onError(e);
+                }
             }
-        };
+        });
     }
-
 
     /**
      * 绑定activity 或 fragment生命周期，在生命周期结束后断开 rxjava 请求

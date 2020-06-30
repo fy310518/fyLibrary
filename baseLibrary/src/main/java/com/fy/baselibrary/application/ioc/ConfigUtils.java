@@ -7,8 +7,6 @@ import com.fy.baselibrary.statuslayout.OnStatusAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.annotations.NonNull;
-import io.reactivex.annotations.Nullable;
 import okhttp3.Interceptor;
 
 
@@ -50,9 +48,6 @@ public class ConfigUtils {
         return configComponent.getConfigBiuder().BASE_URL;
     }
 
-    public static String getContentType() {
-        return configComponent.getConfigBiuder().contTentType;
-    }
     public static String getTokenKey(){return configComponent.getConfigBiuder().token;}
 
     public static List<Interceptor> getInterceptor(){return configComponent.getConfigBiuder().interceptors;}
@@ -87,8 +82,6 @@ public class ConfigUtils {
     public static class ConfigBiuder {
         /** 是否  DEBUG 环境*/
         boolean DEBUG;
-        /** 是否  启用缓存拦截器 */
-        boolean isEnableCacheInterceptor;
 
         /** 应用 文件根目录 名称（文件夹） */
         String filePath = "";
@@ -109,14 +102,13 @@ public class ConfigUtils {
         String cer = "";
         /** https 公钥证书 文件字符串（放在 assets 目录下） */
         String cerFileName = "";
+
+        /** 是否  启用缓存拦截器 */
+        boolean isEnableCacheInterceptor;
         /** token key */
         String token = "X-Access-Token";
-        /** 网络请求 请求头 Content-Type 为了适配不同的 后台服务，Content-Type 不一致导致post请求失败 */
-        String contTentType = "application/x-www-form-urlencoded;charse=UTF-8";
-
         /** token 拦截器 */
         List<Interceptor> interceptors  = new ArrayList<>();
-
 
         /** 多状态布局 适配器 */
         OnStatusAdapter statusAdapter;
@@ -174,11 +166,6 @@ public class ConfigUtils {
 
         public ConfigBiuder setToken(String token) {
             this.token = token == null ? "" : token;
-            return this;
-        }
-
-        public ConfigBiuder setContTentType(@NonNull String contTentType) {
-            this.contTentType = contTentType == null ? "" : contTentType;
             return this;
         }
 
