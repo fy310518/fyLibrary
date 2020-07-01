@@ -106,9 +106,15 @@ public abstract class TimeDialog extends CommonDialog {
             public void onItemSelected(int index) {
                 currentDay = startDay + index;
 
-                int endDay = setDayNum();
+                int endDay = setDayNum();//当月 最大天数
                 wvDay.setAdapter(new NumericWheelAdapter(startDay, endDay));
-                wvDay.setCurrentItem(currentDay);
+
+                int position = wvDay.getCurrentItem();
+                if (position > endDay){
+                    position = endDay - 1;
+                }
+
+                wvDay.setCurrentItem(position);
             }
         };
 
