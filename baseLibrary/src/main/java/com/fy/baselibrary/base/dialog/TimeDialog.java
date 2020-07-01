@@ -6,6 +6,8 @@ import android.view.View;
 
 import com.fy.baselibrary.base.ViewHolder;
 import com.fy.baselibrary.utils.ResUtils;
+import com.fy.baselibrary.utils.TimeUtils;
+import com.fy.baselibrary.utils.notify.L;
 import com.fy.baselibrary.widget.wheel.OnItemSelectedListener;
 import com.fy.baselibrary.widget.wheel.WheelView;
 import com.fy.baselibrary.widget.wheel.simple.NumericWheelAdapter;
@@ -36,9 +38,9 @@ public abstract class TimeDialog extends CommonDialog {
 
 
     protected WheelView[] wvs;
-    private WheelView wvYear, wvMonth, wvDay, wvHour, wvMin, wvSecond;
+    protected WheelView wvYear, wvMonth, wvDay, wvHour, wvMin, wvSecond;
     //年 滑动停止监听；月 滑动停止监听；日 滑动停止监听；
-    OnItemSelectedListener yearSelectedListener, monthSelectedListener, daySelectedListener;
+    private OnItemSelectedListener yearSelectedListener, monthSelectedListener, daySelectedListener;
 
     private int currentYear, currentMonth, currentDay, currentHour, currentMin, currentSecond;//选中的 日期 数据
 
@@ -52,13 +54,18 @@ public abstract class TimeDialog extends CommonDialog {
      * 定义抽象方法，用来实例化 滚轮控件 wvYear, wvMonth, wvDay, wvHour, wvMin, wvSecond（年月日时分秒）
      * @param holder
      */
-    public abstract void initWheelView(ViewHolder holder);
+    protected abstract void initWheelView(ViewHolder holder);
 
     /**
      * 定义抽象方法，用来 设置 滚轮控件其它 属性
      * @param wheelView 滚轮控件
      */
-    public abstract void setOtherAttribute(WheelView wheelView);
+    protected abstract void setOtherAttribute(WheelView wheelView);
+
+    /**
+     * 定义抽象方法，子类自行 控制 相关业务
+     */
+    protected abstract void customerView(ViewHolder holder);
 
     @Override
     public void convertView(ViewHolder holder, CommonDialog dialog) {
@@ -72,6 +79,8 @@ public abstract class TimeDialog extends CommonDialog {
         initData();
         baseSet();
         setWvListener();
+
+        customerView(holder);
     }
 
     //设置 联动监听
@@ -234,6 +243,18 @@ public abstract class TimeDialog extends CommonDialog {
         return this;
     }
 
+    /**
+     * 执行回调方法
+     */
+    protected void runOnTime(){
+        String month = currentMonth > 9 ? "" + currentMonth : "0" + currentMonth;
+        String day   = currentDay   > 9 ? "" + currentDay   : "0" + currentDay;
+
+        String timeStr = currentYear + "-" + month + "-" + day + " " + currentHour + ":" + currentMin + ":" + currentSecond;
+        L.e("时间选择", timeStr);
+
+        if (null != onSelectTimeListener) onSelectTimeListener.onTime(TimeUtils.timeString2long(timeStr, "yyyy-MM-dd HH:mm:ss"));
+    }
 
     /**
      * 选择时间，回调接口
