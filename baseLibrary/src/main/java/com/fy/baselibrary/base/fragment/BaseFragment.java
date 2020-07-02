@@ -229,6 +229,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        onHiddenChanged(isVisibleToUser);
+
         if (isVisibleToUser) {
             isUIVisible = true;
             lazyLoad();
