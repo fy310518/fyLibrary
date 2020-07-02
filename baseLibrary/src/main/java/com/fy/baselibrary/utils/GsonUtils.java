@@ -34,6 +34,27 @@ public class GsonUtils {
     }
 
     /**
+     * 将 list 转换成json字符串
+     * @return
+     */
+    public static <T> String listToJson(List<T> data){
+        Gson gson = new Gson();
+
+        return gson.toJson(data);
+    }
+
+    /**
+     * 将 map 转换成 json字符串
+     * @param params
+     * @return
+     */
+    public static <T> String mapToJsonStr(Map<String, T> params){
+        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
+
+        return gson.toJson(params);
+    }
+
+    /**
      * 没有被 @Expose 标注的字段会被排除
      * @param bean
      */
@@ -90,19 +111,6 @@ public class GsonUtils {
         return returnData;
     }
 
-
-    /**
-     * 将 map 转换成 json字符串
-     * @param params
-     * @return
-     */
-    public static <T> String mapToJsonStr(Map<String, T> params){
-        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
-
-        return gson.toJson(params);
-    }
-
-
     /**
      * 将Json字符串转换成 List集合
      * @param jsonStr
@@ -118,16 +126,6 @@ public class GsonUtils {
         }
 
         return lst;
-    }
-
-    /**
-     * 将 list 转换成json字符串
-     * @return
-     */
-    public static <T> String listToJson(List<T> data){
-        Gson gson = new Gson();
-
-        return gson.toJson(data);
     }
 
 }
