@@ -5,13 +5,17 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
 
+    <!-- App 统一字体大小     微  小 号-->
+    <dimen name="txt_small_mi_much">10sp</dimen>
     <!-- App 统一字体大小     超  小 号-->
     <dimen name="txt_small_much">12sp</dimen>
-    <!-- App 统一字体大小     小号-->
+    <!-- App 统一字体大小     小 号 -->
     <dimen name="txt_small">14sp</dimen>
-    <!-- App 统一字体大小     中 号-->
+    <!-- App 统一字体大小     小 中 号 -->
+    <dimen name="txt_medium_small">16sp</dimen>
+    <!-- App 统一字体大小     中 号 -->
     <dimen name="txt_medium">18sp</dimen>
-    <!-- App 统一字体大小     大 号-->
+    <!-- App 统一字体大小     大 号 -->
     <dimen name="txt_large">22sp</dimen>
 
     <!-- APP 统一间距  超 小 号-->
@@ -23,7 +27,9 @@
     <!-- App 统一间距  中 号-->
     <dimen name="spacing_medium">16dp</dimen>
     <!-- App 统一间距  大 中 号-->
-    <dimen name="spacing_medium_large">30dp</dimen>
+    <dimen name="spacing_medium_large">20dp</dimen>
+    <!-- App 统一间距  大 号-->
+    <dimen name="spacing__large">30dp</dimen>
 
     <!-- 统一 列表 空白间隔 -->
     <dimen name="rv_divider_height">4dp</dimen>
