@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +57,8 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
 //            activity.finish();
 //            return;
 //        }
+
+        setFontDefault(activity);
 
         if (activity instanceof BaseMVPActivity) {
             ((BaseMVPActivity)activity).initPresenter();
@@ -225,4 +229,18 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
         return isrun;
     }
 
+    /**
+     * 设置 app字体是否跟随系统 字体
+     * @param act
+     */
+    private void setFontDefault(Activity act){
+        if (ConfigUtils.isFontDefault()) return;
+
+        Resources res = act.getResources();
+        if (res.getConfiguration().fontScale != 1) {//非默认值
+            Configuration newConfig = new Configuration();
+            newConfig.setToDefaults();//设置默认
+            res.updateConfiguration(newConfig, res.getDisplayMetrics());
+        }
+    }
 }

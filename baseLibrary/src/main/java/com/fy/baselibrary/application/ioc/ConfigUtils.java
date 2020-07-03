@@ -40,6 +40,10 @@ public class ConfigUtils {
         return configComponent.getConfigBiuder().DEBUG;
     }
 
+    public static boolean isFontDefault() {
+        return configComponent.getConfigBiuder().isFontDefault;
+    }
+
     public static boolean isEnableCacheInterceptor() {
         return configComponent.getConfigBiuder().isEnableCacheInterceptor;
     }
@@ -82,6 +86,8 @@ public class ConfigUtils {
     public static class ConfigBiuder {
         /** 是否  DEBUG 环境*/
         boolean DEBUG;
+        /** 是否  跟随系统字体大小 默认跟随*/
+        boolean isFontDefault = true;
 
         /** 应用 文件根目录 名称（文件夹） */
         String filePath = "";
@@ -115,6 +121,11 @@ public class ConfigUtils {
 
         public ConfigBiuder setDEBUG(boolean DEBUG) {
             this.DEBUG = DEBUG;
+            return this;
+        }
+
+        public ConfigBiuder setFontDefault(boolean fontDefault) {
+            isFontDefault = fontDefault;
             return this;
         }
 
