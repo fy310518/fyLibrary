@@ -2,13 +2,16 @@ package com.fy.baselibrary.utils;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.graphics.PointF;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.fy.baselibrary.R;
 
@@ -23,27 +26,25 @@ public class AnimUtils {
     public static final int radius1 = 500;
 
     /**
-     * 设置fragment 转场动画
-     * @param fragmentTransaction 事物
-     * @param currentIndex 当前fragment 在事物中的下标
-     * @param position  将要显示的fragment的下标
+     * 省略号动画
      */
-    public static void setFragmentTransition(FragmentTransaction fragmentTransaction,
-                                             int currentIndex, int position) {
-        //设置自定义过场动画
-        if (currentIndex > position) {
-            fragmentTransaction.setCustomAnimations(
-                    R.anim.anim_slide_right_in,
-                    R.anim.anim_slide_right_out);
-        } else if (currentIndex < position){
-            fragmentTransaction.setCustomAnimations(
-                    R.anim.anim_slide_left_in,
-                    R.anim.anim_slide_left_out);
-        }
+    public static void setTxtEllipsisAnim(TextView txt, @StringRes int id) {
+        String[] scoreText = {"     ", ".    ", ". .  ", ". . ."};
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 4).setDuration(1500);
+        valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int i = (int) animation.getAnimatedValue();
+                txt.setText(ResUtils.getReplaceStr(id, scoreText[i % scoreText.length]));
+            }
+        });
+        valueAnimator.start();
     }
 
     /**
      * 箭头的动画
+     *
      * @param iv_arrow 箭头View
      * @param isExpand 当前状态是否 收起
      */
@@ -59,6 +60,7 @@ public class AnimUtils {
 
     /**
      * 关闭扇形菜单
+     *
      * @param buttonList 控件列表
      */
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
@@ -84,6 +86,7 @@ public class AnimUtils {
 
     /**
      * 显示半圆弧 菜单
+     *
      * @param buttonList 控件列表
      */
     public static void showSemicircleMenu(List<RadioButton> buttonList) {

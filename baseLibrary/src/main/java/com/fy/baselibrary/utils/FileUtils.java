@@ -21,15 +21,18 @@ import java.io.IOException;
  */
 public class FileUtils {
 
+    /** 网络请求缓存目录 */
     public static String cache = ConfigUtils.getFilePath() + ".cache";
-    /** 文件下载目录 */
-    public static String DOWN = ConfigUtils.getFilePath() + ".down";
     /** 图片保存目录 */
     public static String IMG = ConfigUtils.getFilePath() + ".picture";
+    /** 头像保存目录 */
+    public static String headImg = ConfigUtils.getFilePath() + ".headImg";
     /** 压缩文件目录 */
     public static String ZIP = ConfigUtils.getFilePath() + ".zip";
-    /** 錄音文件目录 */
+    /** 录制音频，视频目录 */
     public static String record = ConfigUtils.getFilePath() + ".record";
+    /** 文件下载目录 */
+    public static String DOWN = ConfigUtils.getFilePath() + ".down";
 
     private FileUtils() {
         /* cannot be instantiated */
