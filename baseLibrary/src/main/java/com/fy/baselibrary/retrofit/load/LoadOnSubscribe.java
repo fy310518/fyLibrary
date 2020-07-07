@@ -44,13 +44,15 @@ public class LoadOnSubscribe implements ObservableOnSubscribe<Object> {
 
         mPercent = percent;
         mObservableEmitter.onNext(percent);
+
+        if (percent >= 100.0) mObservableEmitter.onComplete();
     }
 
 
-    //上传完成 清理进度数据
+    //下载完成 清理进度数据
     public void clean() {
         this.mPercent = 0;
-        this.uploaded = new AtomicLong();
+        this.uploaded = null;
         this.mSumLength = 0L;
 
         mObservableEmitter.onComplete();

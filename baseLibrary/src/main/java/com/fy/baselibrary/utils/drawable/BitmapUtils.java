@@ -7,9 +7,11 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.text.TextUtils;
 
+import com.fy.baselibrary.R;
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.utils.FileUtils;
 import com.fy.baselibrary.utils.HanziToPinyin;
+import com.fy.baselibrary.utils.ResUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -91,8 +93,8 @@ public class BitmapUtils {
         paint.setColor(Color.WHITE);
         paint.setTextSize(55);
         paint.setAntiAlias(true);
-        int width = 120;
-        int height = 120;
+        int width = 520;
+        int height = 520;
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.parseColor(color));
@@ -138,13 +140,16 @@ public class BitmapUtils {
         return imgFilePath;
     }
 
-
+    /**
+     * 根据 userId 最后一个字符 的 ascii 获取颜色
+     * 应用层 可以 重新定义 imgHeadBgColor 颜色数组 实现自定义，背景色
+     */
     private static String getColorRGB(String userId) {
-        String[] portraitColors = {"#3A91F3", "#74CFDE", "#F14E7D", "#5585A5", "#F9CB4F", "#F56B2F"};
+        String[] portraitColors = ResUtils.getStrArray(R.array.imgHeadBgColor);
         if (TextUtils.isEmpty(userId)) {
             return portraitColors[0];
         }
-        int i = HanziToPinyin.getChsAscii(userId.substring(userId.length() - 1)) % 6;
+        int i = HanziToPinyin.getChsAscii(userId.substring(userId.length() - 1)) % portraitColors.length;
 
         return portraitColors[i];
     }
