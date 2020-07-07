@@ -37,17 +37,22 @@ public class BitmapUtils {
         String string = HanziToPinyin.getSelling(userName);
         String fileName = string + "_" + userId;
 
-        String filePath = FileUtils.folderIsExists(ConfigUtils.getFilePath() + FileUtils.headImg, ConfigUtils.getType()).getPath();
+        String filePath = FileUtils.folderIsExists(FileUtils.headImg, ConfigUtils.getType()).getPath();
         File file = FileUtils.getTempFile(fileName, filePath);
 
-        if (!FileUtils.fileIsExist(file.getPath())){//文件不存在，则创建文件
+        String imgFilePath = file.getPath();
+        if (!FileUtils.fileIsExist(file.getPath())){ //文件不存在，则创建文件
             Bitmap bitmap = generateDefaultAvatarBitmap(userName, userId);
+
+            imgFilePath = saveBitmap(bitmap, file.getPath());
             if (bitmap != null && !bitmap.isRecycled()) {
                 bitmap.recycle();
             }
+
+            return imgFilePath;
         }
 
-        return file.getPath();
+        return imgFilePath;
     }
 
     /**
@@ -72,11 +77,16 @@ public class BitmapUtils {
 
         if (s == null) s = "A";
 
-
+        String color = getColorRGB(userId);
+        return createBitmap(s, color);
     }
 
-    private static Bitmap aaa(){
-        String color = getColorRGB(userId);
+    /**
+     * 根据字符串 和 颜色 创建 bitmap
+     * @param s
+     * @param color
+     */
+    private static Bitmap createBitmap(String s, String color){
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         paint.setTextSize(55);
@@ -96,10 +106,15 @@ public class BitmapUtils {
         return bitmap;
     }
 
-    private static String saveBitmap(Bitmap bm, String imageUrlName) {
-        File f = new File(SAVED_ADDRESS, imageUrlName);
+    /**
+     * 将bitmap 保存到文件
+     * @param bm
+     * @param imgFilePath
+     */
+    public static String saveBitmap(Bitmap bm, String imgFilePath) {
+        File file = FileUtils.fileIsExists(imgFilePath);
         try {
-            FileOutputStream out = new FileOutputStream(f);
+            FileOutputStream out = new FileOutputStream(file);
             bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
@@ -109,14 +124,18 @@ public class BitmapUtils {
             e.printStackTrace();
             // 防止写入异常时，将文件以不完整形式存留，导致缓存永远不正确
             try {
-                if (f.exists()) {
-                    f.delete();
+                if (file.exists()) {
+                    file.delete();
                 }
             } catch (Exception ex) {
             }
+
+            return "";
         } catch (Exception e) {
+            return "";
         }
-        return SCHEMA + f.getPath();
+
+        return imgFilePath;
     }
 
 
@@ -125,22 +144,9 @@ public class BitmapUtils {
         if (TextUtils.isEmpty(userId)) {
             return portraitColors[0];
         }
-        int i = getAscii(userId.charAt(userId.length() - 1)) % 6;
+        int i = HanziToPinyin.getChsAscii(userId.substring(userId.length() - 1)) % 6;
 
         return portraitColors[i];
     }
 
-    private static int getAscii(char cn) {
-        byte[] bytes = (String.valueOf(cn)).getBytes();
-        if (bytes.length == 1) { //单字节字符
-            return bytes[0];
-        } else if (bytes.length == 2) { //双字节字符
-            int highByte = 256 + bytes[0];
-            int lowByte = 256 + bytes[1];
-            int ascii = (256 * highByte + lowByte) - 256 * 256;
-            return ascii;
-        } else {
-            return 0; //错误
-        }
-    }
 }

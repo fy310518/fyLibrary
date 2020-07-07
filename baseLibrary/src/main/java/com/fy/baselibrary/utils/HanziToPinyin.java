@@ -60,7 +60,7 @@ public class HanziToPinyin {
      * 汉字转成ASCII码
      * @param chs
      */
-    private static int getChsAscii(String chs) {
+    public static int getChsAscii(String chs) {
         int asc = 0;
         try {
             byte[] bytes = chs.getBytes("gb2312");
