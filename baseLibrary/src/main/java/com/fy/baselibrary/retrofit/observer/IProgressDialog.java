@@ -26,15 +26,15 @@ public class IProgressDialog {
      * 显示对话框
      */
     public void show() {
-        if (null != dialog && null != obj){
+        if (null != obj){
             if (obj instanceof AppCompatActivity) {
                 AppCompatActivity activity = (AppCompatActivity) obj;
                 mContext = activity;
-                dialog.show(activity.getSupportFragmentManager(), "");
+                if (null != dialog) dialog.show(activity.getSupportFragmentManager(), "");
             } else if (obj instanceof Fragment) {
                 Fragment fragment = (Fragment) obj;
                 mContext = fragment.getContext();
-                dialog.show(fragment.getFragmentManager(), "");
+                if (null != dialog) dialog.show(fragment.getFragmentManager(), "");
             } else {
                 throw new IllegalArgumentException("The Context must be is AppCompatActivity or v4.app.Fragment.");
             }
