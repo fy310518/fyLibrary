@@ -5,7 +5,7 @@ import android.os.Looper;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.converter.file.FileResponseBodyConverter;
-import com.fy.baselibrary.retrofit.load.LoadCallBack;
+import com.fy.baselibrary.retrofit.observer.CallBack;
 import com.fy.baselibrary.retrofit.load.LoadOnSubscribe;
 import com.fy.baselibrary.retrofit.load.LoadService;
 import com.fy.baselibrary.retrofit.load.down.DownLoadListener;
@@ -191,7 +191,7 @@ public class RequestUtils {
 
         Observable.merge(Observable.create(loadOnSubscribe), downloadObservable)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new LoadCallBack<Object>() {
+                .subscribe(new CallBack<Object>() {
                     @Override
                     protected void onProgress(String percent) {
                         loadListener.onProgress(percent);
