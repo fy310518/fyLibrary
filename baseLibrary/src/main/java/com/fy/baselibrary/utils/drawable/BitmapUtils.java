@@ -93,8 +93,8 @@ public class BitmapUtils {
         paint.setColor(Color.WHITE);
         paint.setTextSize(55);
         paint.setAntiAlias(true);
-        int width = 520;
-        int height = 520;
+        int width = 127;
+        int height = 127;
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.parseColor(color));
