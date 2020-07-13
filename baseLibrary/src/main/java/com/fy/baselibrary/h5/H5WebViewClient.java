@@ -153,7 +153,7 @@ public abstract class H5WebViewClient extends WebViewClient {
         if (TextUtils.isEmpty(url)) return false;
 
         url = url.toLowerCase();
-        if (url.endsWith("js") || url.endsWith(".css")) return true;
+        if (url.endsWith("js") || url.endsWith(".css") || url.contains(".js?") || url.contains(".css?")) return true;
 
         return false;
     }
