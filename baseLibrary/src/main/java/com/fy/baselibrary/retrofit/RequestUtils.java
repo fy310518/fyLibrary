@@ -134,7 +134,7 @@ public class RequestUtils {
      * @param loadListener
      */
     public static void downLoadFile(String url, DownLoadListener<File> loadListener){
-        final String filePath = FileUtils.folderIsExists(ConfigUtils.getFilePath() + FileUtils.DOWN, ConfigUtils.getType()).getPath();
+        final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
         final File tempFile = FileUtils.getTempFile(url, filePath);
 
         LoadOnSubscribe loadOnSubscribe = new LoadOnSubscribe();

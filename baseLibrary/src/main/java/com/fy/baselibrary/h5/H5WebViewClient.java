@@ -187,7 +187,7 @@ public abstract class H5WebViewClient extends WebViewClient {
     private WebResourceResponse getFileWebResResponse(String url){
         WebResourceResponse webResourceResponse = null;
 
-        final String filePath = FileUtils.folderIsExists(ConfigUtils.getFilePath()+ ".down", ConfigUtils.getType()).getPath();
+        final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
 
         File targetFile = FileUtils.getFile(url, filePath);
         if (targetFile.exists()) {

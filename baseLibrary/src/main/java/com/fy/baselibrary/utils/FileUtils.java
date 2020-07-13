@@ -22,7 +22,7 @@ import java.io.IOException;
 public class FileUtils {
 
     /** 网络请求缓存目录 */
-    public static String cache = ConfigUtils.getFilePath() + ".cache";
+    public static String cache = ConfigUtils.getFilePath() + ".ok-cache";
     /** 图片保存目录 */
     public static String IMG = ConfigUtils.getFilePath() + ".picture";
     /** 头像保存目录 */
@@ -400,7 +400,7 @@ public class FileUtils {
         sb.append("\n").append(content).append("\n");
 
         // 文件目录 + 文件名 String
-        File folder = folderIsExists(path, 2);
+        File folder = folderIsExists(path, ConfigUtils.getType());
         File file   = fileIsExists(folder.getPath() + File.separator + inputFileName);
 
         try {

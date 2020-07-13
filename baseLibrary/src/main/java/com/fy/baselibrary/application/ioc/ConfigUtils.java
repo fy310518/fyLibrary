@@ -91,7 +91,7 @@ public class ConfigUtils {
 
         /** 应用 文件根目录 名称（文件夹） */
         String filePath = "";
-        int type = 2;
+        int type = 0;
 
         /** 标题栏背景色 */
         int bgColor;
