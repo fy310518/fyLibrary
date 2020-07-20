@@ -24,7 +24,7 @@ public abstract class MultiCommonAdapter<Item> extends RvCommonAdapter<Item> {
     public int getItemViewType(int position) {
         int superType = super.getItemViewType(position);
         if (0 == superType){//主体
-            return mMultiTypeSupport.getItemViewType(position, mDatas.get(position));
+            return mMultiTypeSupport.getItemViewType(position - getHeadersCount(), mDatas.get(position - getHeadersCount()));
         } else {
             return superType;
         }
