@@ -33,7 +33,7 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     private boolean showEmptyView = false;
 
     protected Context mContext;
-    protected int mLayoutId;
+    protected int mLayoutId = -1;
     protected List<Item> mDatas;
     private SparseArrayCompat<View> mHeaderViews = new SparseArrayCompat<>();
     private SparseArrayCompat<View> mFootViews = new SparseArrayCompat<>();
@@ -87,23 +87,22 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+        ViewHolder viewHolder = null;
         if (null != mHeaderViews.get(viewType)) {//头
-            return ViewHolder.createViewHolder(parent.getContext(), mHeaderViews.get(viewType));
+            viewHolder =  ViewHolder.createViewHolder(parent.getContext(), mHeaderViews.get(viewType));
         } else if (null != mFootViews.get(viewType)) {//尾
-            return ViewHolder.createViewHolder(parent.getContext(), mFootViews.get(viewType));
-        } else {
-            ViewHolder viewHolder;
-            if (viewType == TYPE_EMPTY) {//空布局
-                viewHolder = ViewHolder.createViewHolder(mContext, parent, ConfigUtils.getOnStatusAdapter().emptyDataView());
-                viewHolder.itemView.setOnClickListener(view -> {
-                    if (null != OnEmptyClickListener) OnEmptyClickListener.onRetry();
-                });
-            } else {//主体
-                viewHolder = ViewHolder.createViewHolder(mContext, parent, mLayoutId);
-                bindOnClick(viewHolder);
-            }
-            return viewHolder;
+            viewHolder =  ViewHolder.createViewHolder(parent.getContext(), mFootViews.get(viewType));
+        } else if (viewType == TYPE_EMPTY){//空布局
+            viewHolder = ViewHolder.createViewHolder(mContext, parent, ConfigUtils.getOnStatusAdapter().emptyDataView());
+            viewHolder.itemView.setOnClickListener(view -> {
+                if (null != OnEmptyClickListener) OnEmptyClickListener.onRetry();
+            });
+        } else if (mLayoutId != -1){//主体
+            viewHolder = ViewHolder.createViewHolder(mContext, parent, mLayoutId);
+            bindOnClick(viewHolder);
         }
+
+        return viewHolder;
     }
 
     @Override

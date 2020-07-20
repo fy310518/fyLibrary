@@ -1,1 +1,2 @@
-include ':app',':baseLibrary'
+include ':app',':baseLibrary',
+        ':mapLibrary'

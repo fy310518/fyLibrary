@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 状态栏颜色 -->
+    <color name="statusBar">#3d8bff</color>
+    <!-- 标题栏颜色 -->
+    <color name="appHeadBg">#3d8bff</color>
+    <!-- 导航栏颜色 -->
+    <color name="navBar">#bbbbbb</color>
+
+    <color name="colorMain">#3d8bff</color>
+
+    <!-- 统一 应用 activity 背景色 -->
+    <color name="appBg">#f5f5f5</color>
+    <color name="loadingBg">#ffffff</color>
+
+
+    <!-- 统一 应用 分割线 颜色 -->
+    <color name="divider">#E6E6E6</color>
+    <color name="dividerColor">#eeeeee</color>
+
+    <color name="sdk_text_summary">#b3b3b3</color>
+
+
+    <color name="green1">#45C01A</color>
+    <color name="green2">#A3DEA3</color>
+    <color name="color_msg_bg">#FB5F53</color>
+    <color name="color_yellow">#fec72e</color>
+    <color name="color_tips">#4c000000</color>
+
+    <color name="font_gray">#808080</color>
+    <color name="bg_white_f5">#f5f5f5</color>
+    <color name="base_F2F2F2">#f2f2f2</color>
+    <color name="base_B5B5B5">#B5B5B5</color>
+    <color name="base_697A9F">#697A9F</color>
+    <color name="base_DCDCDC">#DCDCDC</color>
+    <color name="base_eeeee">#eeeeee</color>
+    <color name="base_FFFFFF">#ffffff</color>
+    <color name="base_color">#177ee6</color>
+    <color name="recycle_bg">#f5f5f5</color>
+
+    <color name="txt_task">#3D8BFF</color>
+
+</resources>

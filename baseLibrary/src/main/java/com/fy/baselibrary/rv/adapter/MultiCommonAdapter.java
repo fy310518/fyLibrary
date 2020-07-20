@@ -22,16 +22,23 @@ public abstract class MultiCommonAdapter<Item> extends RvCommonAdapter<Item> {
 
     @Override
     public int getItemViewType(int position) {
-        return mMultiTypeSupport.getItemViewType(position, mDatas.get(position));
+        int superType = super.getItemViewType(position);
+        if (0 == superType){//主体
+            return mMultiTypeSupport.getItemViewType(position, mDatas.get(position));
+        } else {
+            return superType;
+        }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewHolder viewHolder = super.onCreateViewHolder(parent, viewType);
+        if (null == viewHolder){
+            int layoutId = mMultiTypeSupport.getLayoutId(viewType);
+            viewHolder = ViewHolder.createViewHolder(mContext, parent, layoutId);
 
-        int layoutId = mMultiTypeSupport.getLayoutId(viewType);
-        ViewHolder viewHolder = ViewHolder.createViewHolder(mContext, parent, layoutId);
-
-        bindOnClick(viewHolder);
+            bindOnClick(viewHolder);
+        }
 
         return viewHolder;
     }

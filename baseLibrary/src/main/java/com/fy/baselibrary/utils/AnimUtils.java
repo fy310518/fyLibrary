@@ -18,7 +18,7 @@ import com.fy.baselibrary.R;
 import java.util.List;
 
 /**
- * 属性动画 工具类
+ * 动画 工具类
  * Created by fangs on 2017/10/30.
  */
 public class AnimUtils {
