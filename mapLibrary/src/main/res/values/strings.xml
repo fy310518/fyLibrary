@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">MapLibrary</string>
-
-
-    <string name="app_confirm">确定</string>
-    <string name="app_cancel">取消</string>
-    <string name="chat_send_location">选择位置</string>
-
-</resources>
