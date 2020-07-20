@@ -483,14 +483,14 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
 
             @Override//把过滤后的值返回出来
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                setmDatas((List<Item>) results.values);//此时，Adapter数据源就是过滤后的Results
+                filterResult(constraint, (List<Item>) results.values); //此时，Adapter数据源就是过滤后的Results
                 notifyDataSetChanged();//这个相当于从mDatas中删除了一些数据，只是数据的变化，故使用notifyDataSetChanged()
             }
         };
     }
 
     /**
-     * 如需 根据关键字筛选功能，子类 adapter 重写此方法，定义过滤规则
+     * 根据关键字筛选功能，子类 adapter 重写此方法，定义过滤规则
      * @param value         bean
      * @param constraint    过滤条件
      * @return              满足过滤条件返回 true
@@ -498,4 +498,14 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     public boolean filterRule(Item value, CharSequence constraint){
         return false;
     }
+
+    /**
+     * 根据关键字筛选功能，过滤后 的数据
+     * @param constraint
+     * @param filterList   过滤后 的数据集合
+     */
+    public void filterResult(CharSequence constraint, List<Item> filterList){
+
+    }
+
 }
