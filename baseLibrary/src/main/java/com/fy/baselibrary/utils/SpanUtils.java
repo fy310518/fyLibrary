@@ -135,7 +135,7 @@ public class SpanUtils {
          * 关键字 高亮显示
          * @param keywordText  关键字
          */
-        public void keywordHighlight(@NonNull String keywordText) {
+        public Builder keywordHighlight(@NonNull String keywordText) {
             Pattern p = Pattern.compile(keywordText);
             Matcher m = p.matcher(spanBuilder);
 
@@ -144,6 +144,8 @@ public class SpanUtils {
                 int end = m.end();
                 setSpan(start, end, null);
             }
+
+            return this;
         }
 
         /**
