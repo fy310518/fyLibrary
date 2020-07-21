@@ -34,6 +34,9 @@ public class SpanUtils {
     public static Builder getBuilder() {
         return new Builder();
     }
+    public static Builder getBuilder(@NonNull CharSequence text) {
+        return new Builder(text);
+    }
 
 
     public static class Builder {
@@ -59,6 +62,10 @@ public class SpanUtils {
 
         public Builder() {
             init("");
+        }
+
+        public Builder(@NonNull CharSequence text) {
+            init(text);
         }
 
         private void init(@NonNull CharSequence text){
