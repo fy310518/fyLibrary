@@ -179,8 +179,7 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
 
     @Override
     public boolean onLongClick(View v) {
-        itemLongClickListener.onLongClick(v);
-        return false;
+        return itemLongClickListener.onLongClick(v);
     }
 
     public List<Item> getmDatas() {
