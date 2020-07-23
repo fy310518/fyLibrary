@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:titleTextColor="@color/white">
+        style="@style/appBarStyle">
 
         <TextView
             android:id="@+id/toolbarTitle"
