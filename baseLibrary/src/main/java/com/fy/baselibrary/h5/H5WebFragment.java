@@ -44,7 +44,7 @@ public abstract class H5WebFragment extends BaseFragment {
                 onBackPressed();
             } else {
                 //第一个参数把自身传给js 第二个参数是this的一个名字
-                webView.addJavascriptInterface(initializer.getJsInterface(), "android");
+                webView.addJavascriptInterface(initializer.getJsInterface(), initializer.getInterfaceName());
 
                 webView.setWebViewClient(initializer.initWebViewClient());
                 webView.setWebChromeClient(initializer.initWebChromeClient());

@@ -26,4 +26,6 @@ public interface IWebViewInitializer {
      * 定义 JS 与 Android 交互类
      */
     BaseAndroidJSInterface getJsInterface();
+    //定义 JS 与 Android 交互类名
+    String getInterfaceName();
 }

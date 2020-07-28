@@ -193,6 +193,8 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
             AppCompatActivity act = (AppCompatActivity) activity;
             //设置导航图标要在setSupportActionBar方法之后
             act.setSupportActionBar(toolbar);
+            if (ConfigUtils.isTitleCenter()) act.getSupportActionBar().setDisplayShowTitleEnabled(false);//隐藏 toolbar 自带的标题view
+
             //在Toolbar左边显示一个返回按钮
             act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //替换toolbar 自带的返回按钮

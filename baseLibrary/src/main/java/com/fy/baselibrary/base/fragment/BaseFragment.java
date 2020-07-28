@@ -174,8 +174,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     protected void setToolbar(Toolbar toolbar, String title, View.OnClickListener listener){
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
         if (ConfigUtils.isTitleCenter()) {
             toolbar.setTitle("");
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);//隐藏 toolbar 自带的标题view
             TextView toolbarTitle = toolbar.findViewById(R.id.toolbarTitle);
             toolbarTitle.setText(title);
             toolbarTitle.setTextColor(ResUtils.getColor(ConfigUtils.getTitleColor()));
@@ -187,8 +190,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         if (ConfigUtils.getBgColor() > 0)
             toolbar.setBackgroundColor(ResUtils.getColor(ConfigUtils.getBgColor()));
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
         if (null != listener){
             //在Toolbar左边显示一个返回按钮
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -198,7 +199,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             toolbar.setNavigationOnClickListener(listener);
         }
 
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true);//允许fragment 显示 menu
     }
 
 
