@@ -117,6 +117,8 @@ public abstract class H5WebViewClient extends WebViewClient {
         // 断网或者网络连接超时
         if (errorCode == ERROR_HOST_LOOKUP || errorCode == ERROR_CONNECT || errorCode == ERROR_TIMEOUT) {
             setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
+        } else {
+            setTips(Constant.LAYOUT_ERROR_ID);
         }
     }
 
@@ -132,6 +134,8 @@ public abstract class H5WebViewClient extends WebViewClient {
 
         if (400 == statusCode || 401 == statusCode || 404 == statusCode || 500 == statusCode) {
             setTips(Constant.LAYOUT_ERROR_ID);
+        } else {
+            setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
         }
     }
 
