@@ -182,7 +182,7 @@ public abstract class H5WebViewClient extends WebViewClient {
         File imgFile = null;
         try {
             imgFile = ImgLoadUtils.getImgCachePath(ConfigUtils.getAppCtx(), url);
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (null != imgFile) {
