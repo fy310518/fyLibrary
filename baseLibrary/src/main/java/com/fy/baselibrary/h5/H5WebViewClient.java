@@ -2,9 +2,11 @@ package com.fy.baselibrary.h5;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
@@ -22,6 +24,9 @@ import com.fy.baselibrary.utils.notify.L;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -31,7 +36,7 @@ import java.util.concurrent.ExecutionException;
 public abstract class H5WebViewClient extends WebViewClient {
 
     public static String blank = "about:blank";
-
+    private boolean mIsRedirect;
     private OnSetStatusView onSetStatusView;
 
     public H5WebViewClient(OnSetStatusView onSetStatusView) {
@@ -42,6 +47,7 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
+        mIsRedirect = false;
         view.getSettings().setBlockNetworkImage(true);
         setTips(Constant.LAYOUT_CONTENT_ID);
     }
@@ -73,10 +79,12 @@ public abstract class H5WebViewClient extends WebViewClient {
             return true;
         }
 
+        mIsRedirect = true;
         view.loadUrl(url);
-        return false;
+        return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override//webView 请求 拦截方法【下同】
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -86,6 +94,13 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Nullable
     @Override//此 API 21后 过时
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+        String mimeType = null;
+        try {
+            mimeType = new URL(url).openConnection().getContentType();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         WebResourceResponse webResourceResponse;
         if (isImgUrl(url)){//1、如果是图片
             webResourceResponse = getImgWebResResponse(url);
@@ -94,7 +109,10 @@ public abstract class H5WebViewClient extends WebViewClient {
         } else if (isJsOrCssUrl(url)){
             webResourceResponse = getFileWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
-
+            return webResourceResponse;
+        } else if (!TextUtils.isEmpty(mimeType) && mimeType.equals("text/html;charset=UTF-8")){//html
+            webResourceResponse = getFileWebResResponse(url);
+            if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
             return webResourceResponse;
         } else {
             return super.shouldInterceptRequest(view, url);
@@ -122,6 +140,9 @@ public abstract class H5WebViewClient extends WebViewClient {
 
 //        view.loadUrl(blank);// 避免出现默认的错误界面
         int statusCode = errorResponse.getStatusCode();
+
+        if (400 == statusCode && request.getUrl().toString().toLowerCase().endsWith("favicon.ico")) return;//说明网页没有配置 网页 图标
+
         if (404 == statusCode || 500 == statusCode) {
             setTips(Constant.LAYOUT_ERROR_ID);
         } else {
@@ -143,7 +164,7 @@ public abstract class H5WebViewClient extends WebViewClient {
         if (TextUtils.isEmpty(url)) return false;
 
         url = url.toLowerCase();
-        if (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".gif")) return true;
+        if (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".gif")  || url.endsWith(".svg")) return true;
 
         return false;
     }
@@ -153,7 +174,7 @@ public abstract class H5WebViewClient extends WebViewClient {
         if (TextUtils.isEmpty(url)) return false;
 
         url = url.toLowerCase();
-        if (url.endsWith("js") || url.endsWith(".css") || url.contains(".js?") || url.contains(".css?")) return true;
+        if (url.endsWith("js") || url.endsWith(".css") || url.endsWith(".woff") || url.contains(".js?") || url.contains(".css?") || url.contains(".woff?")) return true;
 
         return false;
     }
@@ -163,6 +184,7 @@ public abstract class H5WebViewClient extends WebViewClient {
 //    css:mimeType ="text/css";
 //    html:mimeType ="text/html";
 //    jpg/png: mimeType = "image/png";
+//    woff: application/octet-stream
     private WebResourceResponse getImgWebResResponse(String url){
         WebResourceResponse webResourceResponse = null;
         File imgFile = null;
@@ -192,10 +214,14 @@ public abstract class H5WebViewClient extends WebViewClient {
         File targetFile = FileUtils.getFile(url, filePath);
         if (targetFile.exists()) {
             try {
-                String mimeType = url.endsWith(".js") ? "application/x-javascript" : url.endsWith(".css") ? "text/css" : "text/html";
+                String mimeType = new URL(url).openConnection().getContentType();
                 L.e("H5 图片地址", targetFile.getPath() + "------");
                 webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", new FileInputStream(targetFile));
             } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
