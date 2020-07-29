@@ -110,7 +110,7 @@ public abstract class H5WebViewClient extends WebViewClient {
             webResourceResponse = getFileWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
             return webResourceResponse;
-        } else if (!TextUtils.isEmpty(mimeType) && mimeType.equals("text/html;charset=UTF-8")){//html
+        } else if (isHtmlUrl(url, mimeType)){//html
             webResourceResponse = getFileWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
             return webResourceResponse;
@@ -179,6 +179,17 @@ public abstract class H5WebViewClient extends WebViewClient {
         return false;
     }
 
+    //判断是否是 html 文件
+    private boolean isHtmlUrl(String url, String mimeType){
+        if (TextUtils.isEmpty(url)) return false;
+        if (!TextUtils.isEmpty(mimeType) && mimeType.toLowerCase().contains("text/html"))
+
+        url = url.toLowerCase();
+        if (url.endsWith(".html") || url.endsWith(".htm") || url.contains(".html?") || url.contains(".htm?")) return true;
+
+        return false;
+    }
+
 //    new WebResourceResponse("image/png","UTF-8",new FileInputStream(imgFile)) 第一个参数对应的如下：
 //    js:mimeType ="application/x-javascript";
 //    css:mimeType ="text/css";
@@ -215,7 +226,7 @@ public abstract class H5WebViewClient extends WebViewClient {
         if (targetFile.exists()) {
             try {
                 String mimeType = new URL(url).openConnection().getContentType();
-                L.e("H5 图片地址", targetFile.getPath() + "------");
+                L.e("H5 文件地址", targetFile.getPath() + "------");
                 webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", new FileInputStream(targetFile));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
