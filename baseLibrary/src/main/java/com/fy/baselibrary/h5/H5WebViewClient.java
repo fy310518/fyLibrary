@@ -2,7 +2,6 @@ package com.fy.baselibrary.h5;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -94,23 +93,13 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Nullable
     @Override//此 API 21后 过时
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-        String mimeType = null;
-        try {
-            mimeType = new URL(url).openConnection().getContentType();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         WebResourceResponse webResourceResponse;
+
         if (isImgUrl(url)){//1、如果是图片
             webResourceResponse = getImgWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
             return webResourceResponse;
-        } else if (isJsOrCssUrl(url)){
-            webResourceResponse = getFileWebResResponse(url);
-            if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
-            return webResourceResponse;
-        } else if (isHtmlUrl(url, mimeType)){//html
+        } else if (isWebResUrl(url)){
             webResourceResponse = getFileWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
             return webResourceResponse;
@@ -128,8 +117,6 @@ public abstract class H5WebViewClient extends WebViewClient {
         // 断网或者网络连接超时
         if (errorCode == ERROR_HOST_LOOKUP || errorCode == ERROR_CONNECT || errorCode == ERROR_TIMEOUT) {
             setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
-        } else {
-            setTips(Constant.LAYOUT_ERROR_ID);
         }
     }
 
@@ -143,10 +130,8 @@ public abstract class H5WebViewClient extends WebViewClient {
 
         if (400 == statusCode && request.getUrl().toString().toLowerCase().endsWith("favicon.ico")) return;//说明网页没有配置 网页 图标
 
-        if (404 == statusCode || 500 == statusCode) {
+        if (400 == statusCode || 401 == statusCode || 404 == statusCode || 500 == statusCode) {
             setTips(Constant.LAYOUT_ERROR_ID);
-        } else {
-            setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
         }
     }
 
@@ -169,23 +154,15 @@ public abstract class H5WebViewClient extends WebViewClient {
         return false;
     }
 
-    //判断是否是 js css文件
-    private boolean isJsOrCssUrl(String url){
+    //判断是否是 js css html 字体 文件
+    private boolean isWebResUrl(String url){
         if (TextUtils.isEmpty(url)) return false;
 
         url = url.toLowerCase();
-        if (url.endsWith("js") || url.endsWith(".css") || url.endsWith(".woff") || url.contains(".js?") || url.contains(".css?") || url.contains(".woff?")) return true;
-
-        return false;
-    }
-
-    //判断是否是 html 文件
-    private boolean isHtmlUrl(String url, String mimeType){
-        if (TextUtils.isEmpty(url)) return false;
-        if (!TextUtils.isEmpty(mimeType) && mimeType.toLowerCase().contains("text/html"))
-
-        url = url.toLowerCase();
-        if (url.endsWith(".html") || url.endsWith(".htm") || url.contains(".html?") || url.contains(".htm?")) return true;
+        if (url.endsWith("js") || url.endsWith(".css") || url.endsWith(".woff")
+                || url.contains(".js?") || url.contains(".css?") || url.contains(".woff?")
+                || url.endsWith(".html") || url.endsWith(".htm")
+                || url.contains(".html?") || url.contains(".htm?")) return true;
 
         return false;
     }

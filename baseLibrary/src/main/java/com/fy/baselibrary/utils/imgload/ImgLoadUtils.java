@@ -112,7 +112,7 @@ public class ImgLoadUtils {
     }
 
     /**
-     * 异步获取 glide 缓存在磁盘的图片 的 被观察者
+     * 获取 glide 缓存在磁盘的图片文件
      * @param context
      * @param url
      */
