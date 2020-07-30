@@ -29,6 +29,8 @@ public abstract class H5WebFragment extends BaseFragment {
 
         initWebView();
         initWebViewSetting();
+        webViewSetting();
+        webView.loadUrl(initializer.getLoadUrl());
     }
 
     @SuppressLint("JavascriptInterface")
@@ -70,7 +72,7 @@ public abstract class H5WebFragment extends BaseFragment {
         settings.setAllowUniversalAccessFromFileURLs(true);
 
         settings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE); //关闭webview中缓存
+//        settings.setCacheMode(WebSettings.LOAD_NO_CACHE); //设置webview缓存 模式
         settings.setSavePassword(false);// 关闭密码保存提醒功能
         settings.setDefaultTextEncodingName("utf-8");//设置编码格式
 
@@ -88,9 +90,13 @@ public abstract class H5WebFragment extends BaseFragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
-
-        webView.loadUrl(initializer.getLoadUrl());
     }
+
+    //可选操作，修改父类的 webView 设置
+    protected void webViewSetting(){
+
+    }
+
 
     @Override
     public View setStatusView(){return webView;}
