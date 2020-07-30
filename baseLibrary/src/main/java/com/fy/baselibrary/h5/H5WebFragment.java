@@ -3,15 +3,12 @@ package com.fy.baselibrary.h5;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.fy.baselibrary.base.fragment.BaseFragment;
-import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.FileUtils;
 
 /**
@@ -79,9 +76,14 @@ public abstract class H5WebFragment extends BaseFragment {
 
         webView.setHorizontalScrollBarEnabled(false);//滚动条水平不显示
         webView.setVerticalScrollBarEnabled(false); //滚动条垂直不显示
+//        webView.setVerticalScrollbarOverlay(true);/* 设置垂直滚动条是否有叠加样式 */
         settings.setSupportZoom(true);//缩放支持缩放
 //        webView.setInitialScale(100);//设置缩放等级
+        settings.setBuiltInZoomControls(true); /* 设置是否允许webview使用缩放的功能 */
+        settings.setDisplayZoomControls(false);//隐藏webview缩放按钮 【api 11 以上】
 
+        settings.setUseWideViewPort(true);/* 设置为使用webview推荐的窗口，主要是为了配合下一个属性 */
+        settings.setLoadWithOverviewMode(true);/* 设置网页自适应屏幕大小，该属性必须和上一属性配合使用 */
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
