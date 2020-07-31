@@ -32,7 +32,7 @@ public class H5WebChromeClient extends WebChromeClient {
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
-        if (null != loadLayout) loadLayout.setVisibility(newProgress >= progress ? View.GONE : View.VISIBLE);
+        if (newProgress >= progress) loadLayout.setVisibility(View.GONE);
 
         if (null != webProgress){
             webProgress.setProgress(newProgress);

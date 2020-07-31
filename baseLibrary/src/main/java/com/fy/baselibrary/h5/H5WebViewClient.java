@@ -37,11 +37,17 @@ import java.util.concurrent.ExecutionException;
 public abstract class H5WebViewClient extends WebViewClient {
 
     public static String blank = "about:blank";
+    private boolean isUseLocalIntercept;//使用
     private String mPrevUrl;
     private OnSetStatusView onSetStatusView;
 
     public H5WebViewClient(OnSetStatusView onSetStatusView) {
         this.onSetStatusView = onSetStatusView;
+    }
+
+    public H5WebViewClient(OnSetStatusView onSetStatusView, boolean isUseLocalIntercept) {
+        this.onSetStatusView = onSetStatusView;
+        this.isUseLocalIntercept = isUseLocalIntercept;
     }
 
     //在开始加载网页时会回调
@@ -113,6 +119,8 @@ public abstract class H5WebViewClient extends WebViewClient {
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         WebResourceResponse webResourceResponse;
 
+        if (isUseLocalIntercept) return super.shouldInterceptRequest(view, url);
+
         if (isImgUrl(url)){//1、如果是图片
             webResourceResponse = getImgWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
@@ -130,13 +138,10 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-
 //        view.loadUrl(blank); // 避免出现默认的错误界面
         // 断网或者网络连接超时
         if (errorCode == ERROR_HOST_LOOKUP || errorCode == ERROR_CONNECT || errorCode == ERROR_TIMEOUT) {
             setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
-        } else {
-            setTips(Constant.LAYOUT_ERROR_ID);
         }
     }
 
@@ -144,16 +149,11 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Override
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
-
 //        view.loadUrl(blank);// 避免出现默认的错误界面
         int statusCode = errorResponse.getStatusCode();
-
         if (400 == statusCode && request.getUrl().toString().toLowerCase().endsWith("favicon.ico")) return;//说明网页没有配置 网页 图标
-
         if (400 == statusCode || 401 == statusCode || 404 == statusCode || 500 == statusCode) {
             setTips(Constant.LAYOUT_ERROR_ID);
-        } else {
-            setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
         }
     }
 
