@@ -1,7 +1,9 @@
 package com.fy.baselibrary.h5;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -35,7 +37,7 @@ import java.util.concurrent.ExecutionException;
 public abstract class H5WebViewClient extends WebViewClient {
 
     public static String blank = "about:blank";
-    private boolean mIsRedirect;
+    private String mPrevUrl;
     private OnSetStatusView onSetStatusView;
 
     public H5WebViewClient(OnSetStatusView onSetStatusView) {
@@ -46,7 +48,6 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
-        mIsRedirect = false;
         view.getSettings().setBlockNetworkImage(true);
         setTips(Constant.LAYOUT_CONTENT_ID);
     }
@@ -71,16 +72,33 @@ public abstract class H5WebViewClient extends WebViewClient {
     //当加载的网页需要重定向的时候就会回调这个函数告知我们应用程序是否需要接管控制网页加载，如果应用程序接管，
     //并且return true意味着主程序接管网页加载，如果返回false让webview自己处理。
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        WebView.HitTestResult hitTestResult = view.getHitTestResult();
-        //hitTestResult==null解决重定向问题(刷新后不能退出的bug)
-        if (!TextUtils.isEmpty(url) && hitTestResult == null) {
+    public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        if (mPrevUrl != null) {
+            if (!mPrevUrl.equals(url)) {
+                if (!(url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://"))) {
+                    Intent intent = new Intent("android.intent.action.VIEW");
+                    Uri content_url = Uri.parse(url);
+                    intent.setData(content_url);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    try {
+                        webView.getContext().startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+                mPrevUrl = url;
+                webView.loadUrl(url);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            mPrevUrl = url;
+            webView.loadUrl(url);
             return true;
         }
-
-        mIsRedirect = true;
-        view.loadUrl(url);
-        return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
