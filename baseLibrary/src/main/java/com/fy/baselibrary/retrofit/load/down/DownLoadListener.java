@@ -17,7 +17,7 @@ public interface DownLoadListener<T> {
     void onFail();
 
     /**
-     * 上传、下载 需重写此方法，更新进度
+     * 上传、下载 需重写此方法，更新进度【子线程】
      * @param percent 进度百分比 数
      */
     void onProgress(String percent);
