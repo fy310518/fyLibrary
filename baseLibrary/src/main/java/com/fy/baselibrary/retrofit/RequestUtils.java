@@ -180,7 +180,11 @@ public class RequestUtils {
                     public ObservableSource<File> apply(ResponseBody responseBody) throws Exception {
                         L.e("fy_file_FileDownInterceptor", "文件下载 响应返回---" + Thread.currentThread().getName());
                         File file = FileResponseBodyConverter.saveFile(loadOnSubscribe, responseBody, url, filePath);
-                        return Observable.just(file);
+                        if (null != file){
+                            return Observable.just(file);
+                        } else {
+                            return Observable.error(new ServerException("下载失败", -99));
+                        }
                     }
                 });
 
