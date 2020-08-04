@@ -129,13 +129,18 @@ public class RequestUtils {
         return Observable.concat(fromCache, fromNetwork);
     }
 
+    /**
+     * 文件下载
+     */
     public static void downLoadFile(String url, DownLoadListener<File> loadListener){
         downLoadFile(url, loadListener, null);
     }
+
     /**
      * 文件下载
      * @param url
      * @param loadListener
+     * @param pDialog
      */
     public static void downLoadFile(String url, DownLoadListener<File> loadListener, IProgressDialog pDialog){
         final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
