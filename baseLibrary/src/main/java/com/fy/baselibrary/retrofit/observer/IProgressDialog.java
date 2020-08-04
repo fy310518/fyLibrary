@@ -30,11 +30,11 @@ public class IProgressDialog {
             if (obj instanceof AppCompatActivity) {
                 AppCompatActivity activity = (AppCompatActivity) obj;
                 mContext = activity;
-                if (null != dialog) dialog.show(activity.getSupportFragmentManager(), "");
+                if (null != dialog && !dialog.getDialog().isShowing()) dialog.show(activity.getSupportFragmentManager(), dialog.getClass().getName());
             } else if (obj instanceof Fragment) {
                 Fragment fragment = (Fragment) obj;
                 mContext = fragment.getContext();
-                if (null != dialog) dialog.show(fragment.getFragmentManager(), "");
+                if (null != dialog && !dialog.getDialog().isShowing()) dialog.show(fragment.getFragmentManager(), dialog.getClass().getName());
             } else {
                 throw new IllegalArgumentException("The Context must be is AppCompatActivity or v4.app.Fragment.");
             }
