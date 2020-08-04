@@ -178,14 +178,8 @@ public class RequestUtils {
                 .map(new Function<ResponseBody, File>() {
                     @Override
                     public File apply(ResponseBody responseBody) throws Exception {
-                        try {
-                            L.e("fy_file_FileDownInterceptor", "文件下载 响应返回---" + Thread.currentThread().getName());
-                            return FileResponseBodyConverter.saveFile(loadOnSubscribe, responseBody, url, filePath);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        return null;
+                        L.e("fy_file_FileDownInterceptor", "文件下载 响应返回---" + Thread.currentThread().getName());
+                        return FileResponseBodyConverter.saveFile(loadOnSubscribe, responseBody, url, filePath);
                     }
                 });
 
