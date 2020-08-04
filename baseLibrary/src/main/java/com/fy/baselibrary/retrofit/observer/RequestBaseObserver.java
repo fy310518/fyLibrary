@@ -73,7 +73,7 @@ public abstract class RequestBaseObserver<V> implements Observer<V> {
         L.e("net", "onSubscribe()");
 
         this.disposed = d;
-        if (null != progressDialog && null != disposed && !disposed.isDisposed()) {
+        if (null != progressDialog && null != dialog && dialog.getDialog().isShowing() && null != disposed && !disposed.isDisposed()) {
             progressDialog.show();
         }
     }

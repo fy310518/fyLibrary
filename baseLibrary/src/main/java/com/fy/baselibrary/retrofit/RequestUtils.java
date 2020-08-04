@@ -2,6 +2,7 @@ package com.fy.baselibrary.retrofit;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.converter.file.FileResponseBodyConverter;
@@ -133,16 +134,16 @@ public class RequestUtils {
      * 文件下载
      */
     public static void downLoadFile(String url, DownLoadListener<File> loadListener){
-        downLoadFile(url, loadListener, null);
+        downLoadFile(url, null, loadListener);
     }
 
     /**
      * 文件下载
      * @param url
-     * @param loadListener
      * @param pDialog
+     * @param loadListener
      */
-    public static void downLoadFile(String url, DownLoadListener<File> loadListener, IProgressDialog pDialog){
+    public static void downLoadFile(String url, @Nullable IProgressDialog pDialog, DownLoadListener<File> loadListener){
         final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
         final File tempFile = FileUtils.getTempFile(url, filePath);
 
