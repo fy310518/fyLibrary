@@ -175,11 +175,12 @@ public class RequestUtils {
                         }
                     }
                 })
-                .map(new Function<ResponseBody, File>() {
+                .flatMap(new Function<ResponseBody, ObservableSource<File>>() {
                     @Override
-                    public File apply(ResponseBody responseBody) throws Exception {
+                    public ObservableSource<File> apply(ResponseBody responseBody) throws Exception {
                         L.e("fy_file_FileDownInterceptor", "文件下载 响应返回---" + Thread.currentThread().getName());
-                        return FileResponseBodyConverter.saveFile(loadOnSubscribe, responseBody, url, filePath);
+                        File file = FileResponseBodyConverter.saveFile(loadOnSubscribe, responseBody, url, filePath);
+                        return Observable.just(file);
                     }
                 });
 
