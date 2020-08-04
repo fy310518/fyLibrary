@@ -13,13 +13,13 @@ import com.fy.baselibrary.widget.refresh.EasyPullLayout;
  */
 public class IProgressDialog {
 
-    Context mContext = null;
+    protected Context mContext;
 
     /** 传递进来的 环境（AppCompatActivity or v4.app.Fragment） */
-    Object obj = null;
-    CommonDialog dialog = null;
+    protected Object obj;
+    protected CommonDialog dialog;
 
-    EasyPullLayout epl = null;
+    protected EasyPullLayout epl;
 
 
     /**
@@ -52,11 +52,12 @@ public class IProgressDialog {
         }
     }
 
-    /**
-     * 关闭对话框获取对话框
-     */
+
     public CommonDialog getDialog() {
         return dialog;
     }
+
+
+
 
 }
