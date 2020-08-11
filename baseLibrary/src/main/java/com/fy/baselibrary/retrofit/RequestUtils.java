@@ -2,15 +2,17 @@ package com.fy.baselibrary.retrofit;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.converter.file.FileResponseBodyConverter;
+import com.fy.baselibrary.retrofit.observer.CallBack;
 import com.fy.baselibrary.retrofit.load.LoadOnSubscribe;
 import com.fy.baselibrary.retrofit.load.LoadService;
 import com.fy.baselibrary.retrofit.load.down.DownLoadListener;
+import com.fy.baselibrary.retrofit.observer.IProgressDialog;
 import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.FileUtils;
-import com.fy.baselibrary.utils.TransfmtUtils;
 import com.fy.baselibrary.utils.cache.ACache;
 import com.fy.baselibrary.utils.cache.SpfAgent;
 import com.fy.baselibrary.utils.notify.L;
@@ -130,10 +132,18 @@ public class RequestUtils {
 
     /**
      * 文件下载
+     */
+    public static void downLoadFile(String url, DownLoadListener<File> loadListener){
+        downLoadFile(url, null, loadListener);
+    }
+
+    /**
+     * 文件下载
      * @param url
+     * @param pDialog
      * @param loadListener
      */
-    public static Observable<File> downLoadFile(String url, DownLoadListener<File> loadListener){
+    public static void downLoadFile(String url, @Nullable IProgressDialog pDialog, DownLoadListener<File> loadListener){
         final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
         final File tempFile = FileUtils.getTempFile(url, filePath);
 
@@ -143,6 +153,7 @@ public class RequestUtils {
                 .map(new Function<String, String>() {
                     @Override
                     public String apply(String downUrl) throws Exception {
+
                         File targetFile = FileUtils.getFile(downUrl, filePath);
                         if (targetFile.exists()) {
                             SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 4).commit(false);//下载完成
@@ -178,20 +189,51 @@ public class RequestUtils {
                 });
 
 
-        return Observable.merge(Observable.create(loadOnSubscribe), downloadObservable)
+        Observable.merge(Observable.create(loadOnSubscribe), downloadObservable)
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Function<Object, ObservableSource<File>>() {
+                .subscribe(new CallBack<Object>(pDialog) {
                     @Override
-                    public ObservableSource<File> apply(Object data) throws Exception {
-                        if (data instanceof Double) {
-                            String percent = TransfmtUtils.doubleToKeepTwoDecimalPlaces(((Double) data).doubleValue());
-                            loadListener.onProgress(percent);
-                        } else if (data instanceof File) {//文件下载完成
+                    protected void onProgress(String percent) {
+                        loadListener.onProgress(percent);
+                    }
+
+                    @Override
+                    protected void onSuccess(Object file) {
+                        if (file instanceof File) {
                             loadListener.onProgress("100");
 
-                            return Observable.just((File)data);
+                            runUiThread(() -> {
+                                loadListener.onSuccess((File) file);//已在主线程中，可以更新UI
+                            });
                         }
-                        return null;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        int FileDownStatus = SpfAgent.init("").getInt(tempFile.getName() + Constant.FileDownStatus);
+                        if (FileDownStatus == 4) {
+                            File targetFile = FileUtils.getFile(url, filePath);
+                            loadListener.onProgress("100");
+                            runUiThread(() -> {
+                                loadListener.onSuccess(targetFile);
+                            });
+                        } else {
+//                            super.onError(e);
+                            SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 3).commit(false);
+                            runUiThread(loadListener::onFail);
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        super.onComplete();
+
+                        int fileDownStatus = SpfAgent.init("").getInt(tempFile.getName() + Constant.FileDownStatus);
+                        if (fileDownStatus != 4){
+                            SpfAgent.init("")
+                                    .saveInt(tempFile.getName() + Constant.FileDownStatus, 3)
+                                    .commit(false);
+                        }
                     }
                 });
     }
