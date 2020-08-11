@@ -133,7 +133,7 @@ public class RequestUtils {
      * @param url
      * @param loadListener
      */
-    public static Observable<Object> downLoadFile(String url, DownLoadListener<File> loadListener){
+    public static Observable<File> downLoadFile(String url, DownLoadListener<File> loadListener){
         final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
         final File tempFile = FileUtils.getTempFile(url, filePath);
 
