@@ -57,8 +57,8 @@ public abstract class CommonDialog extends DialogFragment {
     @LayoutRes
     protected int layoutId;
 
-    /** 是否 不拦截返回按钮  [true 不拦截，点击返回键 dismiss dialog]*/
-    protected boolean isKeyBack = true;
+    /** 是否 拦截物理返回键  [true 拦截，点击返回键 无效]*/
+    protected boolean isKeyBack = false;
     /** 点击window外的区域 是否消失 */
     protected boolean isHide = false;
     /** 灰度深浅 */
@@ -124,7 +124,7 @@ public abstract class CommonDialog extends DialogFragment {
         super.onStart();
         initParams();
 
-        if (isKeyBack)setOnKeyListener();
+        if (!isKeyBack)setOnKeyListener();
     }
 
     /**
