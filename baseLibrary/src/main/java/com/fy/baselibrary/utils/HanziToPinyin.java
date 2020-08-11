@@ -105,13 +105,13 @@ public class HanziToPinyin {
      * 词组解析
      * @param chs
      */
-    public static String getSelling(String chs) {
+    public static String getSelling(@NonNull String chs) {
         String key, value;
         StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < chs.length(); i++) {
             key = chs.substring(i, i + 1);
             if (key.getBytes().length >= 2) {
-                value = (String) convert(key);
+                value = convert(key);
                 if (value == null) {
                     value = "unknown";
                 }

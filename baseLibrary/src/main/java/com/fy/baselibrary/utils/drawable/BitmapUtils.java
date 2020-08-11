@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.fy.baselibrary.R;
@@ -35,7 +36,7 @@ public class BitmapUtils {
      * @param userId
      * @return 返回图片本地路径
      */
-    public static String generateDefaultAvatar(String userName, String userId) {
+    public static String generateDefaultAvatar(@NonNull String userName, @NonNull String userId) {
         String string = HanziToPinyin.getSelling(userName);
         String fileName = string + "_" + userId;
 
