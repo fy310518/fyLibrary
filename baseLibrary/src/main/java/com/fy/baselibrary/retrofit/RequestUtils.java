@@ -218,10 +218,10 @@ public class RequestUtils {
                                 loadListener.onSuccess(targetFile);
                             });
                         } else {
-//                            super.onError(e);
                             SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 3).commit(false);
                             runUiThread(loadListener::onFail);
                         }
+                        super.dismissProgress();
                     }
 
                     @Override
