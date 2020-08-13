@@ -12,8 +12,8 @@ import com.fy.baselibrary.permission.PermissionUtils;
 import com.fy.baselibrary.utils.notify.T;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class PermissionFilterAspect {
 
 //    @Around 注解表示这个方法执行时机的前后都可以做切面处理
 //    常用到的还有@Before、@After 等等。@Before 即方法执行前做处理，@After 反之。
-    @Around("PermissionFilter(needPermission)")
+    @Before("PermissionFilter(needPermission)")
     public void BeforeJoinPoint(ProceedingJoinPoint joinPoint, NeedPermission needPermission) throws Throwable {
 //        此方法就是对切面的具体实现，ProceedingJoinPoint 参数意为环绕通知，这个类里面可以获取到方法的签名等各种信息
 
