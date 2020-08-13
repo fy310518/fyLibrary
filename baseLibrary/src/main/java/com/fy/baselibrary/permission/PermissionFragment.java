@@ -232,7 +232,7 @@ public class PermissionFragment extends BaseFragment {
         }
 
         assert manager != null;
-        manager.beginTransaction().add(fragment, "PermissionFragment").commit();
+        manager.beginTransaction().add(fragment, "PermissionFragment").commitAllowingStateLoss();
     }
 
 }
