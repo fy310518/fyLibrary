@@ -214,8 +214,6 @@ public class WifiUtils {
      *             if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
      *                 // wifi已成功扫描到可用wifi。
      *                 List<ScanResult> scanResults = wifiManager.getScanResults();
-     *                 wifiListAdapter.clear();
-     *                 wifiListAdapter.addAll(scanResults);
      *             }
      *     };
      */

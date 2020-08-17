@@ -20,6 +20,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import com.fy.baselibrary.utils.FileUtils;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -51,12 +53,12 @@ public class ACache {
     private static Map<String, ACache> mInstanceMap = new HashMap<>();
     private ACacheManager mCache;
 
-    public static ACache get(Context ctx) {
-        return get(ctx, "ACache");
+    public static ACache get() {
+        return get("ACache");
     }
 
-    public static ACache get(Context ctx, String cacheName) {
-        File f = new File(ctx.getExternalCacheDir(), cacheName);
+    public static ACache get(String cacheName) {
+        File f = new File(FileUtils.getExternalCacheDir(), cacheName);
         return get(f, MAX_SIZE, MAX_COUNT);
     }
 

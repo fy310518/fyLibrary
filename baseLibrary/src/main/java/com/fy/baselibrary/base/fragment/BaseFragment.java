@@ -18,10 +18,8 @@ import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
 import com.fy.baselibrary.statuslayout.StatusLayoutManager;
-import com.fy.baselibrary.utils.JumpUtils;
 import com.fy.baselibrary.utils.ResUtils;
 import com.fy.baselibrary.utils.notify.L;
-import com.fy.baselibrary.utils.cache.ACache;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -32,8 +30,6 @@ import butterknife.Unbinder;
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener, OnSetStatusView {
     public final String TAG = "lifeCycle --> " + getClass().getSimpleName();
-
-    protected ACache mCache;
 
     protected AppCompatActivity mContext;
     protected StatusLayoutManager slManager;
@@ -77,7 +73,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         L.e(TAG, "onAttach()");
 
         this.mContext = (AppCompatActivity) context;
-        mCache = ACache.get(mContext);
     }
 
     @Override

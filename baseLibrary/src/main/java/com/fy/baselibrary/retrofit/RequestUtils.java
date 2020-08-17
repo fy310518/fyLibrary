@@ -97,7 +97,7 @@ public class RequestUtils {
         /** 定义读取缓存数据的 被观察者 */
         Observable<T> fromCache = Observable.create(new ObservableOnSubscribe<T>() {
             public void subscribe(ObservableEmitter<T> emitter) throws Exception {
-                ACache mCache = ACache.get(ConfigUtils.getAppCtx());
+                ACache mCache = ACache.get();
                 T cache = (T) mCache.getAsObject(apiKey);
                 if (null != cache) {
                     L.e("net cache", cache.toString());
@@ -118,7 +118,7 @@ public class RequestUtils {
             public void accept(T result) throws Exception {
                 L.e("net doOnNext", result.toString());
 
-                ACache mCache = ACache.get(ConfigUtils.getAppCtx());
+                ACache mCache = ACache.get();
                 if (result instanceof Serializable){
                     mCache.put(apiKey, (Serializable) result);
                 } else {

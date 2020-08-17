@@ -50,7 +50,11 @@ public class FileUtils {
 
     /**
      * 获取 内置SD卡路径
-     *
+     * Android Q 开始此方法废弃；需要适配分区存储，数据私有化
+     * 以下绕过 分配存储步骤
+     * 1 配置 requestLegacyExternalStorage=true 直接关闭分区存储 适配 Android Q
+     * 2 获取 所有文件访问权限 适配 Android R
+     * <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
      * @return "/mnt/sdcard
      */
     public static String getSDCardPath() {
