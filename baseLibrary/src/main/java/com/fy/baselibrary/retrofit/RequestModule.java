@@ -116,7 +116,11 @@ public class RequestModule {
             SSLSocketFactory sslSocketFactory = SSLUtil.getSSLSocketFactory(is);
             if (null != sslSocketFactory) {
                 builder.sslSocketFactory(sslSocketFactory);
+            } else {
+                builder.hostnameVerifier(SSLUtil.DO_NOT_VERIFY);
             }
+        } else {
+            builder.hostnameVerifier(SSLUtil.DO_NOT_VERIFY);
         }
 
         return builder;
