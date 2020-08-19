@@ -3,6 +3,7 @@ package com.fy.baselibrary.utils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 
+import com.fy.baselibrary.R;
 import com.fy.baselibrary.utils.cache.SpfAgent;
 
 /**
@@ -13,6 +14,9 @@ public class NightModeUtils {
 
     /** 日间/夜间 key */
     public static final String isNightMode = "isNightMode";
+
+    /** APP 当前模式 （日间/夜间）*/
+    public static final String appMode = "appModeSwitch";
 
     private NightModeUtils() {
         /* cannot be instantiated */
@@ -34,7 +38,7 @@ public class NightModeUtils {
         }
 
         SpfAgent.init(Constant.baseSpf).saveBoolean(isNightMode, !isNight).commit(false);
-//        activity.getWindow().setWindowAnimations(R.style.WindowAnimationFadeInOut);
+        activity.getWindow().setWindowAnimations(R.style.WindowAnimationFadeInOut);
         activity.recreate(); // 这个是刷新，不然不起作用
     }
 

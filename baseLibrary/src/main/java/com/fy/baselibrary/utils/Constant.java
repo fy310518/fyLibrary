@@ -62,11 +62,6 @@ public class Constant {
 
 
     /**
-     * APP 当前模式 （日间/夜间）
-     */
-    public static final String appMode = "appModeSwitch";
-
-    /**
      * baseLibrary SharedPreferences 文件名
      */
     public static final String baseSpf = "baseSpf";

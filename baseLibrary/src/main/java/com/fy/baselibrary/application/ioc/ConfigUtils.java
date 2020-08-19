@@ -1,6 +1,7 @@
 package com.fy.baselibrary.application.ioc;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.fy.baselibrary.statuslayout.OnStatusAdapter;
 
@@ -51,6 +52,9 @@ public class ConfigUtils {
     public static String getBaseUrl() {
         return configComponent.getConfigBiuder().BASE_URL;
     }
+
+    public static String getAddCookieKey(){return configComponent.getConfigBiuder().addCookieKey;}
+    public static String getCookieDataKey(){return configComponent.getConfigBiuder().cookieData;}
 
     public static String getTokenKey(){return configComponent.getConfigBiuder().token;}
 
@@ -111,9 +115,14 @@ public class ConfigUtils {
 
         /** 是否  启用缓存拦截器 */
         boolean isEnableCacheInterceptor;
+        /** 向网络请求 添加 cookie 数据 的 key */
+        String addCookieKey = "cookie";
+        /** 从网络请求 响应数据中拿到返回的 cookie数据 的 key */
+        String cookieData = "set-cookie";
+
         /** token key */
         String token = "X-Access-Token";
-        /** token 拦截器 */
+        /** 添加 自定义拦截器；如：token 拦截器 */
         List<Interceptor> interceptors  = new ArrayList<>();
 
         /** 多状态布局 适配器 */
@@ -172,6 +181,12 @@ public class ConfigUtils {
         public ConfigBiuder setBaseFile(String filePath, int type) {
             this.filePath = filePath == null ? "" : filePath;
             this.type = type;
+            return this;
+        }
+
+        public ConfigBiuder setCookie(String addCookieKey, String cookieData) {
+            this.addCookieKey = TextUtils.isEmpty(addCookieKey) ? "" : addCookieKey;
+            this.cookieData = TextUtils.isEmpty(cookieData) ? "" : cookieData;
             return this;
         }
 

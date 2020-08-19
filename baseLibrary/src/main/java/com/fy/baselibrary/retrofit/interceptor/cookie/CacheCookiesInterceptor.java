@@ -2,6 +2,7 @@ package com.fy.baselibrary.retrofit.interceptor.cookie;
 
 import android.annotation.SuppressLint;
 
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.notify.L;
 import com.fy.baselibrary.utils.cache.SpfAgent;
@@ -26,11 +27,12 @@ public class CacheCookiesInterceptor implements Interceptor {
 
         Response response = chain.proceed(chain.request());
 
-        List<String> headers = response.headers("set-cookie");
+        String set_cookie =  ConfigUtils.getCookieDataKey();
+        List<String> headers = response.headers(set_cookie);
         if (!headers.isEmpty() && headers.size() > 1) {
             StringBuffer cookieBuffer = new StringBuffer();
 
-            Object[] strArray = response.headers("set-cookie").toArray();
+            Object[] strArray = response.headers(set_cookie).toArray();
 
             Observable.fromArray(strArray)
                     .map(s -> s.toString().split(";")[0])

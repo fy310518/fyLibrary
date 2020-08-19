@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@android:color/transparent</item>     <!-- ActionBar、Toolbar 的颜色 -->
         <item name="colorPrimaryDark">@android:color/transparent</item> <!-- 状态栏的颜色 -->
