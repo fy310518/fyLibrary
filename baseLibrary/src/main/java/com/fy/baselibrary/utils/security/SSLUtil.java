@@ -1,5 +1,8 @@
 package com.fy.baselibrary.utils.security;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -9,6 +12,7 @@ import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
@@ -16,7 +20,9 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * 证书工具类
@@ -28,13 +34,6 @@ public class SSLUtil {
         /* cannot be instantiated */
         throw new UnsupportedOperationException("cannot be instantiated");
     }
-
-    //配置不验证 证书
-    public static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
-        public boolean verify(String hostname, SSLSession session) {
-            return true;
-        }
-    };
 
     //使用命令keytool -printcert -rfc -file srca.cer 导出证书为字符串，
     // 然后将字符串转换为输入流，如果使用的是okhttp可以直接使用 new Buffer().writeUtf8(s).inputStream()
@@ -112,4 +111,51 @@ public class SSLUtil {
         }
         return null;
     }
+
+
+    /**
+     * 信任所有的证书
+     * TODO 最好加上证书认证，主流App都有自己的证书
+     */
+    @SuppressLint("TrulyRandom")
+    public static SSLSocketFactory createSSLSocketFactory() {
+        SSLSocketFactory sSLSocketFactory = null;
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, new TrustManager[]{new TrustAllManager()},
+                    new SecureRandom());
+            sSLSocketFactory = sc.getSocketFactory();
+        } catch (Exception e) {
+        }
+
+        return sSLSocketFactory;
+    }
+
+    private static class TrustAllManager implements X509TrustManager {
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            Log.d("checkClientTrusted", "authType:" + authType);
+        }
+
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            Log.d("checkServerTrusted", "authType:" + authType);
+            try {
+                chain[0].checkValidity();
+            } catch (Exception var4) {
+                Log.e("checkServerTrusted", "Exception", var4);
+            }
+
+        }
+
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+    }
+
+    //配置信任所有证书
+    public static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    };
+
 }
