@@ -38,7 +38,7 @@ public class CacheCookiesInterceptor implements Interceptor {
                     .map(s -> s.toString().split(";")[0])
                     .subscribe(s -> cookieBuffer.append(s).append(";"));
 
-            SpfAgent.init(Constant.baseSpf)
+            SpfAgent.init("")
                     .saveString("cookie", cookieBuffer.toString())
                     .commit(false);
 
