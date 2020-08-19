@@ -29,7 +29,7 @@ public class CacheCookiesInterceptor implements Interceptor {
 
         String set_cookie =  ConfigUtils.getCookieDataKey();
         List<String> headers = response.headers(set_cookie);
-        if (!headers.isEmpty() && headers.size() > 1) {
+        if (!headers.isEmpty()) {
             StringBuffer cookieBuffer = new StringBuffer();
 
             Object[] strArray = response.headers(set_cookie).toArray();
