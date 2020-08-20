@@ -144,7 +144,7 @@ public abstract class H5WebViewClient extends WebViewClient {
         }
     }
 
-    private void setTips(int status){
+    protected void setTips(int status){
         if (null != onSetStatusView) {
             onSetStatusView.showHideViewFlag(status);
         }
