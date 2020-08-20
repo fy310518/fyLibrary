@@ -28,7 +28,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
 
 /**
  * describe：默认的 WebViewClient
@@ -38,7 +37,6 @@ public abstract class H5WebViewClient extends WebViewClient {
 
     public static String blank = "about:blank";
     private boolean isUseLocalIntercept;//使用
-    private String mPrevUrl;
     private OnSetStatusView onSetStatusView;
 
     public H5WebViewClient(OnSetStatusView onSetStatusView) {
@@ -79,32 +77,21 @@ public abstract class H5WebViewClient extends WebViewClient {
     //并且return true意味着主程序接管网页加载，如果返回false让webview自己处理。
     @Override
     public boolean shouldOverrideUrlLoading(WebView webView, String url) {
-        if (mPrevUrl != null) {
-            if (!mPrevUrl.equals(url)) {
-                if (!(url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://"))) {
-                    Intent intent = new Intent("android.intent.action.VIEW");
-                    Uri content_url = Uri.parse(url);
-                    intent.setData(content_url);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    try {
-                        webView.getContext().startActivity(intent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return true;
-                }
-                mPrevUrl = url;
-                webView.loadUrl(url);
-                return true;
-            } else {
-                return false;
+        if (!(url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://"))) {
+            Intent intent = new Intent("android.intent.action.VIEW");
+            Uri content_url = Uri.parse(url);
+            intent.setData(content_url);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            try {
+                webView.getContext().startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } else {
-            mPrevUrl = url;
-            webView.loadUrl(url);
             return true;
         }
+        webView.loadUrl(url);
+        return false;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
