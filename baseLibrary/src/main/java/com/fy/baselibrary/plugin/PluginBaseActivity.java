@@ -26,89 +26,131 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
     @SuppressLint("MissingSuperCall")
     @Override
     public void onCreate(Bundle saveInstanceState) {
-
+        if (null == mProxyActivity) {
+            super.onCreate(saveInstanceState);
+        }
     }
 
     @SuppressLint("MissingSuperCall")
     @Override
     public void onStart() {
-
+        if (null == mProxyActivity) {
+            super.onStart();
+        }
     }
 
     @SuppressLint("MissingSuperCall")
     @Override
     public void onResume() {
-
+        if (null == mProxyActivity) {
+            super.onResume();
+        }
     }
 
     @SuppressLint("MissingSuperCall")
     @Override
     public void onPause() {
-
+        if (null == mProxyActivity) {
+            super.onPause();
+        }
     }
 
     @SuppressLint("MissingSuperCall")
     @Override
     public void onStop() {
-
+        if (null == mProxyActivity) {
+            super.onStop();
+        }
     }
 
     @SuppressLint("MissingSuperCall")
     @Override
     public void onDestroy() {
-
-    }
-
-    @Override
-    public void onSaveInstanceStates(Bundle outState) {
-
+        if (null == mProxyActivity) {
+            super.onDestroy();
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (null == mProxyActivity) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        if (null != mProxyActivity) {
+            mProxyActivity.startActivityForResult(intent, requestCode);
+        } else {
+            super.startActivityForResult(intent, requestCode);
+        }
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        if (null != mProxyActivity) {
+            mProxyActivity.startActivity(intent);
+        } else {
+            super.startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceStates(@NonNull Bundle outState) {
+        if (null != mProxyActivity) {
+//            mProxyActivity.onSaveInstanceState(outState);
+        } else {
+            super.onSaveInstanceState(outState);
+        }
     }
 
     @Override
     public void setContentView(View view) {
         if (null != mProxyActivity) {
             mProxyActivity.setContentView(view);
-        } else
+        } else {
             super.setContentView(view);
+        }
     }
 
     @Override
     public void setContentView(int layoutResID) {
         if (null != mProxyActivity) {
             mProxyActivity.setContentView(layoutResID);
-        } else
+        } else {
             super.setContentView(layoutResID);
+        }
     }
 
     @Override
     public <T extends View> T findViewById(int id) {
-        return mProxyActivity.findViewById(id);
+        if (null != mProxyActivity) {
+            return mProxyActivity.findViewById(id);
+        } else {
+            return super.findViewById(id);
+        }
     }
 
     @Override
     public Intent getIntent() {
-        return mProxyActivity.getIntent();
+        if (null != mProxyActivity) {
+            return mProxyActivity.getIntent();
+        } else {
+            return super.getIntent();
+        }
     }
 
     @Override
     public ClassLoader getClassLoader() {
-        return mProxyActivity.getClassLoader();
+        if (null != mProxyActivity) {
+            return mProxyActivity.getClassLoader();
+        } else {
+            return super.getClassLoader();
+        }
     }
 
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        mProxyActivity.startActivityForResult(intent, requestCode);
-    }
 
-    @Override
-    public void startActivity(Intent intent) {
-        mProxyActivity.startActivity(intent);
-    }
 
 
 
