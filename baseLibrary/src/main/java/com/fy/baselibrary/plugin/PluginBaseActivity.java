@@ -208,7 +208,13 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
             targetBundle.putAll(bundle);
         }
         intent.putExtras(targetBundle);
-        mProxyActivity.setResult(Activity.RESULT_OK, intent);
-        mProxyActivity.finish();
+
+        if (null != mProxyActivity){
+            mProxyActivity.setResult(Activity.RESULT_OK, intent);
+            mProxyActivity.finish();
+        } else {
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+        }
     }
 }
