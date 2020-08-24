@@ -101,7 +101,7 @@ public class PluginManager {
      * @param activity
      * @param activityName 要启动的 activity 完整包名【如：com.fy.baselibrary.plugin.ProxyActivity】
      */
-    public static void jumpPlugin(@NonNull Activity activity, @NonNull String activityName) {
+    public static void jumpPlugin(@NonNull Activity activity, @NonNull String activityName, Bundle bundle) {
         PackageInfo packageInfo = PluginManager.getInstance().getPackageInfo();
         boolean isExistence = false;
         for (ActivityInfo activityInfo : packageInfo.activities) {
@@ -112,7 +112,7 @@ public class PluginManager {
         }
 
         if (isExistence){
-            Bundle bundle = new Bundle();
+            if (null == bundle) bundle = new Bundle();
             //由于插件只有一个activity，所以取数组第0个
             bundle.putString("className", activityName);
             JumpUtils.jump(activity, ProxyActivity.class, bundle);
