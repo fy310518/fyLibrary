@@ -150,8 +150,14 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
         }
     }
 
-
-
+    //获取当前环境
+    public Activity getContext(){
+        if (null != mProxyActivity) {
+            return mProxyActivity;
+        } else {
+            return this;
+        }
+    }
 
 
     /**
