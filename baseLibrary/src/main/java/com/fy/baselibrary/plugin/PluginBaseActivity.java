@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.fy.baselibrary.utils.AppUtils;
 
@@ -150,6 +152,25 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
         }
     }
 
+    @Override
+    public Window getWindow() {
+        if (null != mProxyActivity) {
+            return mProxyActivity.getWindow();
+        } else {
+            return super.getWindow();
+        }
+    }
+
+
+    @Override
+    public WindowManager getWindowManager() {
+        if (null != mProxyActivity) {
+            return mProxyActivity.getWindowManager();
+        } else {
+            return super.getWindowManager();
+        }
+    }
+
     //获取当前环境
     public Activity getContext(){
         if (null != mProxyActivity) {
@@ -159,6 +180,13 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
         }
     }
 
+    public void finish() {
+        if (null != mProxyActivity) {
+            mProxyActivity.finish();
+        } else {
+            super.finish();
+        }
+    }
 
     /**
      * 插件内 activity 启动另一个activity
