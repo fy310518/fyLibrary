@@ -1,5 +1,6 @@
 package com.fy.baselibrary.plugin;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -54,6 +55,13 @@ public class ProxyActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (pluginInterface != null)
+            pluginInterface.onPause();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (pluginInterface != null)
@@ -65,6 +73,20 @@ public class ProxyActivity extends AppCompatActivity {
         super.onDestroy();
         if (pluginInterface != null)
             pluginInterface.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (pluginInterface != null)
+            pluginInterface.onSaveInstanceStates(outState);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (pluginInterface != null)
+            pluginInterface.onActivityResult(requestCode, resultCode, data);
     }
 
     //重写加载类

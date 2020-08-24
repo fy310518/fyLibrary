@@ -1,17 +1,17 @@
 package com.fy.baselibrary.plugin;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.support.annotation.NonNull;
 
 import com.fy.baselibrary.utils.JumpUtils;
+import com.fy.baselibrary.utils.notify.T;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -86,20 +86,38 @@ public class PluginManager {
         return packageInfo;
     }
 
-
-    //跳转到插件
-    public static void jumpPlugin(AppCompatActivity activity, String activityName) {
+    /**
+     * 加载插件apk
+     * @param activity
+     * @param apkPath    插件apk 路径【如：/sdcard/Android/data/com.xxx.xxx/files/down/xxxx.apk】
+     */
+    public static void loadPlugin(Activity activity, String apkPath){
         PluginManager.getInstance().setContext(activity);
-        PluginManager.getInstance().loadPlugin(Environment.getExternalStorageDirectory() + "/orderfood.apk");
+        PluginManager.getInstance().loadPlugin(apkPath);
+    }
+
+    /**
+     * 跳转到插件中的 指定activity
+     * @param activity
+     * @param activityName 要启动的 activity 完整包名【如：com.fy.baselibrary.plugin.ProxyActivity】
+     */
+    public static void jumpPlugin(@NonNull Activity activity, @NonNull String activityName) {
         PackageInfo packageInfo = PluginManager.getInstance().getPackageInfo();
-
-        for (String : packageInfo.activities[0]){
-
+        boolean isExistence = false;
+        for (ActivityInfo activityInfo : packageInfo.activities) {
+            if (activityInfo.name .equals(activityName)) {
+                isExistence = true;
+                break;
+            }
         }
 
-        Bundle bundle = new Bundle();
-        //由于插件只有一个activity，所以取数组第0个
-        bundle.putString("className", packageInfo.activities[0].name);
-        JumpUtils.jump(activity, ProxyActivity.class, bundle);
+        if (isExistence){
+            Bundle bundle = new Bundle();
+            //由于插件只有一个activity，所以取数组第0个
+            bundle.putString("className", activityName);
+            JumpUtils.jump(activity, ProxyActivity.class, bundle);
+        } else {
+            T.showLong("界面不存在");
+        }
     }
 }

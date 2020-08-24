@@ -1,6 +1,7 @@
 package com.fy.baselibrary.plugin;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 /**
@@ -22,7 +23,9 @@ public interface PluginInterface {
 
     void onDestroy();
 
-    void onSaveIntanceState(Bundle outState);
+    void onSaveInstanceStates(Bundle outState);
+
+    void onActivityResult(int requestCode, int resultCode, Intent data);
 
     void onBackPressed();
 }

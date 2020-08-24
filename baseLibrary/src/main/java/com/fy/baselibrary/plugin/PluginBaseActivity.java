@@ -3,10 +3,12 @@ package com.fy.baselibrary.plugin;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import com.fy.baselibrary.utils.AppUtils;
 
 /**
  * 接口方式插件化
@@ -14,7 +16,7 @@ import android.view.View;
  */
 public class PluginBaseActivity extends AppCompatActivity implements PluginInterface {
 
-    private Activity mProxyActivity;
+    protected Activity mProxyActivity;
 
     @Override
     public void attach(Activity proxyActivity) {
@@ -58,7 +60,12 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
     }
 
     @Override
-    public void onSaveIntanceState(Bundle outState) {
+    public void onSaveInstanceStates(Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
     }
 
@@ -93,13 +100,73 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
         return mProxyActivity.getClassLoader();
     }
 
-    //插件内 activity 启动另一个activity
-    public void jumpPlugin() {
-        PackageInfo packageInfo = PluginManager.getInstance().getPackageInfo();
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        mProxyActivity.startActivityForResult(intent, requestCode);
+    }
 
-        Intent intent = new Intent("com.zjp.plugin.ProxyActivity");
-        //由于插件只有一个activity，所以取数组第0个
-        intent.putExtra("className", packageInfo.activities[0].name);
+    @Override
+    public void startActivity(Intent intent) {
         mProxyActivity.startActivity(intent);
+    }
+
+
+
+    /**
+     * 插件内 activity 启动另一个activity
+     * @param activityName 要启动的 activity 完整包名【如：com.fy.baselibrary.plugin.ProxyActivity】
+     * @param bundle
+     */
+    public void jumpPlugin(@NonNull String activityName, Bundle bundle) {
+        Intent intent = getIntent();
+        intent.setAction(AppUtils.getLocalPackageName() + ".plugin.ProxyActivity");
+        intent.putExtra("className", activityName);
+
+        Bundle targetBundle = intent.getExtras();
+        if (null != bundle){
+            assert targetBundle != null;
+            targetBundle.putAll(bundle);
+        }
+        intent.putExtras(targetBundle);
+
+        startActivity(intent);
+    }
+
+    /**
+     * 插件内 activity 启动另一个activity
+     * @param activityName 要启动的 activity 完整包名【如：com.fy.baselibrary.plugin.ProxyActivity】
+     * @param bundle
+     * @param requestCode
+     */
+    public void jumpPlugin(@NonNull String activityName, Bundle bundle, int requestCode) {
+        Intent intent = getIntent();
+        intent.setAction(AppUtils.getLocalPackageName() + ".plugin.ProxyActivity");
+        intent.putExtra("className", activityName);
+
+        Bundle targetBundle = intent.getExtras();
+        if (null != bundle){
+            assert targetBundle != null;
+            targetBundle.putAll(bundle);
+        }
+        intent.putExtras(targetBundle);
+
+        startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * 插件中，退出当前activity 并带数据回到上一个Activity
+     * @param bundle 可空
+     */
+    public void jumpResult(Bundle bundle){
+        Intent intent = getIntent();
+        Bundle targetBundle = intent.getExtras();
+
+        if (null != bundle){
+            assert targetBundle != null;
+            targetBundle.putAll(bundle);
+        }
+        intent.putExtras(targetBundle);
+        mProxyActivity.setResult(Activity.RESULT_OK, intent);
+        mProxyActivity.finish();
     }
 }
