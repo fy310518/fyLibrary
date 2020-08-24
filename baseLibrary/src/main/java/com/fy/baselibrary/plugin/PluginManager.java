@@ -102,6 +102,39 @@ public class PluginManager {
      * @param activityName 要启动的 activity 完整包名【如：com.fy.baselibrary.plugin.ProxyActivity】
      */
     public static void jumpPlugin(@NonNull Activity activity, @NonNull String activityName, Bundle bundle) {
+        if (isExistence(activityName)){
+            if (null == bundle) bundle = new Bundle();
+            //由于插件只有一个activity，所以取数组第0个
+            bundle.putString("className", activityName);
+            JumpUtils.jump(activity, ProxyActivity.class, bundle);
+        } else {
+            T.showLong("界面不存在");
+        }
+    }
+
+    /**
+     * 跳转到插件中的 指定activity【带回调结果的跳转】
+     * @param activity
+     * @param activityName
+     * @param bundle
+     * @param requestCode
+     */
+    public static void jumpPlugin(@NonNull Activity activity, @NonNull String activityName, Bundle bundle, int requestCode) {
+        if (isExistence(activityName)){
+            if (null == bundle) bundle = new Bundle();
+            //由于插件只有一个activity，所以取数组第0个
+            bundle.putString("className", activityName);
+            JumpUtils.jump(activity, ProxyActivity.class, bundle, requestCode);
+        } else {
+            T.showLong("界面不存在");
+        }
+    }
+
+    /**
+     * 判断插件 中是否存在 指定的 activity
+     * @param activityName
+     */
+    public static boolean isExistence(@NonNull String activityName){
         PackageInfo packageInfo = PluginManager.getInstance().getPackageInfo();
         boolean isExistence = false;
         for (ActivityInfo activityInfo : packageInfo.activities) {
@@ -111,13 +144,6 @@ public class PluginManager {
             }
         }
 
-        if (isExistence){
-            if (null == bundle) bundle = new Bundle();
-            //由于插件只有一个activity，所以取数组第0个
-            bundle.putString("className", activityName);
-            JumpUtils.jump(activity, ProxyActivity.class, bundle);
-        } else {
-            T.showLong("界面不存在");
-        }
+        return isExistence;
     }
 }
