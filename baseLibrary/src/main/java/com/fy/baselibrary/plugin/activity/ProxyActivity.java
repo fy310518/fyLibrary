@@ -1,11 +1,11 @@
-package com.fy.baselibrary.plugin;
+package com.fy.baselibrary.plugin.activity;
 
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-
+import com.fy.baselibrary.plugin.PluginManager;
 import java.lang.reflect.Constructor;
 
 /**

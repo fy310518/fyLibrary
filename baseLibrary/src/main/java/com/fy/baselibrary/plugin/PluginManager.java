@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.fy.baselibrary.plugin.activity.ProxyActivity;
 import com.fy.baselibrary.utils.JumpUtils;
 import com.fy.baselibrary.utils.notify.T;
 
@@ -53,22 +54,28 @@ public class PluginManager {
         //获取包管理器
         PackageManager packageManager = mContext.getPackageManager();
         //获取插件的包信息类
-        packageInfo = packageManager.getPackageArchiveInfo(pluginPath, PackageManager.GET_ACTIVITIES);
+        if (null == packageInfo) packageInfo = packageManager.getPackageArchiveInfo(pluginPath, PackageManager.GET_ACTIVITIES);
 
         //插件解压后的目录
         File pluginFile = mContext.getDir("plugin", Context.MODE_PRIVATE);
 
-        //获取到类加载器
-        dexClassLoader = new DexClassLoader(pluginPath, pluginFile.getAbsolutePath(), null, mContext.getClassLoader());
+        //拷贝插件so库 若插件中存在so，需要拷贝到宿主中才能正常读取;
+        String soPath = SoFileUtils.copySo(mContext, pluginPath);
+//        SoFileUtils.insertNativeLibraryPathElements(new File(soPath), mContext);
 
-        //获取到插件的资源对象
+        //获取类加载器
+        if (null == dexClassLoader) dexClassLoader = new DexClassLoader(pluginPath, pluginFile.getAbsolutePath(), soPath, mContext.getClassLoader());
+
+        //获取插件的资源对象
         try {
-            AssetManager assetManager = AssetManager.class.newInstance();
-            Method addAssetPath = assetManager.getClass().getDeclaredMethod("addAssetPath", String.class);
-            addAssetPath.invoke(assetManager, pluginPath);
-            pluginResource = new Resources(assetManager,
-                    mContext.getResources().getDisplayMetrics(),
-                    mContext.getResources().getConfiguration());
+            if (null == pluginResource){
+                AssetManager assetManager = AssetManager.class.newInstance();
+                Method addAssetPath = assetManager.getClass().getDeclaredMethod("addAssetPath", String.class);
+                addAssetPath.invoke(assetManager, pluginPath);
+                pluginResource = new Resources(assetManager,
+                        mContext.getResources().getDisplayMetrics(),
+                        mContext.getResources().getConfiguration());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,10 +103,14 @@ public class PluginManager {
         PluginManager.getInstance().loadPlugin(apkPath);
     }
 
+    public void clear(){
+        setContext(null);
+    }
+
     /**
      * 跳转到插件中的 指定activity
      * @param activity
-     * @param activityName 要启动的 activity 完整包名【如：com.fy.baselibrary.plugin.ProxyActivity】
+     * @param activityName 要启动的 activity 完整包名【如：com.fy.baselibrary.plugin.activity.ProxyActivity】
      */
     public static void jumpPlugin(@NonNull Activity activity, @NonNull String activityName, Bundle bundle) {
         if (isExistence(activityName)){

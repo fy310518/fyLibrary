@@ -1,15 +1,19 @@
-package com.fy.baselibrary.plugin;
+package com.fy.baselibrary.plugin.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
+import com.fy.baselibrary.plugin.PluginManager;
 import com.fy.baselibrary.utils.AppUtils;
 
 /**
@@ -70,6 +74,8 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
     public void onDestroy() {
         if (null == mProxyActivity) {
             super.onDestroy();
+        } else {
+            PluginManager.getInstance().clear();
         }
     }
 
@@ -95,6 +101,33 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
             mProxyActivity.startActivity(intent);
         } else {
             super.startActivity(intent);
+        }
+    }
+
+    @Override
+    public ComponentName startService(Intent service) {
+        if (null != mProxyActivity) {
+            return mProxyActivity.startService(service);
+        } else {
+            return super.startService(service);
+        }
+    }
+
+    @Override
+    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+        if (null != mProxyActivity) {
+            return mProxyActivity.bindService(service, conn, flags);
+        } else {
+            return super.bindService(service, conn, flags);
+        }
+    }
+
+    @Override
+    public void unbindService(ServiceConnection conn) {
+        if (null != mProxyActivity) {
+            mProxyActivity.unbindService(conn);
+        } else {
+            super.unbindService(conn);
         }
     }
 
@@ -134,6 +167,16 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
         }
     }
 
+    @NonNull
+    @Override
+    public LayoutInflater getLayoutInflater() {
+        if (null != mProxyActivity) {
+            return mProxyActivity.getLayoutInflater();
+        } else {
+            return super.getLayoutInflater();
+        }
+    }
+
     @Override
     public Intent getIntent() {
         if (null != mProxyActivity) {
@@ -161,13 +204,21 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
         }
     }
 
-
     @Override
     public WindowManager getWindowManager() {
         if (null != mProxyActivity) {
             return mProxyActivity.getWindowManager();
         } else {
             return super.getWindowManager();
+        }
+    }
+
+    @Override
+    public Resources getResources() {
+        if (null != mProxyActivity) {
+            return PluginManager.getInstance().getPluginResource();
+        } else {
+            return super.getResources();
         }
     }
 
@@ -250,5 +301,46 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
             setResult(Activity.RESULT_OK, intent);
             finish();
         }
+    }
+
+    public void startPservice(@NonNull String serviceName, Bundle bundle) {
+        String appId = AppUtils.getLocalPackageName();
+        Intent intent = getIntent();
+        if (null != mProxyActivity) {
+            intent.setAction(appId + ".plugin.ProxyService");
+            intent.setPackage(appId);
+            intent.putExtra("serviceName", serviceName);
+        } else {
+            intent.setClassName(appId, serviceName);
+        }
+
+        Bundle targetBundle = intent.getExtras();
+        if (null != bundle){
+            assert targetBundle != null;
+            targetBundle.putAll(bundle);
+        }
+        intent.putExtras(targetBundle);
+
+        startService(intent);
+    }
+
+    public void bindPservice(@NonNull String serviceName, Bundle bundle, ServiceConnection conn, int flags) {
+        String appId = AppUtils.getLocalPackageName();
+        Intent intent = getIntent();
+        if (null != mProxyActivity) {
+            intent.setClassName(appId, "com.cxy.plugin.service.ProxyService");
+            intent.putExtra("serviceName", serviceName);
+        } else {
+            intent.setClassName(appId, serviceName);
+        }
+
+        Bundle targetBundle = intent.getExtras();
+        if (null != bundle){
+            assert targetBundle != null;
+            targetBundle.putAll(bundle);
+        }
+        intent.putExtras(targetBundle);
+
+        bindService(intent, conn, flags);
     }
 }
