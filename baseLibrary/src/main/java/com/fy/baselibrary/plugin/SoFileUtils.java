@@ -5,22 +5,18 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.utils.FileUtils;
 import com.fy.baselibrary.utils.ZipUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import dalvik.system.PathClassLoader;
 
@@ -39,8 +35,7 @@ public class SoFileUtils {
 
     public static String copySo(Context context, String dexPath) {
         String fileName = dexPath.substring(dexPath.lastIndexOf("/"), dexPath.length()).replace("/", "");
-        String unZipPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + fileName.replace(".apk", "") + File.separator;
+        String unZipPath = FileUtils.folderIsExists(FileUtils.ZIP, ConfigUtils.getType()).getPath() + File.separator + fileName.replace(".apk", "") + File.separator;
 
         String soPath = getSoPath(context);
 
@@ -49,8 +44,7 @@ public class SoFileUtils {
             return soPath;
         }
 
-        String zipFileString = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + fileName;
-        ZipUtils.unZipFolder(zipFileString, unZipPath, null);//解压插件apk
+        ZipUtils.unZipFolder(dexPath, unZipPath, null);//解压插件apk
 
         List<File> fileList = FileUtils.recursionGetFile(new File(unZipPath + "lib/"), null);
         for (int i = 0; i < fileList.size(); i++) {
