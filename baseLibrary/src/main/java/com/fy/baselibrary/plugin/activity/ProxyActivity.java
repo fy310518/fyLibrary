@@ -21,8 +21,10 @@ public class ProxyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        intent.removeExtra("ActivityBean");
         //获取到真正目的地的类名
-        className = getIntent().getStringExtra("className");
+        className = intent.getStringExtra("className");
         try {
             //通过类加载器去加载这个类
             Class<?> aClass = getClassLoader().loadClass(className);
