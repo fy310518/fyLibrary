@@ -243,7 +243,17 @@ public class PluginBaseActivity extends Activity implements PluginInterface {
         }
     }
 
-
+    @Override
+    public Resources.Theme getTheme() {
+        if (null != mProxyActivity) {
+            Resources pluginResource = PluginManager.getInstance().getPluginResource();
+            Resources.Theme mTheme = pluginResource.newTheme();
+            mTheme.setTo(mProxyActivity.getTheme());
+            return mTheme;
+        } else {
+            return super.getTheme();
+        }
+    }
 
     //获取当前环境
     public Activity getContext(){
