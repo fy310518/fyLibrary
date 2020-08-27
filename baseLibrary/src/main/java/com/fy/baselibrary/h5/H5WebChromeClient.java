@@ -13,23 +13,26 @@ public class H5WebChromeClient extends WebChromeClient {
 
     private View loadLayout;
     private ProgressBar webProgress;
+    private int progress = 70;//设置进度达到 70% 显示webview
 
-    public H5WebChromeClient(View loadLayout) {
+    public H5WebChromeClient(View loadLayout, int progress) {
         this.loadLayout = loadLayout;
+        this.progress = progress;
     }
 
     public H5WebChromeClient(ProgressBar webProgress) {
         this.webProgress = webProgress;
     }
 
-    public H5WebChromeClient(View loadLayout, ProgressBar webProgress) {
+    public H5WebChromeClient(View loadLayout, ProgressBar webProgress, int progress) {
         this.loadLayout = loadLayout;
         this.webProgress = webProgress;
+        this.progress = progress;
     }
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
-        if (null != loadLayout) loadLayout.setVisibility(newProgress > 80 ? View.GONE : View.VISIBLE);
+        if (newProgress >= progress) loadLayout.setVisibility(View.GONE);
 
         if (null != webProgress){
             webProgress.setProgress(newProgress);

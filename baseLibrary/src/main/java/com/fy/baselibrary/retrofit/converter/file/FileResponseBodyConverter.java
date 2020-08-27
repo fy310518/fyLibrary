@@ -25,9 +25,9 @@ public class FileResponseBodyConverter implements Converter<ResponseBody, File> 
 
     @Override
     public File convert(ResponseBody responseBody) throws IOException {
-        String filePath = FileUtils.folderIsExists(ConfigUtils.getFilePath()+ ".down", ConfigUtils.getType()).getPath();
+        String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
         String url = "http://acj3.pc6.com/pc6_soure/2018-11/com.tencent.mobileqqi_6600.apk";
-        return FileResponseBodyConverter.saveFile(null, responseBody, url, filePath);
+        return saveFile(null, responseBody, url, filePath);
     }
 
 

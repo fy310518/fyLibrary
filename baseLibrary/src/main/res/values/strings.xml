@@ -75,6 +75,14 @@
     <string name="internetError">网络错误</string>
     <string name="confirmInternetRetry">请确认网络连接后点击空白区域重试</string>
 
+    <!--  生成头像的 背景色数组  -->
+    <string-array name="imgHeadBgColor">
+        <item>#3A91F3</item>
+        <item>#F14E7D</item>
+        <item>#5585A5</item>
+        <item>#F9CB4F</item>
+        <item>#F56B2F</item>
+    </string-array>
 
 </resources>
 

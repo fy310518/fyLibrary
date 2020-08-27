@@ -10,7 +10,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * okhttp 连接器捕获http 通讯，计算下载进度
+ * okhttp 拦截器捕获http 通讯，计算下载进度
  */
 public class ProgressInterceptor implements Interceptor {
 

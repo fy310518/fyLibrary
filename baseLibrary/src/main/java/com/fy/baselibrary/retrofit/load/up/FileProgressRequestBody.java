@@ -61,10 +61,6 @@ public class FileProgressRequestBody extends RequestBody {
                 sink.flush();
 
                 if (!ispercent && sum > 1){
-//                    String percent = TransfmtUtils.doubleToKeepTwoDecimalPlaces(100d * total / contentLength());
-//                    percent = percent.equals("100.0") ? "----100" : percent;
-//                    L.e("进度R", percent + "%-->" + file.getName() + "-->" + Thread.currentThread().getId());
-
                     if (null != subscribe)subscribe.onRead(read);
                 }
             }

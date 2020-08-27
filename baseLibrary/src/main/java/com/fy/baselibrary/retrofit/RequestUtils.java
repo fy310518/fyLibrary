@@ -2,13 +2,15 @@ package com.fy.baselibrary.retrofit;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.converter.file.FileResponseBodyConverter;
-import com.fy.baselibrary.retrofit.load.LoadCallBack;
+import com.fy.baselibrary.retrofit.observer.CallBack;
 import com.fy.baselibrary.retrofit.load.LoadOnSubscribe;
 import com.fy.baselibrary.retrofit.load.LoadService;
 import com.fy.baselibrary.retrofit.load.down.DownLoadListener;
+import com.fy.baselibrary.retrofit.observer.IProgressDialog;
 import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.FileUtils;
 import com.fy.baselibrary.utils.cache.ACache;
@@ -95,7 +97,7 @@ public class RequestUtils {
         /** 定义读取缓存数据的 被观察者 */
         Observable<T> fromCache = Observable.create(new ObservableOnSubscribe<T>() {
             public void subscribe(ObservableEmitter<T> emitter) throws Exception {
-                ACache mCache = ACache.get(ConfigUtils.getAppCtx());
+                ACache mCache = ACache.get();
                 T cache = (T) mCache.getAsObject(apiKey);
                 if (null != cache) {
                     L.e("net cache", cache.toString());
@@ -116,7 +118,7 @@ public class RequestUtils {
             public void accept(T result) throws Exception {
                 L.e("net doOnNext", result.toString());
 
-                ACache mCache = ACache.get(ConfigUtils.getAppCtx());
+                ACache mCache = ACache.get();
                 if (result instanceof Serializable){
                     mCache.put(apiKey, (Serializable) result);
                 } else {
@@ -130,11 +132,19 @@ public class RequestUtils {
 
     /**
      * 文件下载
-     * @param url
-     * @param loadListener
      */
     public static void downLoadFile(String url, DownLoadListener<File> loadListener){
-        final String filePath = FileUtils.folderIsExists(ConfigUtils.getFilePath()+ ".down", ConfigUtils.getType()).getPath();
+        downLoadFile(url, null, loadListener);
+    }
+
+    /**
+     * 文件下载
+     * @param url
+     * @param pDialog
+     * @param loadListener
+     */
+    public static void downLoadFile(String url, @Nullable IProgressDialog pDialog, DownLoadListener<File> loadListener){
+        final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
         final File tempFile = FileUtils.getTempFile(url, filePath);
 
         LoadOnSubscribe loadOnSubscribe = new LoadOnSubscribe();
@@ -165,33 +175,23 @@ public class RequestUtils {
                         }
                     }
                 })
-                .map(new Function<ResponseBody, File>() {
+                .flatMap(new Function<ResponseBody, ObservableSource<File>>() {
                     @Override
-                    public File apply(ResponseBody responseBody) throws Exception {
-                        try {
-                            //使用反射获得我们自定义的response
-//                            Class aClass = responseBody.getClass();
-//                            Field field = aClass.getDeclaredField("delegate");
-//                            field.setAccessible(true);
-//                            ResponseBody body = (ResponseBody) field.get(responseBody);
-//                            if (body instanceof FileResponseBody) {
-//                                FileResponseBody prBody = ((FileResponseBody) body);
-                                L.e("fy_file_FileDownInterceptor", "文件下载 响应返回---" + Thread.currentThread().getName());
-//                                return FileResponseBodyConverter.saveFile(loadOnSubscribe, prBody, prBody.getDownUrl(), filePath);
-                                return FileResponseBodyConverter.saveFile(loadOnSubscribe, responseBody, url, filePath);
-//                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    public ObservableSource<File> apply(ResponseBody responseBody) throws Exception {
+                        L.e("fy_file_FileDownInterceptor", "文件下载 响应返回---" + Thread.currentThread().getName());
+                        File file = FileResponseBodyConverter.saveFile(loadOnSubscribe, responseBody, url, filePath);
+                        if (null != file){
+                            return Observable.just(file);
+                        } else {
+                            return Observable.error(new ServerException("下载失败", -99));
                         }
-
-                        return null;
                     }
                 });
 
 
         Observable.merge(Observable.create(loadOnSubscribe), downloadObservable)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new LoadCallBack<Object>() {
+                .subscribe(new CallBack<Object>(pDialog) {
                     @Override
                     protected void onProgress(String percent) {
                         loadListener.onProgress(percent);
@@ -218,10 +218,10 @@ public class RequestUtils {
                                 loadListener.onSuccess(targetFile);
                             });
                         } else {
-//                            super.onError(e);
                             SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 3).commit(false);
                             runUiThread(loadListener::onFail);
                         }
+                        super.dismissProgress();
                     }
 
                     @Override

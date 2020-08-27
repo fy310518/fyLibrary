@@ -39,7 +39,8 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
-        exclude 'publicsuffixes.gz'
+        pickFirst 'META-INF/*'
+        exclude "okhttp3/internal/publicsuffix/publicsuffixes.gz"
     }
 }
 
@@ -59,7 +60,7 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.9'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.9'
 
-    api 'com.squareup.okhttp3:okhttp:3.10.0'
+    api 'com.squareup.okhttp3:okhttp:3.12.0'
     api 'com.google.code.gson:gson:2.7'
 
     //    rxjava

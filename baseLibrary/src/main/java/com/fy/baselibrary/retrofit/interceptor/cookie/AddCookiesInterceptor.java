@@ -2,6 +2,7 @@ package com.fy.baselibrary.retrofit.interceptor.cookie;
 
 import android.annotation.SuppressLint;
 
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.notify.L;
 import com.fy.baselibrary.utils.cache.SpfAgent;
@@ -26,13 +27,13 @@ public class AddCookiesInterceptor implements Interceptor {
 
         final Request.Builder builder = chain.request().newBuilder();
 
-        String[] cookieArray = SpfAgent.init("").getString(Constant.baseSpf, "cookie").split(";");
+        String[] cookieArray = SpfAgent.init("").getString("cookie").split(";");
 
         Observable.fromArray(cookieArray)
                 .subscribe(cookie -> {
                     //添加cookie
                     L.e("http", "AddCookiesInterceptor--" + cookie);
-                    builder.addHeader("cookie", cookie);
+                    builder.addHeader(ConfigUtils.getAddCookieKey(), cookie);//Cookie
                 });
 
         return chain.proceed(builder.build());

@@ -1,5 +1,6 @@
 package com.fy.baselibrary.utils;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.IntRange;
@@ -11,6 +12,9 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * SpannableString 富文本显示 工具类
@@ -29,6 +33,9 @@ public class SpanUtils {
      */
     public static Builder getBuilder() {
         return new Builder();
+    }
+    public static Builder getBuilder(@NonNull CharSequence text) {
+        return new Builder(text);
     }
 
 
@@ -55,6 +62,10 @@ public class SpanUtils {
 
         public Builder() {
             init("");
+        }
+
+        public Builder(@NonNull CharSequence text) {
+            init(text);
         }
 
         private void init(@NonNull CharSequence text){
@@ -128,8 +139,26 @@ public class SpanUtils {
         }
 
         /**
+         * 关键字 高亮显示
+         * @param keywordText  关键字
+         */
+        public Builder keywordHighlight(@NonNull String keywordText) {
+            Pattern p = Pattern.compile(keywordText);
+            Matcher m = p.matcher(spanBuilder);
+
+            while (m.find()) {
+                int start = m.start();
+                int end = m.end();
+                setSpan(start, end, null);
+            }
+
+            return this;
+        }
+
+        /**
          * 设置样式
          */
+        @SuppressLint("ResourceType")
         private void setSpan(int start, int end, ClickableSpan clickableSpan) {
             if (fgColor > 0) {
                 int color = ResUtils.getColor(fgColor);
@@ -164,4 +193,5 @@ public class SpanUtils {
             ds.setUnderlineText(false);//去掉下划线
         }
     }
+
 }

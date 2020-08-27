@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -27,11 +28,32 @@ public class ZipUtils {
     }
 
     /**
+     * 获取压缩文件大小
+     * @param filePath
+     * @return
+     */
+    public static long getZipSize(String filePath){
+        long size = 0;
+        try {
+            ZipFile f = new ZipFile(filePath);
+            Enumeration<? extends ZipEntry> en = f.entries();
+            while (en.hasMoreElements()) {
+                size += en.nextElement().getSize();
+            }
+        } catch (IOException e) {
+            size = 0;
+        }
+        return size;
+    }
+
+    /**
      * 解压zip到指定的路径
      * @param zipFileString  要解压的 文件（可以是 手机sd卡 中的文件，也可以是 assets 目录下的文件）
      * @param outPathString
      */
-    public static void unZipFolder(String zipFileString, String outPathString) {
+    public static void unZipFolder(String zipFileString, String outPathString, OnZipProgress zipProgress) {
+        long zipLength = getZipSize(zipFileString);
+
         InputStream is = null;
         try {
             if (FileUtils.fileIsExist(zipFileString)) {
@@ -40,7 +62,7 @@ public class ZipUtils {
                 is = ResUtils.getAssetsInputStream(zipFileString);
             }
 
-            unZipFolder(is, outPathString);
+            unZipFolder(is, outPathString, zipLength, zipProgress);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -57,10 +79,12 @@ public class ZipUtils {
      * @param is            要解压的 文件 输入流
      * @param outPathString 要解压缩路径
      */
-    public static void unZipFolder(InputStream is, String outPathString) throws Exception {
+    public static void unZipFolder(InputStream is, String outPathString, long zipLength, OnZipProgress zipProgress) throws Exception {
         ZipInputStream inZip = new ZipInputStream(is);
         ZipEntry zipEntry;
         String szName = "";
+        long count = 0;
+
         while ((zipEntry = inZip.getNextEntry()) != null) {
             szName = zipEntry.getName();
             if (zipEntry.isDirectory()) {
@@ -83,6 +107,12 @@ public class ZipUtils {
                 byte[] buffer = new byte[1024];
                 // 读取（字节）字节到缓冲区
                 while ((len = inZip.read(buffer)) != -1) {
+                    if (zipLength > 0 && null != zipProgress) {
+                        count += len;
+                        int progress = (int) ((count * 100) / zipLength);
+                        zipProgress.onProgress(progress);
+                    }
+
                     // 从缓冲区（0）位置写入（字节）字节
                     out.write(buffer, 0, len);
                     out.flush();
@@ -184,4 +214,8 @@ public class ZipUtils {
         return fileList;
     }
 
+    /** Zip解压进度回调 接口*/
+    public interface OnZipProgress{
+        void onProgress(int progress);
+    }
 }

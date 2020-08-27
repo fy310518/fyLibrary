@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:titleTextColor="@color/white">
+        style="@style/appBarStyle">
 
         <TextView
             android:id="@+id/toolbarTitle"
@@ -23,6 +23,11 @@
             android:text="ToolBar"
             android:textSize="18sp"
             android:visibility="gone" />
+
+        <ViewStub
+            android:id="@+id/toolbarViewStub"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </android.support.v7.widget.Toolbar>
 

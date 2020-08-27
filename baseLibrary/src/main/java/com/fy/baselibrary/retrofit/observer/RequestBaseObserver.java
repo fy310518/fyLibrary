@@ -37,6 +37,7 @@ public abstract class RequestBaseObserver<V> implements Observer<V> {
     private IProgressDialog progressDialog;
     private CommonDialog dialog;
 
+    /** 传递进来的 环境（AppCompatActivity or v4.app.Fragment） */
     private Object context;
 
     public RequestBaseObserver() {}
@@ -60,10 +61,11 @@ public abstract class RequestBaseObserver<V> implements Observer<V> {
         this.progressDialog = pDialog;
 
         dialog = progressDialog.getDialog();
-        if (null == dialog) return;
-        dialog.setDialogList(() -> {
-            if (null != disposed && !disposed.isDisposed()) disposed.dispose();
-        });
+        if (null != dialog) {
+            dialog.setDialogList(() -> {
+                if (null != disposed && !disposed.isDisposed()) disposed.dispose();
+            });
+        }
     }
 
     @Override

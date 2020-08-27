@@ -1,10 +1,13 @@
 package com.fy.baselibrary.h5;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceRequest;
@@ -22,7 +25,9 @@ import com.fy.baselibrary.utils.notify.L;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.concurrent.ExecutionException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * describe：默认的 WebViewClient
@@ -31,11 +36,16 @@ import java.util.concurrent.ExecutionException;
 public abstract class H5WebViewClient extends WebViewClient {
 
     public static String blank = "about:blank";
-
+    private boolean isUseLocalIntercept;//使用
     private OnSetStatusView onSetStatusView;
 
     public H5WebViewClient(OnSetStatusView onSetStatusView) {
         this.onSetStatusView = onSetStatusView;
+    }
+
+    public H5WebViewClient(OnSetStatusView onSetStatusView, boolean isUseLocalIntercept) {
+        this.onSetStatusView = onSetStatusView;
+        this.isUseLocalIntercept = isUseLocalIntercept;
     }
 
     //在开始加载网页时会回调
@@ -66,17 +76,25 @@ public abstract class H5WebViewClient extends WebViewClient {
     //当加载的网页需要重定向的时候就会回调这个函数告知我们应用程序是否需要接管控制网页加载，如果应用程序接管，
     //并且return true意味着主程序接管网页加载，如果返回false让webview自己处理。
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        WebView.HitTestResult hitTestResult = view.getHitTestResult();
-        //hitTestResult==null解决重定向问题(刷新后不能退出的bug)
-        if (!TextUtils.isEmpty(url) && hitTestResult == null) {
+    public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        if (!(url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://"))) {
+            Intent intent = new Intent("android.intent.action.VIEW");
+            Uri content_url = Uri.parse(url);
+            intent.setData(content_url);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            try {
+                webView.getContext().startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return true;
         }
-
-        view.loadUrl(url);
+        webView.loadUrl(url);
         return false;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override//webView 请求 拦截方法【下同】
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -87,14 +105,16 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Override//此 API 21后 过时
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         WebResourceResponse webResourceResponse;
+
+        if (isUseLocalIntercept) return super.shouldInterceptRequest(view, url);
+
         if (isImgUrl(url)){//1、如果是图片
             webResourceResponse = getImgWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
             return webResourceResponse;
-        } else if (isJsOrCssUrl(url)){
+        } else if (isWebResUrl(url)){
             webResourceResponse = getFileWebResResponse(url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
-
             return webResourceResponse;
         } else {
             return super.shouldInterceptRequest(view, url);
@@ -105,13 +125,10 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-
 //        view.loadUrl(blank); // 避免出现默认的错误界面
         // 断网或者网络连接超时
         if (errorCode == ERROR_HOST_LOOKUP || errorCode == ERROR_CONNECT || errorCode == ERROR_TIMEOUT) {
             setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
-        } else {
-            setTips(Constant.LAYOUT_ERROR_ID);
         }
     }
 
@@ -119,17 +136,15 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Override
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
-
 //        view.loadUrl(blank);// 避免出现默认的错误界面
         int statusCode = errorResponse.getStatusCode();
-        if (404 == statusCode || 500 == statusCode) {
+        if (400 == statusCode && request.getUrl().toString().toLowerCase().endsWith("favicon.ico")) return;//说明网页没有配置 网页 图标
+        if (400 == statusCode || 401 == statusCode || 404 == statusCode || 500 == statusCode) {
             setTips(Constant.LAYOUT_ERROR_ID);
-        } else {
-            setTips(Constant.LAYOUT_NETWORK_ERROR_ID);
         }
     }
 
-    private void setTips(int status){
+    protected void setTips(int status){
         if (null != onSetStatusView) {
             onSetStatusView.showHideViewFlag(status);
         }
@@ -143,17 +158,20 @@ public abstract class H5WebViewClient extends WebViewClient {
         if (TextUtils.isEmpty(url)) return false;
 
         url = url.toLowerCase();
-        if (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".gif")) return true;
+        if (url.endsWith(".png") || url.endsWith(".jpg") || url.endsWith(".gif")  || url.endsWith(".svg")) return true;
 
         return false;
     }
 
-    //判断是否是 js css文件
-    private boolean isJsOrCssUrl(String url){
+    //判断是否是 js css html 字体 文件
+    private boolean isWebResUrl(String url){
         if (TextUtils.isEmpty(url)) return false;
 
         url = url.toLowerCase();
-        if (url.endsWith("js") || url.endsWith(".css")) return true;
+        if (url.endsWith("js") || url.endsWith(".css") || url.endsWith(".woff")
+                || url.contains(".js?") || url.contains(".css?") || url.contains(".woff?")
+                || url.endsWith(".html") || url.endsWith(".htm")
+                || url.contains(".html?") || url.contains(".htm?")) return true;
 
         return false;
     }
@@ -163,12 +181,13 @@ public abstract class H5WebViewClient extends WebViewClient {
 //    css:mimeType ="text/css";
 //    html:mimeType ="text/html";
 //    jpg/png: mimeType = "image/png";
+//    woff: application/octet-stream
     private WebResourceResponse getImgWebResResponse(String url){
         WebResourceResponse webResourceResponse = null;
         File imgFile = null;
         try {
             imgFile = ImgLoadUtils.getImgCachePath(ConfigUtils.getAppCtx(), url);
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (null != imgFile) {
@@ -187,15 +206,19 @@ public abstract class H5WebViewClient extends WebViewClient {
     private WebResourceResponse getFileWebResResponse(String url){
         WebResourceResponse webResourceResponse = null;
 
-        final String filePath = FileUtils.folderIsExists(ConfigUtils.getFilePath()+ ".down", ConfigUtils.getType()).getPath();
+        final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
 
         File targetFile = FileUtils.getFile(url, filePath);
         if (targetFile.exists()) {
             try {
-                String mimeType = url.endsWith(".js") ? "application/x-javascript" : url.endsWith(".css") ? "text/css" : "text/html";
-                L.e("H5 图片地址", targetFile.getPath() + "------");
+                String mimeType = new URL(url).openConnection().getContentType();
+                L.e("H5 文件地址", targetFile.getPath() + "------");
                 webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", new FileInputStream(targetFile));
             } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {

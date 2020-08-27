@@ -24,7 +24,7 @@ import java.util.List;
  * RecyclerView 通用的Adapter
  * Created by fangs on 2017/7/31.
  */
-public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHolder> implements Filterable, View.OnClickListener{
+public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHolder> implements Filterable, View.OnClickListener, View.OnLongClickListener{
     private final static int TYPE_HEAD = 100000;
     private final static int TYPE_FOOTER = 200000;
 
@@ -33,7 +33,7 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     private boolean showEmptyView = false;
 
     protected Context mContext;
-    protected int mLayoutId;
+    protected int mLayoutId = -1;
     protected List<Item> mDatas;
     private SparseArrayCompat<View> mHeaderViews = new SparseArrayCompat<>();
     private SparseArrayCompat<View> mFootViews = new SparseArrayCompat<>();
@@ -43,7 +43,8 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     protected int mSelectedPos = -1;//实现单选  保存当前选中的position
 
     protected OnListener.OnEmptyClickListener OnEmptyClickListener;//列表条目点击事件
-    protected OnListener.OnitemClickListener itemClickListner;//列表条目点击事件
+    protected OnListener.OnitemClickListener itemClickListener;//列表条目点击事件
+    protected OnListener.OnItemLongClickListener itemLongClickListener;//列表条目长按事件
     protected OnListener.OnRemoveItemListener removeItemListener;
     public OnListener.OnChangeItemListener changeItemListener;
 
@@ -87,23 +88,22 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+        ViewHolder viewHolder = null;
         if (null != mHeaderViews.get(viewType)) {//头
-            return ViewHolder.createViewHolder(parent.getContext(), mHeaderViews.get(viewType));
+            viewHolder =  ViewHolder.createViewHolder(parent.getContext(), mHeaderViews.get(viewType));
         } else if (null != mFootViews.get(viewType)) {//尾
-            return ViewHolder.createViewHolder(parent.getContext(), mFootViews.get(viewType));
-        } else {
-            ViewHolder viewHolder;
-            if (viewType == TYPE_EMPTY) {//空布局
-                viewHolder = ViewHolder.createViewHolder(mContext, parent, ConfigUtils.getOnStatusAdapter().emptyDataView());
-                viewHolder.itemView.setOnClickListener(view -> {
-                    if (null != OnEmptyClickListener) OnEmptyClickListener.onRetry();
-                });
-            } else {//主体
-                viewHolder = ViewHolder.createViewHolder(mContext, parent, mLayoutId);
-                bindOnClick(viewHolder);
-            }
-            return viewHolder;
+            viewHolder =  ViewHolder.createViewHolder(parent.getContext(), mFootViews.get(viewType));
+        } else if (viewType == TYPE_EMPTY){//空布局
+            viewHolder = ViewHolder.createViewHolder(mContext, parent, ConfigUtils.getOnStatusAdapter().emptyDataView());
+            viewHolder.itemView.setOnClickListener(view -> {
+                if (null != OnEmptyClickListener) OnEmptyClickListener.onRetry();
+            });
+        } else if (mLayoutId != -1){//主体
+            viewHolder = ViewHolder.createViewHolder(mContext, parent, mLayoutId);
+            bindOnClick(viewHolder);
         }
+
+        return viewHolder;
     }
 
     @Override
@@ -163,18 +163,24 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
      */
     protected void bindOnClick(ViewHolder viewHolder) {
 //        避免 在onBindViewHolder里面频繁创建事件回调，应该在 onCreateViewHolder()中每次为新建的 View 设置一次即可
-        if (null != itemClickListner) {
+        if (null != itemClickListener) {
 //            需要在 convert() 最后使用 holder.itemView.setTag(Item)
             viewHolder.itemView.setOnClickListener(this);
         }
+
+        if (null != itemLongClickListener) viewHolder.itemView.setOnLongClickListener(this);
     }
 
     @ClickFilter()
     @Override
     public void onClick(View v) {
-        itemClickListner.onItemClick(v);
+        itemClickListener.onItemClick(v);
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        return itemLongClickListener.onLongClick(v);
+    }
 
     public List<Item> getmDatas() {
         return this.mDatas;
@@ -364,10 +370,18 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     /**
      * 设置 item 点击事件 监听
      *
-     * @param itemClickListner
+     * @param itemClickListener
      */
-    public void setItemClickListner(OnListener.OnitemClickListener itemClickListner) {
-        this.itemClickListner = itemClickListner;
+    public void setItemClickListener(OnListener.OnitemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    /**
+     * 设置item 长按 事件监听器
+     * @param itemLongClickListener
+     */
+    public void setItemLongClickListener(OnListener.OnItemLongClickListener itemLongClickListener) {
+        this.itemLongClickListener = itemLongClickListener;
     }
 
     /**
@@ -484,14 +498,14 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
 
             @Override//把过滤后的值返回出来
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                setmDatas((List<Item>) results.values);//此时，Adapter数据源就是过滤后的Results
+                filterResult(constraint, (List<Item>) results.values); //此时，Adapter数据源就是过滤后的Results
                 notifyDataSetChanged();//这个相当于从mDatas中删除了一些数据，只是数据的变化，故使用notifyDataSetChanged()
             }
         };
     }
 
     /**
-     * 如需 根据关键字筛选功能，子类 adapter 重写此方法，定义过滤规则
+     * 根据关键字筛选功能，子类 adapter 重写此方法，定义过滤规则
      * @param value         bean
      * @param constraint    过滤条件
      * @return              满足过滤条件返回 true
@@ -499,4 +513,14 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
     public boolean filterRule(Item value, CharSequence constraint){
         return false;
     }
+
+    /**
+     * 根据关键字筛选功能，过滤后 的数据
+     * @param constraint
+     * @param filterList   过滤后 的数据集合
+     */
+    public void filterResult(CharSequence constraint, List<Item> filterList){
+
+    }
+
 }

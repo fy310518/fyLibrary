@@ -64,7 +64,7 @@ public class FileRequestBodyConverter implements Converter<ArrayMap<String, Obje
 
         //解析 文本参数 装载到 MultipartBody 中
         for (String key : params.keySet()) {
-            if (!TextUtils.isEmpty(key) && !key.equals("LoadOnSubscribe") && !key.equals("uploadFile") && !key.equals("filePathList")){
+            if (!TextUtils.isEmpty(key) && !key.equals("LoadOnSubscribe") && !key.equals("uploadFile") && !key.equals("filePathList") && !key.equals("files")){
                 builder.addFormDataPart(key, (String) params.get(key));
             }
         }

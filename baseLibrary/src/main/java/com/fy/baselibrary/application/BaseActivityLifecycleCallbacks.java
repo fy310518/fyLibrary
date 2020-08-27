@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +57,8 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
 //            activity.finish();
 //            return;
 //        }
+
+        setFontDefault(activity);
 
         if (activity instanceof BaseMVPActivity) {
             ((BaseMVPActivity)activity).initPresenter();
@@ -189,6 +193,8 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
             AppCompatActivity act = (AppCompatActivity) activity;
             //设置导航图标要在setSupportActionBar方法之后
             act.setSupportActionBar(toolbar);
+            if (ConfigUtils.isTitleCenter()) act.getSupportActionBar().setDisplayShowTitleEnabled(false);//隐藏 toolbar 自带的标题view
+
             //在Toolbar左边显示一个返回按钮
             act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             //替换toolbar 自带的返回按钮
@@ -225,4 +231,18 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
         return isrun;
     }
 
+    /**
+     * 设置 app字体是否跟随系统 字体
+     * @param act
+     */
+    private void setFontDefault(Activity act){
+        if (ConfigUtils.isFontDefault()) return;
+
+        Resources res = act.getResources();
+        if (res.getConfiguration().fontScale != 1) {//非默认值
+            Configuration newConfig = new Configuration();
+            newConfig.setToDefaults();//设置默认
+            res.updateConfiguration(newConfig, res.getDisplayMetrics());
+        }
+    }
 }

@@ -18,10 +18,8 @@ import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
 import com.fy.baselibrary.statuslayout.StatusLayoutManager;
-import com.fy.baselibrary.utils.JumpUtils;
 import com.fy.baselibrary.utils.ResUtils;
 import com.fy.baselibrary.utils.notify.L;
-import com.fy.baselibrary.utils.cache.ACache;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -32,8 +30,6 @@ import butterknife.Unbinder;
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener, OnSetStatusView {
     public final String TAG = "lifeCycle --> " + getClass().getSimpleName();
-
-    protected ACache mCache;
 
     protected AppCompatActivity mContext;
     protected StatusLayoutManager slManager;
@@ -77,7 +73,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         L.e(TAG, "onAttach()");
 
         this.mContext = (AppCompatActivity) context;
-        mCache = ACache.get(mContext);
     }
 
     @Override
@@ -174,8 +169,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     protected void setToolbar(Toolbar toolbar, String title, View.OnClickListener listener){
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
         if (ConfigUtils.isTitleCenter()) {
             toolbar.setTitle("");
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);//隐藏 toolbar 自带的标题view
             TextView toolbarTitle = toolbar.findViewById(R.id.toolbarTitle);
             toolbarTitle.setText(title);
             toolbarTitle.setTextColor(ResUtils.getColor(ConfigUtils.getTitleColor()));
@@ -187,8 +185,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         if (ConfigUtils.getBgColor() > 0)
             toolbar.setBackgroundColor(ResUtils.getColor(ConfigUtils.getBgColor()));
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
         if (null != listener){
             //在Toolbar左边显示一个返回按钮
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -198,7 +194,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             toolbar.setNavigationOnClickListener(listener);
         }
 
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true);//允许fragment 显示 menu
     }
 
 
@@ -229,6 +225,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        onHiddenChanged(isVisibleToUser);
+
         if (isVisibleToUser) {
             isUIVisible = true;
             lazyLoad();

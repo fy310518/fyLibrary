@@ -21,6 +21,12 @@ public interface OnListener {
     }
 
     /**
+     * 长按事件
+     */
+    interface OnItemLongClickListener{
+        boolean onLongClick(View view);
+    }
+    /**
      * 删除 item 回调接口
      */
     interface OnRemoveItemListener {

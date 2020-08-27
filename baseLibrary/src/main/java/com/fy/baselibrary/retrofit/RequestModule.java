@@ -97,7 +97,7 @@ public class RequestModule {
         if (ConfigUtils.isEnableCacheInterceptor()) {//是否 添加缓存拦截器
             builder.addInterceptor(new IsUseCacheInterceptor())
                     .addNetworkInterceptor(new CacheNetworkInterceptor())
-                    .cache(new Cache(FileUtils.folderIsExists(FileUtils.cache + ".ok-cache", 1), 1024 * 1024 * 30L));
+                    .cache(new Cache(FileUtils.folderIsExists(FileUtils.cache, ConfigUtils.getType()), 1024 * 1024 * 30L));
         }
 
         List<Interceptor> interceptors = ConfigUtils.getInterceptor();
@@ -113,10 +113,10 @@ public class RequestModule {
         }
 
         if (null != is){
-            SSLSocketFactory sslSocketFactory = SSLUtil.getSSLSocketFactory(is);
-            if (null != sslSocketFactory) {
-                builder.sslSocketFactory(sslSocketFactory);
-            }
+            builder.sslSocketFactory(SSLUtil.getSSLSocketFactory(is));
+        } else {
+            builder.sslSocketFactory(SSLUtil.createSSLSocketFactory());
+            builder.hostnameVerifier(SSLUtil.DO_NOT_VERIFY);
         }
 
         return builder;

@@ -14,6 +14,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 文件工具类
@@ -21,15 +23,18 @@ import java.io.IOException;
  */
 public class FileUtils {
 
-    public static String cache = ConfigUtils.getFilePath() + ".cache";
-    /** 文件下载目录 */
-    public static String DOWN = ConfigUtils.getFilePath() + ".down";
+    /** 网络请求缓存目录 */
+    public static String cache = ConfigUtils.getFilePath() + ".ok-cache";
     /** 图片保存目录 */
     public static String IMG = ConfigUtils.getFilePath() + ".picture";
+    /** 头像保存目录 */
+    public static String headImg = ConfigUtils.getFilePath() + ".headImg";
     /** 压缩文件目录 */
     public static String ZIP = ConfigUtils.getFilePath() + ".zip";
-    /** 錄音文件目录 */
+    /** 录制音频，视频目录 */
     public static String record = ConfigUtils.getFilePath() + ".record";
+    /** 文件下载目录 */
+    public static String DOWN = ConfigUtils.getFilePath() + ".down";
 
     private FileUtils() {
         /* cannot be instantiated */
@@ -47,7 +52,11 @@ public class FileUtils {
 
     /**
      * 获取 内置SD卡路径
-     *
+     * Android Q 开始此方法废弃；需要适配分区存储，数据私有化
+     * 以下绕过 分配存储步骤
+     * 1 配置 requestLegacyExternalStorage=true 直接关闭分区存储 适配 Android Q
+     * 2 获取 所有文件访问权限 适配 Android R
+     * <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
      * @return "/mnt/sdcard
      */
     public static String getSDCardPath() {
@@ -220,12 +229,31 @@ public class FileUtils {
     }
 
     /**
+     * 递归获取文件夹中所有的文件
+     * @param file  文件夹
+     * @param data  得到的文件集合，可空
+     */
+    public static List<File> recursionGetFile(File file, List<File> data) {
+        if (null == data) data = new ArrayList<>();
+
+        File[] fileArray = file.listFiles();
+        for (File f : fileArray) {
+            if (f.isFile()) {
+                data.add(f);
+            } else {
+                recursionGetFile(f, data);
+            }
+        }
+
+        return data;
+    }
+
+    /**
      * 递归删除文件和文件夹
      *
      * @param file 要删除的根目录
      */
     public static void recursionDeleteFile(File file) {
-
         if (!file.exists()) return;
 
         if (file.isFile()) {
@@ -250,7 +278,6 @@ public class FileUtils {
 
     /**
      * 安全删除文件
-     *
      * @param file
      * @return
      */
@@ -397,7 +424,7 @@ public class FileUtils {
         sb.append("\n").append(content).append("\n");
 
         // 文件目录 + 文件名 String
-        File folder = folderIsExists(path, 2);
+        File folder = folderIsExists(path, ConfigUtils.getType());
         File file   = fileIsExists(folder.getPath() + File.separator + inputFileName);
 
         try {
@@ -416,11 +443,46 @@ public class FileUtils {
     }
 
     /**
-     * 复制文件
+     * 复制整个文件夹内容
+     * @param oldPath String 原文件路径 如：c:/fqf
+     * @param newPath String 复制后路径 如：f:/fqf/ff
+     * @return boolean
+     */
+    public static void copyFolder(String oldPath, String newPath) throws IOException {
+        File file = new File(oldPath);
+        String[] filePath = file.list();
+
+        if (!(new File(newPath)).exists()) {
+            (new File(newPath)).mkdirs();
+        } else {
+            return;//如果存在直接返回
+        }
+
+        for (int i = 0; i < filePath.length; i++) {
+            if ((new File(oldPath + file.separator + filePath[i])).isDirectory()) {
+                copyFolder(oldPath + file.separator + filePath[i], newPath + file.separator + filePath[i]);
+            }
+
+            if (new File(oldPath + file.separator + filePath[i]).isFile()) {
+                copyFile(oldPath + file.separator + filePath[i], newPath + file.separator + filePath[i]);
+            }
+        }
+    }
+
+    /**
+     * 复制单个文件
      * @param source 输入文件
      * @param target 输出文件
      */
-    public void copy(File source, File target) {
+    public static void copyFile(String source, String target) {
+        copyFile(new File(source), new File(target));
+    }
+
+    public static void copyFile(File source, File target) {
+        String targetPath = target.getPath();
+        deleteFileSafely(target);//先删除已存在的
+        target = fileIsExists(targetPath);//再创建一个文件；最后写入文件流
+
         FileInputStream fileInputStream = null;
         FileOutputStream fileOutputStream = null;
         try {
@@ -441,9 +503,6 @@ public class FileUtils {
             }
         }
     }
-
-
-
 
     /**
      * 获取SD卡的剩余容量 单位byte
