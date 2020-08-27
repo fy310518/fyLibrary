@@ -5,12 +5,15 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import com.fy.baselibrary.plugin.PluginManager;
@@ -159,6 +162,24 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
     }
 
     @Override
+    public void addContentView(View view, ViewGroup.LayoutParams params) {
+        if (null != mProxyActivity) {
+            mProxyActivity.addContentView(view, params);
+        } else {
+            super.addContentView(view, params);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (null != mProxyActivity) {
+            mProxyActivity.onConfigurationChanged(newConfig);
+        } else {
+            super.onConfigurationChanged(newConfig);
+        }
+    }
+
+    @Override
     public <T extends View> T findViewById(int id) {
         if (null != mProxyActivity) {
             return mProxyActivity.findViewById(id);
@@ -222,6 +243,8 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
         }
     }
 
+
+
     //获取当前环境
     public Activity getContext(){
         if (null != mProxyActivity) {
@@ -245,18 +268,7 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
      * @param bundle
      */
     public void jumpPlugin(@NonNull String activityName, Bundle bundle) {
-        Intent intent = getIntent();
-        intent.setAction(AppUtils.getLocalPackageName() + ".plugin.ProxyActivity");
-        intent.putExtra("className", activityName);
-
-        Bundle targetBundle = intent.getExtras();
-        if (null != bundle){
-            assert targetBundle != null;
-            targetBundle.putAll(bundle);
-        }
-        intent.putExtras(targetBundle);
-
-        startActivity(intent);
+        startActivity(getActivityIntent(activityName, bundle));
     }
 
     /**
@@ -266,18 +278,7 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
      * @param requestCode
      */
     public void jumpPlugin(@NonNull String activityName, Bundle bundle, int requestCode) {
-        Intent intent = getIntent();
-        intent.setAction(AppUtils.getLocalPackageName() + ".plugin.ProxyActivity");
-        intent.putExtra("className", activityName);
-
-        Bundle targetBundle = intent.getExtras();
-        if (null != bundle){
-            assert targetBundle != null;
-            targetBundle.putAll(bundle);
-        }
-        intent.putExtras(targetBundle);
-
-        startActivityForResult(intent, requestCode);
+        startActivityForResult(getActivityIntent(activityName, bundle), requestCode);
     }
 
     /**
@@ -285,14 +286,7 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
      * @param bundle 可空
      */
     public void jumpResult(Bundle bundle){
-        Intent intent = getIntent();
-        Bundle targetBundle = intent.getExtras();
-
-        if (null != bundle){
-            assert targetBundle != null;
-            targetBundle.putAll(bundle);
-        }
-        intent.putExtras(targetBundle);
+        Intent intent = getActivityIntent("", bundle);
 
         if (null != mProxyActivity){
             mProxyActivity.setResult(Activity.RESULT_OK, intent);
@@ -303,32 +297,39 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
         }
     }
 
+    //启动插件 普通服务
     public void startPservice(@NonNull String serviceName, Bundle bundle) {
-        String appId = AppUtils.getLocalPackageName();
-        Intent intent = getIntent();
-        if (null != mProxyActivity) {
-            intent.setAction(appId + ".plugin.ProxyService");
-            intent.setPackage(appId);
-            intent.putExtra("serviceName", serviceName);
-        } else {
-            intent.setClassName(appId, serviceName);
-        }
-
-        Bundle targetBundle = intent.getExtras();
-        if (null != bundle){
-            assert targetBundle != null;
-            targetBundle.putAll(bundle);
-        }
-        intent.putExtras(targetBundle);
-
-        startService(intent);
+        startService(getServiceIntent(serviceName, bundle));
     }
 
+    //插件 绑定服务
     public void bindPservice(@NonNull String serviceName, Bundle bundle, ServiceConnection conn, int flags) {
+        bindService(getServiceIntent(serviceName, bundle), conn, flags);
+    }
+
+    private Intent getActivityIntent(String activityName, Bundle bundle){
+        Intent intent = getIntent();
+
+        Bundle targetBundle = intent.getExtras();
+        if (null != bundle){
+            assert targetBundle != null;
+            targetBundle.putAll(bundle);
+        }
+        intent.putExtras(targetBundle);
+
+        if(!TextUtils.isEmpty(activityName)) {
+            intent.setAction(AppUtils.getLocalPackageName() + ".plugin.ProxyActivity");
+            intent.putExtra("className", activityName);
+        }
+
+        return intent;
+    }
+
+    private Intent getServiceIntent(@NonNull String serviceName, Bundle bundle){
         String appId = AppUtils.getLocalPackageName();
         Intent intent = getIntent();
         if (null != mProxyActivity) {
-            intent.setClassName(appId, "com.cxy.plugin.service.ProxyService");
+            intent.setClassName(appId, "com.fy.baselibrary.plugin.service.ProxyService");
             intent.putExtra("serviceName", serviceName);
         } else {
             intent.setClassName(appId, serviceName);
@@ -341,6 +342,6 @@ public class PluginBaseActivity extends AppCompatActivity implements PluginInter
         }
         intent.putExtras(targetBundle);
 
-        bindService(intent, conn, flags);
+        return intent;
     }
 }

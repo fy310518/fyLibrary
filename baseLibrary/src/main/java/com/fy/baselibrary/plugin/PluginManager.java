@@ -84,7 +84,6 @@ public class PluginManager {
     public Context getContext() {
         return mContext;
     }
-    
     public Resources getPluginResource() {
         return pluginResource;
     }
