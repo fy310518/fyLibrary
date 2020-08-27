@@ -23,7 +23,7 @@ import com.fy.baselibrary.utils.AppUtils;
  * 接口方式插件化
  * 插件app 父类 activity
  */
-public class PluginBaseActivity extends AppCompatActivity implements PluginInterface {
+public class PluginBaseActivity extends Activity implements PluginInterface {
 
     protected Activity mProxyActivity;
 
