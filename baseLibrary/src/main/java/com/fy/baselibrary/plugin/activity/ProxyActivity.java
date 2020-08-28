@@ -1,18 +1,20 @@
 package com.fy.baselibrary.plugin.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+
 import com.fy.baselibrary.plugin.PluginManager;
+
 import java.lang.reflect.Constructor;
 
 /**
  * 接口插件化：代理activity
  * Created by zjp on 2020/6/30 13:36
  */
-public class ProxyActivity extends AppCompatActivity {
+public class ProxyActivity extends Activity {
 
     //需要加载插件的全类名
     private String className;
