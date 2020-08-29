@@ -1,4 +1,4 @@
-package com.fy.baselibrary.plugin.activity;
+package com.fy.plugin.activity;
 
 import android.app.Activity;
 import android.content.Intent;

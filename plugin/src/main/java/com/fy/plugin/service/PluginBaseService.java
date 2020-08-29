@@ -1,4 +1,4 @@
-package com.fy.baselibrary.plugin.service;
+package com.fy.plugin.service;
 
 import android.app.Service;
 import android.content.ContentResolver;
@@ -8,7 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.IBinder;
 
-import com.fy.baselibrary.plugin.PluginManager;
+import com.fy.plugin.PluginManager;
+
 
 /**
  * description 接口方式插件化 --》插件app 父类 Service

@@ -1,2 +1,4 @@
 include ':app',':baseLibrary',
         ':mapLibrary'
+
+include ':plugin'

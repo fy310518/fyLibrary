@@ -1,23 +1,25 @@
-package com.fy.baselibrary.plugin.activity;
+package com.fy.plugin.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import com.fy.baselibrary.plugin.PluginManager;
-import com.fy.baselibrary.utils.AppUtils;
+
+import com.fy.plugin.PluginManager;
 
 /**
  * 接口方式插件化
@@ -328,7 +330,7 @@ public class PluginBaseActivity extends Activity implements PluginInterface {
         intent.putExtras(targetBundle);
 
         if(!TextUtils.isEmpty(activityName)) {
-            intent.setAction(AppUtils.getLocalPackageName() + ".plugin.ProxyActivity");
+            intent.setAction(getLocalPackageName(getContext()) + ".plugin.ProxyActivity");
             intent.putExtra("className", activityName);
         }
 
@@ -336,10 +338,10 @@ public class PluginBaseActivity extends Activity implements PluginInterface {
     }
 
     private Intent getServiceIntent(@NonNull String serviceName, Bundle bundle){
-        String appId = AppUtils.getLocalPackageName();
+        String appId = getLocalPackageName(getContext());
         Intent intent = getIntent();
         if (null != mProxyActivity) {
-            intent.setClassName(appId, "com.fy.baselibrary.plugin.service.ProxyService");
+            intent.setClassName(appId, "com.fy.plugin.service.ProxyService");
             intent.putExtra("serviceName", serviceName);
         } else {
             intent.setClassName(appId, serviceName);
@@ -353,5 +355,20 @@ public class PluginBaseActivity extends Activity implements PluginInterface {
         intent.putExtras(targetBundle);
 
         return intent;
+    }
+
+    /**
+     * 获取当前应用的 应用id
+     * @return 应用id（包名）
+     */
+    public static String getLocalPackageName(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo info = packageManager.getPackageInfo(context.getPackageName(), 0);
+            return info.packageName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "获取失败";
+        }
     }
 }

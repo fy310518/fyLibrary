@@ -1,7 +1,8 @@
-package com.fy.baselibrary.plugin;
+package com.fy.plugin;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,10 +10,9 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
-import com.fy.baselibrary.plugin.activity.ProxyActivity;
-import com.fy.baselibrary.utils.JumpUtils;
-import com.fy.baselibrary.utils.notify.T;
+import com.fy.plugin.activity.ProxyActivity;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -113,16 +113,19 @@ public class PluginManager {
     /**
      * 跳转到插件中的 指定activity
      * @param activity
-     * @param activityName 要启动的 activity 完整包名【如：com.fy.baselibrary.plugin.activity.ProxyActivity】
+     * @param activityName 要启动的 activity 完整包名【如：com.fy.plugin.activity.ProxyActivity】
      */
     public static void jumpPlugin(@NonNull Activity activity, @NonNull String activityName, Bundle bundle) {
         if (isExistence(activityName)){
             if (null == bundle) bundle = new Bundle();
             //由于插件只有一个activity，所以取数组第0个
             bundle.putString("className", activityName);
-            JumpUtils.jump(activity, ProxyActivity.class, bundle);
+
+            Intent intent = new Intent(activity, ProxyActivity.class);
+            intent.putExtras(bundle);
+            activity.startActivity(intent);
         } else {
-            T.showLong("界面不存在");
+            Toast.makeText(activity, "界面不存在", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -138,9 +141,12 @@ public class PluginManager {
             if (null == bundle) bundle = new Bundle();
             //由于插件只有一个activity，所以取数组第0个
             bundle.putString("className", activityName);
-            JumpUtils.jump(activity, ProxyActivity.class, bundle, requestCode);
+
+            Intent intent = new Intent(activity, ProxyActivity.class);
+            intent.putExtras(bundle);
+            activity.startActivityForResult(intent, requestCode);//原生默认
         } else {
-            T.showLong("界面不存在");
+            Toast.makeText(activity, "界面不存在", Toast.LENGTH_LONG).show();
         }
     }
 

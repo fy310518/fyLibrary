@@ -1,10 +1,10 @@
-package com.fy.baselibrary.plugin.service;
+package com.fy.plugin.service;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.fy.baselibrary.plugin.PluginManager;
+import com.fy.plugin.PluginManager;
 
 import java.lang.reflect.Constructor;
 

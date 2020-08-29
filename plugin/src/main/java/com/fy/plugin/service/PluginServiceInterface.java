@@ -1,4 +1,4 @@
-package com.fy.baselibrary.plugin.service;
+package com.fy.plugin.service;
 
 import android.app.Service;
 import android.content.Intent;

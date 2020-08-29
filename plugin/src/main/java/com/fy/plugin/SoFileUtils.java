@@ -1,13 +1,8 @@
-package com.fy.baselibrary.plugin;
+package com.fy.plugin;
 
 import android.content.Context;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
-
-import com.fy.baselibrary.application.ioc.ConfigUtils;
-import com.fy.baselibrary.utils.FileUtils;
-import com.fy.baselibrary.utils.ZipUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +21,6 @@ import dalvik.system.PathClassLoader;
  */
 public class SoFileUtils {
     private static final String TAG = "PluginManager";
-    private static int BUFFER = 4096;
 
     public static String getSoPath(Context context) {
         return context.getDir("libs", Context.MODE_PRIVATE).getAbsolutePath() + File.separator + Build.CPU_ABI;
@@ -35,7 +29,7 @@ public class SoFileUtils {
 
     public static String copySo(Context context, String dexPath) {
         String fileName = dexPath.substring(dexPath.lastIndexOf("/"), dexPath.length()).replace("/", "");
-        String unZipPath = FileUtils.folderIsExists(FileUtils.ZIP, ConfigUtils.getType()).getPath() + File.separator + fileName.replace(".apk", "") + File.separator;
+        String unZipPath = FyFileUtils.folderIsExists("zip", 0).getPath() + File.separator + fileName.replace(".apk", "") + File.separator;
 
         String soPath = getSoPath(context);
 
@@ -44,9 +38,9 @@ public class SoFileUtils {
             return soPath;
         }
 
-        ZipUtils.unZipFolder(dexPath, unZipPath, null);//解压插件apk
+        FyFileUtils.unZipFolder(dexPath, unZipPath);//解压插件apk
 
-        List<File> fileList = FileUtils.recursionGetFile(new File(unZipPath + "lib/"), null);
+        List<File> fileList = FyFileUtils.recursionGetFile(new File(unZipPath + "lib/"), null);
         for (int i = 0; i < fileList.size(); i++) {
             File file = fileList.get(i);
             String parentPath = file.getParentFile().getAbsolutePath();
@@ -54,13 +48,13 @@ public class SoFileUtils {
             if (parentPath.contains(Build.CPU_ABI)) {
                 Log.i(TAG, "parentPath " + soPath);
                 try {
-                    FileUtils.copyFolder(parentPath, soPath);//copy插件的so到唯一单独文件夹
+                    FyFileUtils.copyFolder(parentPath, soPath);//copy插件的so到唯一单独文件夹
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-        FileUtils.recursionDeleteFile(new File(unZipPath));//删除解压包
+        FyFileUtils.recursionDeleteFile(new File(unZipPath));//删除解压包
         return soPath;
     }
 
