@@ -133,7 +133,7 @@ public class RequestModule {
             }
         });
         if (ConfigUtils.isDEBUG()) loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        else loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
+        else loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
         return loggingInterceptor;
     }
