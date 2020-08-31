@@ -60,7 +60,7 @@ public class FileProgressRequestBody extends RequestBody {
                 total += read;
                 sink.flush();
 
-                if (!ispercent && sum > 1){
+                if (!ispercent && sum >= 1){
                     if (null != subscribe)subscribe.onRead(read);
                 }
             }
