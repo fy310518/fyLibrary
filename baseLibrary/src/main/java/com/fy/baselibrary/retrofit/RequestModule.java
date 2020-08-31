@@ -86,7 +86,6 @@ public class RequestModule {
                 .retryOnConnectionFailure(true)//错误重连
                 .addInterceptor(new RequestHeaderInterceptor())
                 .addInterceptor(new FileDownInterceptor())
-                .addNetworkInterceptor(logInterceptor)
                 .addInterceptor(new CacheCookiesInterceptor())
                 .addNetworkInterceptor(new AddCookiesInterceptor())
                 .hostnameVerifier((hostname, session) -> {
@@ -98,6 +97,10 @@ public class RequestModule {
             builder.addInterceptor(new IsUseCacheInterceptor())
                     .addNetworkInterceptor(new CacheNetworkInterceptor())
                     .cache(new Cache(FileUtils.folderIsExists(FileUtils.cache, ConfigUtils.getType()), 1024 * 1024 * 30L));
+        }
+
+        if (ConfigUtils.isDEBUG()){//是否使用日志拦截器
+            builder.addInterceptor(logInterceptor);
         }
 
         List<Interceptor> interceptors = ConfigUtils.getInterceptor();
@@ -132,8 +135,7 @@ public class RequestModule {
 //                FileUtils.fileToInputContent("log", "日志.txt", message);
             }
         });
-        if (ConfigUtils.isDEBUG()) loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        else loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         return loggingInterceptor;
     }

@@ -3,6 +3,7 @@ package com.fy.baselibrary.utils.notify;
 import android.util.Log;
 
 import com.fy.baselibrary.BuildConfig;
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 
 /**
  * Log统一管理类
@@ -15,7 +16,7 @@ public class L {
         throw new UnsupportedOperationException("cannot be instantiated");
     }
 
-    public static boolean isDebug = true;// 是否需要打印bug
+    public static boolean isDebug = ConfigUtils.isDEBUG();// 是否需要打印bug
     private static final String TAG = "fy";
 
     // 下面四个是默认tag的函数
