@@ -109,12 +109,12 @@ public class PermissionFragment extends BaseFragment {
                 List<String> rationaleList = PermissionUtils.getShouldRationaleList(getActivity(), mPermissions);
                 if (null != rationaleList && rationaleList.size() > 0) {
                     if (rationaleList.size() < mPermissions.length){
-                        showPermissionDialog(false, false);
+                        showPermissionDialog(true, false);
                     } else {
                         showPermissionDialog(false, true);//全部拒绝
                     }
                 } else {
-                    showPermissionDialog(true, true);
+                    showPermissionDialog(false, true);
                 }
             }
         }
