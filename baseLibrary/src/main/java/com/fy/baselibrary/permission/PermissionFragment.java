@@ -111,7 +111,7 @@ public class PermissionFragment extends BaseFragment {
                     if (rationaleList.size() < mPermissions.length){
                         showPermissionDialog(true, false);
                     } else {
-                        showPermissionDialog(false, true);//全部拒绝
+                        showPermissionDialog(true, true);//全部拒绝
                     }
                 } else {
                     showPermissionDialog(false, true);
