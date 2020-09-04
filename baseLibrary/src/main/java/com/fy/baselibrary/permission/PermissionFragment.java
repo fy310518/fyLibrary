@@ -132,7 +132,7 @@ public class PermissionFragment extends BaseFragment {
             boolean requestSpecialPermission = false;
             // 判断当前是否包含特殊权限
             if (PermissionUtils.containsSpecialPermission(requestPermission)) {
-                if (requestPermission.contains(OnPermission.MANAGE_EXTERNAL_STORAGE) && !PermissionUtils.hasStoragePermission(getActivity())) {
+                if (requestPermission.contains(Permission.MANAGE_EXTERNAL_STORAGE) && !PermissionUtils.hasStoragePermission(getActivity())) {
                     // 当前必须是 Android 11 及以上版本，因为 hasStoragePermission 在旧版本上是拿旧权限做的判断，所以这里需要多判断一次版本
                     if (OSUtils.isAndroid11()) {
                         // 跳转到存储权限设置界面
@@ -141,25 +141,25 @@ public class PermissionFragment extends BaseFragment {
                     }
                 }
 
-                if (requestPermission.contains(OnPermission.REQUEST_INSTALL_PACKAGES) && !PermissionUtils.hasInstallPermission(getActivity())) {
+                if (requestPermission.contains(Permission.REQUEST_INSTALL_PACKAGES) && !PermissionUtils.hasInstallPermission(getActivity())) {
                     // 跳转到安装权限设置界面
                     startActivityForResult(PermissionUtils.getInstallPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
                     requestSpecialPermission = true;
                 }
 
-                if (requestPermission.contains(OnPermission.SYSTEM_ALERT_WINDOW) && !PermissionUtils.hasWindowPermission(getActivity())) {
+                if (requestPermission.contains(Permission.SYSTEM_ALERT_WINDOW) && !PermissionUtils.hasWindowPermission(getActivity())) {
                     // 跳转到悬浮窗设置页面
                     startActivityForResult(PermissionUtils.getWindowPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
                     requestSpecialPermission = true;
                 }
 
-                if (requestPermission.contains(OnPermission.NOTIFICATION_SERVICE) && !PermissionUtils.hasNotifyPermission(getActivity())) {
+                if (requestPermission.contains(Permission.NOTIFICATION_SERVICE) && !PermissionUtils.hasNotifyPermission(getActivity())) {
                     // 跳转到通知栏权限设置页面
                     startActivityForResult(PermissionUtils.getNotifyPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
                     requestSpecialPermission = true;
                 }
 
-                if (requestPermission.contains(OnPermission.WRITE_SETTINGS) && !PermissionUtils.hasSettingPermission(getActivity())) {
+                if (requestPermission.contains(Permission.WRITE_SETTINGS) && !PermissionUtils.hasSettingPermission(getActivity())) {
                     // 跳转到系统设置权限设置页面
                     startActivityForResult(PermissionUtils.getSettingPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
                     requestSpecialPermission = true;

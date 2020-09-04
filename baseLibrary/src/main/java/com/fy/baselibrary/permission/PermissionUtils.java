@@ -56,37 +56,37 @@ public class PermissionUtils {
         if (!OSUtils.isAndroid6()) return true;
 
         // 检测存储权限
-        if (OnPermission.MANAGE_EXTERNAL_STORAGE.equals(permission)) return hasStoragePermission(context);
+        if (Permission.MANAGE_EXTERNAL_STORAGE.equals(permission)) return hasStoragePermission(context);
 
         // 检测安装权限
-        if (OnPermission.REQUEST_INSTALL_PACKAGES.equals(permission)) return hasInstallPermission(context);
+        if (Permission.REQUEST_INSTALL_PACKAGES.equals(permission)) return hasInstallPermission(context);
 
         // 检测悬浮窗权限
-        if (OnPermission.SYSTEM_ALERT_WINDOW.equals(permission)) return hasWindowPermission(context);
+        if (Permission.SYSTEM_ALERT_WINDOW.equals(permission)) return hasWindowPermission(context);
 
         // 检测通知栏权限
-        if (OnPermission.NOTIFICATION_SERVICE.equals(permission)) return hasNotifyPermission(context);
+        if (Permission.NOTIFICATION_SERVICE.equals(permission)) return hasNotifyPermission(context);
 
         // 检测系统权限
-        if (OnPermission.WRITE_SETTINGS.equals(permission)) return hasSettingPermission(context);
+        if (Permission.WRITE_SETTINGS.equals(permission)) return hasSettingPermission(context);
 
         if (!OSUtils.isAndroid10()) {
             // 检测 10.0 的三个新权限，如果当前版本不符合最低要求，那么就用旧权限进行检测
-            if (OnPermission.ACCESS_BACKGROUND_LOCATION.equals(permission) ||
-                    OnPermission.ACCESS_MEDIA_LOCATION.equals(permission)) {
+            if (Permission.ACCESS_BACKGROUND_LOCATION.equals(permission) ||
+                    Permission.ACCESS_MEDIA_LOCATION.equals(permission)) {
                 return true;
-            } else if (OnPermission.ACTIVITY_RECOGNITION.equals(permission)) {
-                return context.checkSelfPermission(OnPermission.BODY_SENSORS) == PackageManager.PERMISSION_GRANTED;
+            } else if (Permission.ACTIVITY_RECOGNITION.equals(permission)) {
+                return context.checkSelfPermission(Permission.BODY_SENSORS) == PackageManager.PERMISSION_GRANTED;
             }
         }
 
 //        ContextCompat.checkSelfPermission();
         if (!OSUtils.isAndroid8()) {
             // 检测 8.0 的两个新权限，如果当前版本不符合最低要求，那么就用旧权限进行检测
-            if (OnPermission.ANSWER_PHONE_CALLS.equals(permission)) {
-                return context.checkSelfPermission(OnPermission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_GRANTED;
-            } else if (OnPermission.READ_PHONE_NUMBERS.equals(permission)) {
-                return context.checkSelfPermission(OnPermission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
+            if (Permission.ANSWER_PHONE_CALLS.equals(permission)) {
+                return context.checkSelfPermission(Permission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_GRANTED;
+            } else if (Permission.READ_PHONE_NUMBERS.equals(permission)) {
+                return context.checkSelfPermission(Permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
             }
         }
 
@@ -122,22 +122,22 @@ public class PermissionUtils {
 
         if (!OSUtils.isAndroid10()) {
             // 检测 10.0 的三个新权限，如果当前版本不符合最低要求，那么就用旧权限进行检测
-            if (OnPermission.ACCESS_BACKGROUND_LOCATION.equals(permission) ||
-                    OnPermission.ACCESS_MEDIA_LOCATION.equals(permission)) {
+            if (Permission.ACCESS_BACKGROUND_LOCATION.equals(permission) ||
+                    Permission.ACCESS_MEDIA_LOCATION.equals(permission)) {
                 return false;
-            } else if (OnPermission.ACTIVITY_RECOGNITION.equals(permission) ) {
-                return activity.checkSelfPermission(OnPermission.BODY_SENSORS) == PackageManager.PERMISSION_DENIED &&
+            } else if (Permission.ACTIVITY_RECOGNITION.equals(permission) ) {
+                return activity.checkSelfPermission(Permission.BODY_SENSORS) == PackageManager.PERMISSION_DENIED &&
                         !activity.shouldShowRequestPermissionRationale(permission);
             }
         }
 
         if (!OSUtils.isAndroid8()) {
             // 检测 8.0 的两个新权限，如果当前版本不符合最低要求，那么就用旧权限进行检测
-            if (OnPermission.ANSWER_PHONE_CALLS.equals(permission)) {
-                return activity.checkSelfPermission(OnPermission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_DENIED &&
+            if (Permission.ANSWER_PHONE_CALLS.equals(permission)) {
+                return activity.checkSelfPermission(Permission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_DENIED &&
                         !activity.shouldShowRequestPermissionRationale(permission);
-            } else if (OnPermission.READ_PHONE_NUMBERS.equals(permission) ) {
-                return activity.checkSelfPermission(OnPermission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED &&
+            } else if (Permission.READ_PHONE_NUMBERS.equals(permission) ) {
+                return activity.checkSelfPermission(Permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED &&
                         !activity.shouldShowRequestPermissionRationale(permission);
             }
         }
@@ -248,11 +248,11 @@ public class PermissionUtils {
      * 判断某个权限是否是特殊权限
      */
     public static boolean isSpecialPermission(String permission) {
-        return OnPermission.MANAGE_EXTERNAL_STORAGE.equals(permission) ||
-                OnPermission.REQUEST_INSTALL_PACKAGES.equals(permission) ||
-                OnPermission.SYSTEM_ALERT_WINDOW.equals(permission) ||
-                OnPermission.NOTIFICATION_SERVICE.equals(permission) ||
-                OnPermission.WRITE_SETTINGS.equals(permission);
+        return Permission.MANAGE_EXTERNAL_STORAGE.equals(permission) ||
+                Permission.REQUEST_INSTALL_PACKAGES.equals(permission) ||
+                Permission.SYSTEM_ALERT_WINDOW.equals(permission) ||
+                Permission.NOTIFICATION_SERVICE.equals(permission) ||
+                Permission.WRITE_SETTINGS.equals(permission);
     }
 
 
@@ -281,15 +281,15 @@ public class PermissionUtils {
             // 如果当前只有一个权限被拒绝了
             if (deniedPermissions.size() == 1) {
                 String permission = deniedPermissions.get(0);
-                if (OnPermission.MANAGE_EXTERNAL_STORAGE.equals(permission)) {
+                if (Permission.MANAGE_EXTERNAL_STORAGE.equals(permission)) {
                     return getStoragePermissionIntent(context);
-                } else if (OnPermission.REQUEST_INSTALL_PACKAGES.equals(permission)) {
+                } else if (Permission.REQUEST_INSTALL_PACKAGES.equals(permission)) {
                     return getInstallPermissionIntent(context);
-                } else if (OnPermission.SYSTEM_ALERT_WINDOW.equals(permission)) {
+                } else if (Permission.SYSTEM_ALERT_WINDOW.equals(permission)) {
                     return getWindowPermissionIntent(context);
-                } else if (OnPermission.NOTIFICATION_SERVICE.equals(permission)) {
+                } else if (Permission.NOTIFICATION_SERVICE.equals(permission)) {
                     return getNotifyPermissionIntent(context);
-                } else if (OnPermission.WRITE_SETTINGS.equals(permission)) {
+                } else if (Permission.WRITE_SETTINGS.equals(permission)) {
                     return getSettingPermissionIntent(context);
                 } else {
                     return jumpPermiSettting(context);
