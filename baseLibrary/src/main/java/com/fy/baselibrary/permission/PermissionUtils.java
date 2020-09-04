@@ -41,7 +41,7 @@ public class PermissionUtils {
     public static List<String> getRequestPermissionList(Context context, String... permissions) {
         List<String> requestPermissionCount = new ArrayList<>();
         for (String permission : permissions){
-            if (isPermissionGranted(context, permission)) {
+            if (!isPermissionGranted(context, permission)) {
                 requestPermissionCount.add(permission);
             }
         }
