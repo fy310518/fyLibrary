@@ -1,19 +1,24 @@
 package com.fy.baselibrary.permission;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.fy.baselibrary.BuildConfig;
 import com.fy.baselibrary.retrofit.ServerException;
+import com.fy.baselibrary.utils.os.OSUtils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,12 +37,11 @@ public class PermissionUtils {
     /**
      * 获取需要去申请权限的权限列表
      * @param permissions
-     * @return
      */
-    public static List<String> getRequestPermissionList(Context context, String[] permissions) {
+    public static List<String> getRequestPermissionList(Context context, String... permissions) {
         List<String> requestPermissionCount = new ArrayList<>();
         for (String permission : permissions){
-            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (isPermissionGranted(context, permission)) {
                 requestPermissionCount.add(permission);
             }
         }
@@ -45,20 +49,101 @@ public class PermissionUtils {
     }
 
     /**
-     * 检查是否需要提示用户对该权限的授权进行说明，返回boolean类型
-     * @return
+     * 判断某个权限是否授予
+     */
+    private static boolean isPermissionGranted(Context context, String permission) {
+        // 如果是安卓 6.0 以下版本就默认授予
+        if (!OSUtils.isAndroid6()) return true;
+
+        // 检测存储权限
+        if (OnPermission.MANAGE_EXTERNAL_STORAGE.equals(permission)) return hasStoragePermission(context);
+
+        // 检测安装权限
+        if (OnPermission.REQUEST_INSTALL_PACKAGES.equals(permission)) return hasInstallPermission(context);
+
+        // 检测悬浮窗权限
+        if (OnPermission.SYSTEM_ALERT_WINDOW.equals(permission)) return hasWindowPermission(context);
+
+        // 检测通知栏权限
+        if (OnPermission.NOTIFICATION_SERVICE.equals(permission)) return hasNotifyPermission(context);
+
+        // 检测系统权限
+        if (OnPermission.WRITE_SETTINGS.equals(permission)) return hasSettingPermission(context);
+
+        if (!OSUtils.isAndroid10()) {
+            // 检测 10.0 的三个新权限，如果当前版本不符合最低要求，那么就用旧权限进行检测
+            if (OnPermission.ACCESS_BACKGROUND_LOCATION.equals(permission) ||
+                    OnPermission.ACCESS_MEDIA_LOCATION.equals(permission)) {
+                return true;
+            } else if (OnPermission.ACTIVITY_RECOGNITION.equals(permission)) {
+                return context.checkSelfPermission(OnPermission.BODY_SENSORS) == PackageManager.PERMISSION_GRANTED;
+            }
+        }
+
+//        ContextCompat.checkSelfPermission();
+        if (!OSUtils.isAndroid8()) {
+            // 检测 8.0 的两个新权限，如果当前版本不符合最低要求，那么就用旧权限进行检测
+            if (OnPermission.ANSWER_PHONE_CALLS.equals(permission)) {
+                return context.checkSelfPermission(OnPermission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_GRANTED;
+            } else if (OnPermission.READ_PHONE_NUMBERS.equals(permission)) {
+                return context.checkSelfPermission(OnPermission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
+            }
+        }
+
+        return context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * 检查是否需要提示用户对该权限的授权进行说明【其实是 判断申请的权限列表 是否被永久拒绝】
      */
     public static List<String> getShouldRationaleList(Activity activity, String... permissions) {
         if (null != permissions) {
             List<String> strings = new ArrayList<>();
             for (String permission : permissions) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+                if (isPermissionPermanentDenied(activity, permission)) {
                     strings.add(permission);
                 }
             }
             return strings;
         }
         return null;
+    }
+
+    /**
+     * 判断某个权限是否被永久拒绝
+     * @param activity              Activity对象
+     * @param permission            请求的权限
+     */
+    private static boolean isPermissionPermanentDenied(Activity activity, String permission) {
+        if (!OSUtils.isAndroid6()) return false;
+
+        // 特殊权限不算，本身申请方式和危险权限申请方式不同，因为没有永久拒绝的选项，所以这里返回 false
+        if (isSpecialPermission(permission)) return false;
+
+        if (!OSUtils.isAndroid10()) {
+            // 检测 10.0 的三个新权限，如果当前版本不符合最低要求，那么就用旧权限进行检测
+            if (OnPermission.ACCESS_BACKGROUND_LOCATION.equals(permission) ||
+                    OnPermission.ACCESS_MEDIA_LOCATION.equals(permission)) {
+                return false;
+            } else if (OnPermission.ACTIVITY_RECOGNITION.equals(permission) ) {
+                return activity.checkSelfPermission(OnPermission.BODY_SENSORS) == PackageManager.PERMISSION_DENIED &&
+                        !activity.shouldShowRequestPermissionRationale(permission);
+            }
+        }
+
+        if (!OSUtils.isAndroid8()) {
+            // 检测 8.0 的两个新权限，如果当前版本不符合最低要求，那么就用旧权限进行检测
+            if (OnPermission.ANSWER_PHONE_CALLS.equals(permission)) {
+                return activity.checkSelfPermission(OnPermission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_DENIED &&
+                        !activity.shouldShowRequestPermissionRationale(permission);
+            } else if (OnPermission.READ_PHONE_NUMBERS.equals(permission) ) {
+                return activity.checkSelfPermission(OnPermission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED &&
+                        !activity.shouldShowRequestPermissionRationale(permission);
+            }
+        }
+
+        return activity.checkSelfPermission(permission) == PackageManager.PERMISSION_DENIED &&
+                !activity.shouldShowRequestPermissionRationale(permission);
     }
 
     /**
@@ -91,17 +176,226 @@ public class PermissionUtils {
         }
     }
 
+    /**
+     * 是否有存储权限
+     */
+    public static boolean hasStoragePermission(Context context) {
+        if (OSUtils.isAndroid11()) {
+            return Environment.isExternalStorageManager();
+        } else {
+            List<String> requestPermission = PermissionUtils.getRequestPermissionList(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+            return requestPermission.size() == 0;
+        }
+    }
+
+    /**
+     * 是否有安装权限
+     */
+    public static boolean hasInstallPermission(Context context) {
+        if (OSUtils.isAndroid8()) {
+            return context.getPackageManager().canRequestPackageInstalls();
+        }
+        return true;
+    }
+
+    /**
+     * 是否有悬浮窗权限
+     */
+    static boolean hasWindowPermission(Context context) {
+        if (OSUtils.isAndroid6()) {
+            return Settings.canDrawOverlays(context);
+        }
+        return true;
+    }
+
+    /**
+     * 是否有通知栏权限
+     * 参考 Support 库中的方法： NotificationManagerCompat.from(context).areNotificationsEnabled();
+     */
+    public static boolean hasNotifyPermission(Context context) {
+        if (OSUtils.isAndroid7()) {
+            return context.getSystemService(NotificationManager.class).areNotificationsEnabled();
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 是否有系统设置权限
+     */
+    public static boolean hasSettingPermission(Context context) {
+        if (OSUtils.isAndroid6()) {
+            return Settings.System.canWrite(context);
+        }
+        return true;
+    }
+
+    /**
+     * 判断某个权限集合是否包含特殊权限
+     */
+    public static boolean containsSpecialPermission(List<String> permissions) {
+        if (null == permissions || permissions.isEmpty()) return false;
+
+        for (String permission : permissions) {
+            if (isSpecialPermission(permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断某个权限是否是特殊权限
+     */
+    public static boolean isSpecialPermission(String permission) {
+        return OnPermission.MANAGE_EXTERNAL_STORAGE.equals(permission) ||
+                OnPermission.REQUEST_INSTALL_PACKAGES.equals(permission) ||
+                OnPermission.SYSTEM_ALERT_WINDOW.equals(permission) ||
+                OnPermission.NOTIFICATION_SERVICE.equals(permission) ||
+                OnPermission.WRITE_SETTINGS.equals(permission);
+    }
+
+
+
+    // 如果是被永久拒绝就跳转到应用权限系统设置页面
+    public static int startPermissionActivity(Activity activity, List<String> deniedPermissions) {
+        int requestCode = PermissionFragment.PERMISSION_REQUEST_CODE;
+        try {
+            activity.startActivityForResult(getSmartPermissionIntent(activity, deniedPermissions), requestCode);
+        } catch (Exception ignored) {
+            activity.startActivityForResult(jumpPermiSettting(activity), requestCode);
+        }
+        return requestCode;
+    }
+
+    /**
+     * 根据传入的权限自动选择最合适的权限设置页
+     */
+    static Intent getSmartPermissionIntent(Context context, List<String> deniedPermissions) {
+        if (deniedPermissions == null || deniedPermissions.isEmpty()) {
+            return jumpPermiSettting(context);
+        }
+
+        // 如果失败的权限里面包含了特殊权限
+        if (PermissionUtils.containsSpecialPermission(deniedPermissions)) {
+            // 如果当前只有一个权限被拒绝了
+            if (deniedPermissions.size() == 1) {
+                String permission = deniedPermissions.get(0);
+                if (OnPermission.MANAGE_EXTERNAL_STORAGE.equals(permission)) {
+                    return getStoragePermissionIntent(context);
+                } else if (OnPermission.REQUEST_INSTALL_PACKAGES.equals(permission)) {
+                    return getInstallPermissionIntent(context);
+                } else if (OnPermission.SYSTEM_ALERT_WINDOW.equals(permission)) {
+                    return getWindowPermissionIntent(context);
+                } else if (OnPermission.NOTIFICATION_SERVICE.equals(permission)) {
+                    return getNotifyPermissionIntent(context);
+                } else if (OnPermission.WRITE_SETTINGS.equals(permission)) {
+                    return getSettingPermissionIntent(context);
+                } else {
+                    return jumpPermiSettting(context);
+                }
+            } else {
+                // 跳转到应用详情界面
+                return jumpPermiSettting(context);
+            }
+        } else {
+            // 跳转到具体的权限设置界面
+            return jumpPermiSettting(context);
+        }
+    }
+
+
+    /**
+     * 判断传入意图 的 Activity 是否存在
+     */
+    public static boolean hasActivityIntent(Context context, Intent intent) {
+        return !context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).isEmpty();
+    }
+
+    /**
+     * 获取悬浮窗权限设置界面意图
+     */
+    static Intent getWindowPermissionIntent(Context context) {
+        Intent intent = null;
+        if (OSUtils.isAndroid6()) {
+            intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+        }
+
+        if (intent == null || !PermissionUtils.hasActivityIntent(context, intent)) {
+            intent = jumpPermiSettting(context);
+        }
+        return intent;
+    }
+
+    /**
+     * 获取安装权限设置界面意图
+     */
+    static Intent getInstallPermissionIntent(Context context) {
+        Intent intent = null;
+        if (OSUtils.isAndroid8()) {
+            intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+        }
+        if (intent == null || !PermissionUtils.hasActivityIntent(context, intent)) {
+            intent = jumpPermiSettting(context);
+        }
+        return intent;
+    }
+
+    /**
+     * 获取通知栏权限设置界面意图
+     */
+    static Intent getNotifyPermissionIntent(Context context) {
+        Intent intent = null;
+        if (OSUtils.isAndroid8()) {
+            intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+            //intent.putExtra(Settings.EXTRA_CHANNEL_ID, context.getApplicationInfo().uid);
+        }
+        if (intent == null || !PermissionUtils.hasActivityIntent(context, intent)) {
+            intent = jumpPermiSettting(context);
+        }
+        return intent;
+    }
+
+    /**
+     * 获取系统设置权限界面意图
+     */
+    static Intent getSettingPermissionIntent(Context context) {
+        Intent intent = null;
+        if (OSUtils.isAndroid6()) {
+            intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+        }
+        if (intent == null || !PermissionUtils.hasActivityIntent(context, intent)) {
+            intent = jumpPermiSettting(context);
+        }
+        return intent;
+    }
+
+    /**
+     * 获取存储权限设置界面意图
+     */
+    static Intent getStoragePermissionIntent(Context context) {
+        Intent intent = null;
+        if (OSUtils.isAndroid11()) {
+            intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+        }
+        if (intent == null || !PermissionUtils.hasActivityIntent(context, intent)) {
+            intent = jumpPermiSettting(context);
+        }
+        return intent;
+    }
 
     /**     以下为适配不同厂商手机 进入权限管理界面   */
     private static final String MARK = Build.MANUFACTURER.toLowerCase();
-
     /**
-     * 跳转到应用权限设置页面
+     * 获取 到应用权限设置页面 的意图
      * @param context 上下文对象
      */
-    static void jumpPermiSettting(Context context) {
-
-        Intent intent;
+    public static Intent jumpPermiSettting(Context context) {
+        Intent intent = null;
         if (MARK.contains("xiaomi")) {
             intent = xiaomi(context);
         } else if (MARK.contains("oppo")) {
@@ -114,16 +408,12 @@ public class PermissionUtils {
             intent = sony(context);
         } else if (MARK.contains("lg")) {
             intent = lg(context);
-        } else {
-            intent = google(context);
         }
 
-        try {
-            context.startActivity(intent);
-        } catch (Exception e) {
+        if (null == intent || PermissionUtils.hasActivityIntent(context, intent)){
             intent = google(context);
-            context.startActivity(intent);
         }
+        return intent;
     }
 
     private static Intent google(Context context) {
@@ -132,14 +422,12 @@ public class PermissionUtils {
         return intent;
     }
 
-
     private static Intent lg(Context context) {
         Intent intent = new Intent("android.intent.action.MAIN");
         intent.putExtra("packageName", BuildConfig.APPLICATION_ID);
         ComponentName comp = new ComponentName("com.android.settings", "com.android.settings.Settings$AccessLockSummaryActivity");
         intent.setComponent(comp);
         return intent;
-
     }
 
     private static Intent sony(Context context) {
@@ -148,7 +436,6 @@ public class PermissionUtils {
         ComponentName comp = new ComponentName("com.sonymobile.cta", "com.sonymobile.cta.SomcCTAMainActivity");
         intent.setComponent(comp);
         return intent;
-
     }
 
     private static Intent huawei(Context context) {

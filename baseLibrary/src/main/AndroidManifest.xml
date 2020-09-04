@@ -16,16 +16,6 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <!--    接口插件化：代理activity 注册 模板【直接复制】  -->
-<!--        <activity-->
-<!--            android:name=".plugin.ProxyActivity"-->
-<!--            android:launchMode="standard" >-->
-<!--            <intent-filter>-->
-<!--                <action android:name="${applicationId}.plugin.ProxyActivity"/>-->
-<!--                <category android:name="android.intent.category.DEFAULT"/>-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
-
     </application>
 
 </manifest>

@@ -19,6 +19,7 @@ import com.fy.baselibrary.base.dialog.NiceDialog;
 import com.fy.baselibrary.base.fragment.BaseFragment;
 import com.fy.baselibrary.utils.ResUtils;
 import com.fy.baselibrary.utils.drawable.ShapeBuilder;
+import com.fy.baselibrary.utils.os.OSUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class PermissionFragment extends BaseFragment {
     public final static String KEY_ALWAYS_MESSAGE = "key_always_message";
 
     /** 权限请求 状态码 */
-    private final static int PERMISSION_REQUEST_CODE = 0x01;
+    public final static int PERMISSION_REQUEST_CODE = 0x01;
 
     /** 权限请求成功 状态码 */
     public final static int CALL_BACK_RESULT_CODE_SUCCESS = 0x02;
@@ -122,14 +123,56 @@ public class PermissionFragment extends BaseFragment {
     /** 请求多个权限 */
     @TargetApi(Build.VERSION_CODES.M)
     public void checkPermission(String... permissions) {
-        PermissionUtils.checkPermissions(getActivity(), permissions);
-
         if (null != permissions) {
-            List<String> requestPermissionCount = PermissionUtils.getRequestPermissionList(getContext(), permissions);
-            if (null != requestPermissionCount && requestPermissionCount.size() > 0) {
-                requestPermissions(requestPermissionCount.toArray(new String[0]), PERMISSION_REQUEST_CODE);
-            } else {
-                permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, true);
+            PermissionUtils.checkPermissions(getActivity(), permissions);
+
+            List<String> requestPermission = PermissionUtils.getRequestPermissionList(getContext(), permissions);
+
+            // 是否需要申请特殊权限
+            boolean requestSpecialPermission = false;
+            // 判断当前是否包含特殊权限
+            if (PermissionUtils.containsSpecialPermission(requestPermission)) {
+                if (requestPermission.contains(OnPermission.MANAGE_EXTERNAL_STORAGE) && !PermissionUtils.hasStoragePermission(getActivity())) {
+                    // 当前必须是 Android 11 及以上版本，因为 hasStoragePermission 在旧版本上是拿旧权限做的判断，所以这里需要多判断一次版本
+                    if (OSUtils.isAndroid11()) {
+                        // 跳转到存储权限设置界面
+                        startActivityForResult(PermissionUtils.getStoragePermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                        requestSpecialPermission = true;
+                    }
+                }
+
+                if (requestPermission.contains(OnPermission.REQUEST_INSTALL_PACKAGES) && !PermissionUtils.hasInstallPermission(getActivity())) {
+                    // 跳转到安装权限设置界面
+                    startActivityForResult(PermissionUtils.getInstallPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                    requestSpecialPermission = true;
+                }
+
+                if (requestPermission.contains(OnPermission.SYSTEM_ALERT_WINDOW) && !PermissionUtils.hasWindowPermission(getActivity())) {
+                    // 跳转到悬浮窗设置页面
+                    startActivityForResult(PermissionUtils.getWindowPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                    requestSpecialPermission = true;
+                }
+
+                if (requestPermission.contains(OnPermission.NOTIFICATION_SERVICE) && !PermissionUtils.hasNotifyPermission(getActivity())) {
+                    // 跳转到通知栏权限设置页面
+                    startActivityForResult(PermissionUtils.getNotifyPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                    requestSpecialPermission = true;
+                }
+
+                if (requestPermission.contains(OnPermission.WRITE_SETTINGS) && !PermissionUtils.hasSettingPermission(getActivity())) {
+                    // 跳转到系统设置权限设置页面
+                    startActivityForResult(PermissionUtils.getSettingPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                    requestSpecialPermission = true;
+                }
+            }
+
+            // 当前必须没有跳转到悬浮窗或者安装权限界面
+            if (!requestSpecialPermission) {
+                if (requestPermission.size() > 0) {
+                    requestPermissions(requestPermission.toArray(new String[0]), PERMISSION_REQUEST_CODE);
+                } else {
+                    permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, true);
+                }
             }
         } else {
             permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, true);
@@ -144,7 +187,8 @@ public class PermissionFragment extends BaseFragment {
     public void onSurePermission(boolean isRefuse) {
         if (isRefuse) {
             isToSettingPermission = true;
-            PermissionUtils.jumpPermiSettting(getContext());
+            List<String> rationaleList = PermissionUtils.getShouldRationaleList(getActivity(), mPermissions);
+            PermissionUtils.startPermissionActivity(getActivity(), rationaleList);
         } else {
             checkPermission(mPermissions);
         }
