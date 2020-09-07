@@ -1,5 +1,6 @@
 package com.fy.baselibrary.permission;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -138,6 +139,10 @@ public class PermissionFragment extends BaseFragment {
                         // 跳转到存储权限设置界面
                         startActivityForResult(PermissionUtils.getStoragePermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
                         requestSpecialPermission = true;
+                    } else {
+                        requestPermission.remove(Permission.MANAGE_EXTERNAL_STORAGE);
+                        requestPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        requestPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
                     }
                 }
 
