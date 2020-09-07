@@ -107,9 +107,9 @@ public class PermissionFragment extends BaseFragment {
                 permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, true);
             } else {
                 //失败
-                List<String> rationaleList = PermissionUtils.getShouldRationaleList(getActivity(), mPermissions);
+                List<String> rationaleList = PermissionUtils.getShouldRationaleList(getActivity(), permissions);
                 if (null != rationaleList && rationaleList.size() > 0) {
-                    if (rationaleList.size() < mPermissions.length){
+                    if (rationaleList.size() < permissions.length){
                         showPermissionDialog(true, false);
                     } else {
                         showPermissionDialog(true, true);//全部拒绝
