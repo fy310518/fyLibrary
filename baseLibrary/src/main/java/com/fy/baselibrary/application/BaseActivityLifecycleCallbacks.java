@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.fy.baselibrary.R;
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.base.mvp.BaseMVPActivity;
+import com.fy.baselibrary.dress.DressUtils;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
 import com.fy.baselibrary.statuslayout.StatusLayoutManager;
@@ -59,6 +60,10 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
 //        }
 
         setFontDefault(activity);
+
+        if (null != DressUtils.getColor()) {
+            DressUtils.getColor().tint(activity);
+        }
 
         if (activity instanceof BaseMVPActivity) {
             ((BaseMVPActivity)activity).initPresenter();
@@ -127,6 +132,10 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
     public void onActivityResumed(Activity activity) {
         String simpleName = activity.getClass().getSimpleName();
         L.e(TAG + simpleName, "--Resume()");
+
+        if (DressUtils.isModify() && null != DressUtils.getColor()) {
+            DressUtils.getColor().tint(activity);
+        }
     }
 
     @Override
