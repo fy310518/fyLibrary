@@ -11,9 +11,10 @@ import android.view.OrientationEventListener;
  */
 public class BaseOrientoinListener extends OrientationEventListener {
 
-//     * android:screenOrientation="sensor" 此属性表示 屏幕根据物理传感器方向转动
-//     * android:configChanges="keyboardHidden|orientation|screenSize" 添加此属性表示横竖屏切换activity不重启
-//     * activity 或者 fragment 重写 onConfigurationChanged() 以监听屏幕旋转 如下：
+//     android:screenOrientation="sensor" 此属性表示 屏幕根据物理传感器方向转动
+//     android:configChanges="keyboardHidden|orientation|screenSize" 添加此属性表示横竖屏切换activity不重启
+//     android:configChanges="uiMode" 监听深色主题是否开启
+//     Application(很少用) activity 或者 fragment 重写 onConfigurationChanged() 以【监听屏幕旋转 或者 监听到暗黑的主题是否开启】 如下：
 
 //    @Override
 //    public void onConfigurationChanged(Configuration newConfig) {
@@ -23,6 +24,15 @@ public class BaseOrientoinListener extends OrientationEventListener {
 //        } else {
 //            //竖屏
 //        }
+//
+//        int currentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+//        switch (currentNightMode) {
+//            case Configuration.UI_MODE_NIGHT_NO:
+//                // 关闭
+//                break;
+//            case Configuration.UI_MODE_NIGHT_YES:
+//                // 开启
+//                break;
 //    }
 
     public static final String TAG = "activity";

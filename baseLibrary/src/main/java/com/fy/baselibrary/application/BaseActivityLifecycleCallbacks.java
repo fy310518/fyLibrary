@@ -23,9 +23,11 @@ import com.fy.baselibrary.dress.DressUtils;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
 import com.fy.baselibrary.statuslayout.StatusLayoutManager;
+import com.fy.baselibrary.utils.AppUtils;
 import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.JumpUtils;
 import com.fy.baselibrary.utils.ResUtils;
+import com.fy.baselibrary.utils.cache.SpfAgent;
 import com.fy.baselibrary.utils.media.PlayUtils;
 import com.fy.baselibrary.utils.notify.L;
 
@@ -43,7 +45,6 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public class BaseActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
     public static final String TAG = "lifeCycle --> ";
     public static int actNum;
-    int designWidth;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -60,10 +61,7 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
 //        }
 
         setFontDefault(activity);
-
-        if (null != DressUtils.getColor()) {
-            DressUtils.getColor().tint(activity);
-        }
+        DressUtils.setDress(activity);
 
         if (activity instanceof BaseMVPActivity) {
             ((BaseMVPActivity)activity).initPresenter();
@@ -133,9 +131,16 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
         String simpleName = activity.getClass().getSimpleName();
         L.e(TAG + simpleName, "--Resume()");
 
-        if (DressUtils.isModify() && null != DressUtils.getColor()) {
-            DressUtils.getColor().tint(activity);
+        boolean lastTimeUIMode = SpfAgent.init("").getBoolean(DressUtils.lastTimeUIMode);
+        boolean isNight = SpfAgent.init("").getBoolean(DressUtils.isNightMode);
+        if (lastTimeUIMode != isNight){//当前模式 和 上次模式不同
+            DressUtils.setDress(activity);
+
+            if (activity.getClass().getSimpleName().equals(AppUtils.getBottomActivity(activity).getClassName())){
+                SpfAgent.init().saveBoolean(DressUtils.lastTimeUIMode, isNight).commit(false);
+            }
         }
+
     }
 
     @Override

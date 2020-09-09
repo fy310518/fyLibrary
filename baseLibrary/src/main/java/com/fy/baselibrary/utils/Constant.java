@@ -27,45 +27,11 @@ public class Constant {
      */
     public static final String FileDownStatus = "FileDownStatus";
 
-    /**
-     * 一个下载任务 已经下载的进度百分比 数值
-     */
-    public static final String DownPercent = "Task_DownLoad_Percent";
-
-    /**
-     * 一个下载任务 已经下载的总长度
-     */
-    public static final String DownTask = "Task_DownLoad_length";
-
-    /**
-     * 一个线程 下载数据的长度
-     */
-    public static final String DownTherad = "Therad_DownLoad_length";
-
-
-
-    /**
-     * 程序是否必须登录
-     */
-    public static boolean isMustAppLogin = false;
 
     /**
      * 程序是否需要横竖屏切换
      */
     public static boolean isOrientation = false;
-
-    /**
-     * 缓存用户名 key
-     */
-    public static final String isLogin = "User_isLogin";
-    public static final String userName = "User_Name";
-
-
-    /**
-     * baseLibrary SharedPreferences 文件名
-     */
-    public static final String baseSpf = "baseSpf";
-
 
     /**
      * 吸附 ViewType

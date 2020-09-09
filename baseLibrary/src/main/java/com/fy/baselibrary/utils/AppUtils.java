@@ -360,6 +360,22 @@ public class AppUtils {
         }
     }
 
+    /**
+     * 获取栈底 activity 的 ComponentName 对象
+     * @param context
+     * @return
+     */
+    public static ComponentName getBottomActivity(Context context) {
+        final ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityInfo aInfo = null;
+        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(1);
+        if (list.size() != 0) {
+            ActivityManager.RunningTaskInfo topRunningTask = list.get(0);
+            return topRunningTask.baseActivity;
+        } else {
+            return null;
+        }
+    }
 
     /**
      * 获取手机ip
