@@ -3,6 +3,7 @@ package com.fy.baselibrary.application.ioc;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.fy.baselibrary.dress.DressColor;
 import com.fy.baselibrary.statuslayout.OnStatusAdapter;
 
 import java.util.ArrayList;
@@ -124,6 +125,9 @@ public class ConfigUtils {
         String token = "X-Access-Token";
         /** 添加 自定义拦截器；如：token 拦截器 */
         List<Interceptor> interceptors  = new ArrayList<>();
+
+        /** 添加 自定义 色彩处理 对象【相当于 给app 穿衣服，从而改变app 界面 展示样式】*/
+        List<DressColor> dressColors  = new ArrayList<>();
 
         /** 多状态布局 适配器 */
         OnStatusAdapter statusAdapter;
