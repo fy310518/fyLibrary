@@ -40,7 +40,7 @@ public class NightColor implements DressColor {
                 0, 0, 0, 1, 0
         });
         rootPaint.setColorFilter(new ColorMatrixColorFilter(cm));
-        view.setLayerType(View.LAYER_TYPE_HARDWARE, rootPaint);
+        view.setLayerType(View.LAYER_TYPE_SOFTWARE, rootPaint);
         if (view instanceof ViewGroup && null != nightColorFilter) {
             filters.add(new ObservableNightColorFilter(nightColorFilter, (ViewGroup) view));
         }

@@ -100,13 +100,13 @@ public class DressUtils {
         DressColor oldColor = dressColor;
         dressColor = color;
 
-//        if (null != oldColor) oldColor.clear(activity);
+        if (null != oldColor) oldColor.clear(activity);
 
         Window window = activity.getWindow();
         if (null == window) return;
 
         if (null == dressColor) {
-            window.getDecorView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            window.getDecorView().setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         } else {
             dressColor.tint(activity);
         }
