@@ -61,6 +61,8 @@ public class ConfigUtils {
 
     public static List<Interceptor> getInterceptor(){return configComponent.getConfigBiuder().interceptors;}
 
+    public static DressColor getDressColor(){return configComponent.getConfigBiuder().dressColors;}
+
     public static OnStatusAdapter getOnStatusAdapter(){return configComponent.getConfigBiuder().statusAdapter;}
 
     public static String getCer() {
@@ -126,8 +128,8 @@ public class ConfigUtils {
         /** 添加 自定义拦截器；如：token 拦截器 */
         List<Interceptor> interceptors  = new ArrayList<>();
 
-        /** 添加 自定义 色彩处理 对象【相当于 给app 穿衣服，从而改变app 界面 展示样式】*/
-        List<DressColor> dressColors  = new ArrayList<>();
+        /** 添加 自定义 色彩处理 对象【相当于 给app 穿衣服，从而改变app 界面 展示样式】DressColor 对象的完整类路径*/
+        DressColor dressColors;
 
         /** 多状态布局 适配器 */
         OnStatusAdapter statusAdapter;
@@ -201,6 +203,11 @@ public class ConfigUtils {
 
         public ConfigBiuder addInterceptor(Interceptor interceptor) {
             interceptors.add(interceptor);
+            return this;
+        }
+
+        public ConfigBiuder addDressColor(DressColor dressColor) {
+            this.dressColors = dressColor;
             return this;
         }
 
