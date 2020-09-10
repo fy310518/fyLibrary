@@ -20,6 +20,7 @@ import com.fy.baselibrary.R;
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.base.mvp.BaseMVPActivity;
 import com.fy.baselibrary.dress.DressUtils;
+import com.fy.baselibrary.dress.IDressActivity;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
 import com.fy.baselibrary.statuslayout.StatusLayoutManager;
@@ -61,7 +62,7 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
 //        }
 
         setFontDefault(activity);
-        DressUtils.setDress(activity);
+        if (!(activity instanceof IDressActivity)) DressUtils.setDress(activity);
 
         if (activity instanceof BaseMVPActivity) {
             ((BaseMVPActivity)activity).initPresenter();
@@ -133,7 +134,7 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
 
         boolean lastTimeUIMode = SpfAgent.init("").getBoolean(DressUtils.lastTimeUIMode);
         boolean isNight = SpfAgent.init("").getBoolean(DressUtils.isNightMode);
-        if (lastTimeUIMode != isNight){//当前模式 和 上次模式不同
+        if (lastTimeUIMode != isNight && !(activity instanceof IDressActivity)){//当前模式 和 上次模式不同
             DressUtils.setDress(activity);
 
             if (activity.getClass().getSimpleName().equals(AppUtils.getBottomActivity(activity).getClassName())){
