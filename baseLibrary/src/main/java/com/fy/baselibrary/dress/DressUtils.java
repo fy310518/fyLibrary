@@ -25,16 +25,13 @@ public class DressUtils {
      * 2、在 application onConfigurationChanged 中监听深色主题开关，并更新 “当前模式（isNightMode）” 数据值
      * 3、在 ActivityLifecycleCallbacks onActivityResumed 回调中 更新UI样式 为 “当前模式”
      */
-    private static DressColor dressColor;
-    private static boolean isModify;//应用运行中 是否修改了 模式
 
     /** 是否跟随系统 key */
     public static final String isToFollowSystem = "isToFollowSystem";
-    /** 当前模式 日间/夜间 key */
+    /** 当前模式 日间/夜间/护眼 key 保存的是 int类型数据【0：正常模式；1：夜间模式；2：护眼模式；3：灰阶（黑白）模式】*/
     public static final String isNightMode = "isNightMode";
-    /** 上次的模式 key【true 深色，false 浅色】 */
+    /** 上次的模式 key【true 深色，false 同上】 */
     public static final String lastTimeUIMode = "lastTimeUIMode";
-
 
 
     /**
@@ -51,16 +48,18 @@ public class DressUtils {
      * @param activity
      */
     public static void switchNightMode(AppCompatActivity activity){
-        boolean isNight = SpfAgent.init("").getBoolean(isNightMode);
-        if (isNight) {//当前模式是夜间模式
+        int isNight = SpfAgent.init("").getInt(isNightMode);
+        if (isNight == 1) {//当前模式是夜间模式
             //不使用夜间模式
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
+            isNight = 0;
+        } else if (isNight == 0){
             //使用夜间模式
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            isNight = 1;
         }
 
-        SpfAgent.init().saveBoolean(isNightMode, !isNight).commit(false);
+        SpfAgent.init().saveInt(isNightMode, isNight).commit(false);
         activity.getWindow().setWindowAnimations(R.style.WindowAnimationFadeInOut);
         activity.recreate(); // 这个是刷新，不然不起作用
     }
@@ -69,29 +68,17 @@ public class DressUtils {
      * 设置 日间/夜间 模式
      */
     public static void setNightMode(){
-        boolean isNight = SpfAgent.init("").getBoolean(isNightMode);
-        if (isNight) {
+        int isNight = SpfAgent.init("").getInt(isNightMode);
+        if (isNight == 0) {
             //使用夜间模式
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
+        } else if (isNight == 1){
             //不使用夜间模式
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
     }
 
-    //设置 Ui模式 样式
-    public static void setDress(Activity activity){
-        boolean isToFollowSystem = SpfAgent.init("").getBoolean(DressUtils.isToFollowSystem);
-        if (isToFollowSystem){//是否跟随系统
-            DressColor dressColor = isDarkTheme(activity) ? new NightColor(view -> view instanceof ImageView) : null;//是否深色模式
-            DressUtils.tint(activity, dressColor);
-        } else {
-            boolean isNight = SpfAgent.init("").getBoolean(isNightMode);//是否深色模式
-            DressColor dressColor = isNight ? new NightColor(view -> view instanceof ImageView) : null;
-            DressUtils.tint(activity, dressColor);
-        }
-    }
-
+    private static DressColor dressColor;
     /**
      * 设置界面 色彩处理 对象
      * @param color 色彩处理 对象
@@ -118,11 +105,24 @@ public class DressUtils {
         return dressColor;
     }
 
-    public static void setIsModify() {
-        DressUtils.isModify = true;
-    }
 
-    public static boolean isModify() {
-        return isModify;
+    //设置 Ui模式 样式
+    public static void setDress(Activity context){
+        boolean isToFollowSystem = SpfAgent.init("").getBoolean(DressUtils.isToFollowSystem);
+        DressColor dressColor = null;
+        if (isToFollowSystem){//是否跟随系统
+            dressColor = DressUtils.isDarkTheme(context) ? new NightColor(view -> view instanceof ImageView) : null;//是否深色模式
+        } else {
+            int isNight = SpfAgent.init("").getInt(DressUtils.isNightMode);//是否深色模式
+            if (isNight == 1){
+                dressColor = new NightColor(view -> view instanceof ImageView);
+            } else if (isNight == 2){
+                dressColor = new EyeProtectionColor(0.3f);
+            } else if (isNight == 3){
+                dressColor = new GrayColor();
+            }
+        }
+
+        DressUtils.tint(context, dressColor);
     }
 }

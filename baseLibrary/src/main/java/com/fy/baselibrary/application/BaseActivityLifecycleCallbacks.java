@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import com.fy.baselibrary.R;
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.base.mvp.BaseMVPActivity;
 import com.fy.baselibrary.dress.DressUtils;
+import com.fy.baselibrary.dress.widget.DressCleanFrameLayout;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
 import com.fy.baselibrary.statuslayout.OnSetStatusView;
 import com.fy.baselibrary.statuslayout.StatusLayoutManager;
@@ -61,7 +63,6 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
 //        }
 
         setFontDefault(activity);
-        DressUtils.setDress(activity);
 
         if (activity instanceof BaseMVPActivity) {
             ((BaseMVPActivity)activity).initPresenter();
@@ -131,16 +132,20 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
         String simpleName = activity.getClass().getSimpleName();
         L.e(TAG + simpleName, "--Resume()");
 
-        boolean lastTimeUIMode = SpfAgent.init("").getBoolean(DressUtils.lastTimeUIMode);
-        boolean isNight = SpfAgent.init("").getBoolean(DressUtils.isNightMode);
-        if (lastTimeUIMode != isNight){//当前模式 和 上次模式不同
-            DressUtils.setDress(activity);
+        ViewGroup content = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        if (DressCleanFrameLayout.getChildA(content, "com.fy.baselibrary.dress.widget.DressCleanFrameLayout")){
+            return;
+        }
 
-            if (activity.getClass().getSimpleName().equals(AppUtils.getBottomActivity(activity).getClassName())){
-                SpfAgent.init().saveBoolean(DressUtils.lastTimeUIMode, isNight).commit(false);
+        int lastTimeUIMode = SpfAgent.init("").getInt(DressUtils.lastTimeUIMode);
+        int isNight = SpfAgent.init("").getInt(DressUtils.isNightMode);
+        if (lastTimeUIMode != isNight){//当前模式 和 上次模式不同
+            if (simpleName.equals(AppUtils.getBottomActivity(activity).getClassName())){
+                SpfAgent.init().saveInt(DressUtils.lastTimeUIMode, isNight).commit(false);
             }
         }
 
+        DressUtils.setDress(activity);
     }
 
     @Override
