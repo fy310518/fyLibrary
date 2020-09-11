@@ -140,7 +140,7 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
         int lastTimeUIMode = SpfAgent.init("").getInt(DressUtils.lastTimeUIMode);
         int isNight = SpfAgent.init("").getInt(DressUtils.isNightMode);
         if (lastTimeUIMode != isNight){//当前模式 和 上次模式不同
-            if (simpleName.equals(AppUtils.getBottomActivity(activity).getClassName())){
+            if (activity.getClass().getName().equals(AppUtils.getBottomActivity(activity).getClassName())){
                 SpfAgent.init().saveInt(DressUtils.lastTimeUIMode, isNight).commit(false);
             }
         }

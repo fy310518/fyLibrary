@@ -95,7 +95,7 @@ public class DressUtils {
         if (!view.isHardwareAccelerated()) return;
 
         if (null == dressColor) {
-            view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         } else {
             dressColor.tint(activity);
         }
