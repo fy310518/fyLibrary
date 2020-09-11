@@ -92,7 +92,6 @@ public class DressUtils {
         Window window = activity.getWindow();
         if (null == window) return;
         View view = window.getDecorView();
-        if (!view.isHardwareAccelerated()) return;
 
         if (null == dressColor) {
             view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
