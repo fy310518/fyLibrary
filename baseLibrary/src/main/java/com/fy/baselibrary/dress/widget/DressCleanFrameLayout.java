@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 /**
- * description </p>
+ * description 清理因为添加 颜色矩阵（本质是使用了 硬件加速）引起 UI异常【如：地图，自定义相机功能的 页面】
  * Created by fangs on 2020/9/11 10:12.
  */
 public class DressCleanFrameLayout extends FrameLayout {

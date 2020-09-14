@@ -33,12 +33,7 @@ public class NightColor implements DressColor {
 
         View view = window.getDecorView();
         Paint rootPaint = new Paint();
-        ColorMatrix cm = new ColorMatrix(new float[]{
-                -1, 0, 0, 0, 255,
-                0, -1, 0, 0, 255,
-                0, 0, -1, 0, 255,
-                0, 0, 0, 1, 0
-        });
+        ColorMatrix cm = getColorMatrix();
         rootPaint.setColorFilter(new ColorMatrixColorFilter(cm));
         view.setLayerType(View.LAYER_TYPE_HARDWARE, rootPaint);
         if (view instanceof ViewGroup && null != nightColorFilter) {
@@ -53,5 +48,15 @@ public class NightColor implements DressColor {
                 filter.destroy(activity);
             }
         }
+    }
+
+    @Override
+    public ColorMatrix getColorMatrix() {
+        return new ColorMatrix(new float[]{
+                -1,  0,  0, 0, 155,
+                0, -1,  0, 0, 155,
+                0,  0, -1, 0, 155,
+                0,  0,  0, 1, 0
+        });
     }
 }

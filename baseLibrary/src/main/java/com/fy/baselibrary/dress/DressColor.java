@@ -1,6 +1,7 @@
 package com.fy.baselibrary.dress;
 
 import android.app.Activity;
+import android.graphics.ColorMatrix;
 import android.support.annotation.NonNull;
 
 /**
@@ -20,4 +21,9 @@ public interface DressColor {
      * @param activity 被清除界面
      */
     void clear(@NonNull Activity activity);
+
+    /**
+     * 定义 颜色矩阵
+     */
+    ColorMatrix getColorMatrix();
 }

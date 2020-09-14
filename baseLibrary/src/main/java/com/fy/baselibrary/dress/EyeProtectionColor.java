@@ -34,12 +34,7 @@ public class EyeProtectionColor implements DressColor {
         }
         View view = window.getDecorView();
         Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix(new float[]{
-                1, 0, 0, 0, 0,
-                0, 1, 0, 0, 0,
-                0, 0, 1 - weight, 0, 0,
-                0, 0, 0, 1, 0
-        });
+        ColorMatrix cm = getColorMatrix();
         paint.setColorFilter(new ColorMatrixColorFilter(cm));
         view.setLayerType(View.LAYER_TYPE_HARDWARE, paint);
     }
@@ -47,5 +42,15 @@ public class EyeProtectionColor implements DressColor {
     @Override
     public void clear(@NonNull Activity activity) {
 
+    }
+
+    @Override
+    public ColorMatrix getColorMatrix(){
+        return new ColorMatrix(new float[]{
+                1, 0, 0, 0, 0,
+                0, 1, 0, 0, 0,
+                0, 0, 1 - weight, 0, 0,
+                0, 0, 0, 1, 0
+        });
     }
 }

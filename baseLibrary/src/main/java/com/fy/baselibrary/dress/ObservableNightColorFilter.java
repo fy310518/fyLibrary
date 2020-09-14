@@ -25,10 +25,10 @@ public class ObservableNightColorFilter implements View.OnLayoutChangeListener {
         filterWeakReference = new WeakReference<>(filter);
         revertPaint = new Paint();
         ColorMatrix rcm = new ColorMatrix(new float[]{
-                -1, 0, 0, 0, 255,
-                0, -1, 0, 0, 255,
-                0, 0, -1, 0, 255,
-                0, 0, 0, 1, 0
+                -1,  0,  0, 0, 155,
+                 0, -1,  0, 0, 155,
+                 0,  0, -1, 0, 155,
+                 0,  0,  0, 1, 0
         });
         revertPaint.setColorFilter(new ColorMatrixColorFilter(rcm));
         // 遍历查找需要逆转的View，对其逆转

@@ -23,8 +23,7 @@ public class GrayColor implements DressColor {
         }
         View view = window.getDecorView();
         Paint paint = new Paint();
-        ColorMatrix cm = new ColorMatrix();
-        cm.setSaturation(0f);
+        ColorMatrix cm = getColorMatrix();
         paint.setColorFilter(new ColorMatrixColorFilter(cm));
         view.setLayerType(View.LAYER_TYPE_HARDWARE, paint);
     }
@@ -32,5 +31,12 @@ public class GrayColor implements DressColor {
     @Override
     public void clear(@NonNull Activity activity) {
 
+    }
+
+    @Override
+    public ColorMatrix getColorMatrix(){
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0f);
+        return cm;
     }
 }

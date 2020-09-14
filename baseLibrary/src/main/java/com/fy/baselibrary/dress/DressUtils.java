@@ -107,6 +107,11 @@ public class DressUtils {
 
     //设置 Ui模式 样式
     public static void setDress(Activity context){
+        DressColor dressColor = getDressColor(context);
+        DressUtils.tint(context, dressColor);
+    }
+
+    public static DressColor getDressColor(Context context){
         boolean isToFollowSystem = SpfAgent.init("").getBoolean(DressUtils.isToFollowSystem);
         DressColor dressColor = null;
         if (isToFollowSystem){//是否跟随系统
@@ -116,12 +121,12 @@ public class DressUtils {
             if (isNight == 1){
                 dressColor = new NightColor(view -> view instanceof ImageView);
             } else if (isNight == 2){
-                dressColor = new EyeProtectionColor(0.3f);
+                dressColor = new EyeProtectionColor(0.7f);
             } else if (isNight == 3){
                 dressColor = new GrayColor();
             }
         }
 
-        DressUtils.tint(context, dressColor);
+        return dressColor;
     }
 }
