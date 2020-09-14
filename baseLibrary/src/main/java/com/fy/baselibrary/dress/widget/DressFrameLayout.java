@@ -28,6 +28,7 @@ public class DressFrameLayout extends FrameLayout {
 
         DressColor dressColor = DressUtils.getDressColor(context);
         if (null != dressColor){
+            mPaint = new Paint();
             ColorMatrix cm = dressColor.getColorMatrix();
             mPaint.setColorFilter(new ColorMatrixColorFilter(cm));
         }
