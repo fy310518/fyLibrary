@@ -116,7 +116,7 @@ public class DressUtils {
     public static DressColor getDressColor(Context context){
         boolean useNightMode = SpfAgent.init("").getBoolean(DressUtils.useNightMode);
         if (!useNightMode) return null;
-        
+
         boolean isToFollowSystem = SpfAgent.init("").getBoolean(DressUtils.isToFollowSystem);
         DressColor dressColor = null;
         if (isToFollowSystem){//是否跟随系统
