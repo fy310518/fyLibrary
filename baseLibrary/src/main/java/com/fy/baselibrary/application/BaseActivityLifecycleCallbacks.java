@@ -132,20 +132,22 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
         String simpleName = activity.getClass().getSimpleName();
         L.e(TAG + simpleName, "--Resume()");
 
-        ViewGroup content = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        if (DressCleanFrameLayout.getChildA(content, "com.fy.baselibrary.dress.widget.DressCleanFrameLayout") ||
-                DressCleanFrameLayout.getChildA(content, "com.fy.baselibrary.dress.widget.DressFrameLayout")){
+        if (SpfAgent.init("").getBoolean(DressUtils.useNightMode)){
+            ViewGroup content = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+            if (DressCleanFrameLayout.getChildA(content, "com.fy.baselibrary.dress.widget.DressCleanFrameLayout") ||
+                    DressCleanFrameLayout.getChildA(content, "com.fy.baselibrary.dress.widget.DressFrameLayout")){
 
-        } else {
-            int lastTimeUIMode = SpfAgent.init("").getInt(DressUtils.lastTimeUIMode);
-            int isNight = SpfAgent.init("").getInt(DressUtils.isNightMode);
-            if (lastTimeUIMode != isNight){//当前模式 和 上次模式不同
-                if (activity.getClass().getName().equals(AppUtils.getBottomActivity(activity).getClassName())){
-                    SpfAgent.init().saveInt(DressUtils.lastTimeUIMode, isNight).commit(false);
+            } else {
+                int lastTimeUIMode = SpfAgent.init("").getInt(DressUtils.lastTimeUIMode);
+                int isNight = SpfAgent.init("").getInt(DressUtils.isNightMode);
+                if (lastTimeUIMode != isNight){//当前模式 和 上次模式不同
+                    if (activity.getClass().getName().equals(AppUtils.getBottomActivity(activity).getClassName())){
+                        SpfAgent.init().saveInt(DressUtils.lastTimeUIMode, isNight).commit(false);
+                    }
                 }
-            }
 
-            DressUtils.setDress(activity);
+                DressUtils.setDress(activity);
+            }
         }
     }
 

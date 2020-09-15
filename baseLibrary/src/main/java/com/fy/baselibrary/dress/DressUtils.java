@@ -32,6 +32,8 @@ public class DressUtils {
     public static final String isNightMode = "isNightMode";
     /** 上次的模式 key【true 深色，false 同上】 */
     public static final String lastTimeUIMode = "lastTimeUIMode";
+    /** 是否使用 深色模式 key */
+    public static final String useNightMode = "useNightMode";
 
 
     /**
@@ -112,6 +114,9 @@ public class DressUtils {
     }
 
     public static DressColor getDressColor(Context context){
+        boolean useNightMode = SpfAgent.init("").getBoolean(DressUtils.useNightMode);
+        if (!useNightMode) return null;
+        
         boolean isToFollowSystem = SpfAgent.init("").getBoolean(DressUtils.isToFollowSystem);
         DressColor dressColor = null;
         if (isToFollowSystem){//是否跟随系统
