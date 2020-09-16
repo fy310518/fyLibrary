@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.fy.baselibrary.BuildConfig;
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.ServerException;
 import com.fy.baselibrary.utils.os.OSUtils;
 
@@ -80,7 +81,6 @@ public class PermissionUtils {
             }
         }
 
-//        ContextCompat.checkSelfPermission();
         if (!OSUtils.isAndroid8()) {
             // 检测 8.0 的两个新权限，如果当前版本不符合最低要求，那么就用旧权限进行检测
             if (Permission.ANSWER_PHONE_CALLS.equals(permission)) {
@@ -94,19 +94,19 @@ public class PermissionUtils {
     }
 
     /**
-     * 检查是否需要提示用户对该权限的授权进行说明【其实是 判断申请的权限列表 是否被永久拒绝】
+     * 检查是否需要提示用户对该权限的授权进行说明
+     * 【其实是 判断申请的权限列表 是否被永久拒绝】
      */
     public static List<String> getShouldRationaleList(Activity activity, String... permissions) {
-        if (null != permissions) {
-            List<String> strings = new ArrayList<>();
-            for (String permission : permissions) {
-                if (isPermissionPermanentDenied(activity, permission)) {
-                    strings.add(permission);
-                }
+        if (null == permissions) return null;
+
+        List<String> strings = new ArrayList<>();
+        for (String permission : permissions) {
+            if (isPermissionPermanentDenied(activity, permission)) {
+                strings.add(permission);
             }
-            return strings;
         }
-        return null;
+        return strings;
     }
 
     /**
@@ -255,6 +255,23 @@ public class PermissionUtils {
                 Permission.WRITE_SETTINGS.equals(permission);
     }
 
+    /**
+     * 根据权限 获取 权限组
+     * @param sunPermission
+     */
+    public static String getPermissionGroup(String sunPermission){
+        if (OSUtils.isAndroid11()) {
+            return Permission.permissionMap.get(sunPermission);
+        } else if (OSUtils.isAndroid10()){
+            return Permission.permissionMap.get(sunPermission);
+        } else {
+            try {
+                return ConfigUtils.getAppCtx().getPackageManager().getPermissionInfo(sunPermission, 0).group;
+            } catch (PackageManager.NameNotFoundException e) {
+            }
+            return "";
+        }
+    }
 
 
     // 如果是被永久拒绝就跳转到应用权限系统设置页面

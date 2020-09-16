@@ -53,7 +53,7 @@
     <string name="daytimeMode">日间模式</string>
     <string name="nightMode">夜间模式</string>
 
-    <string name="successs">成功</string>
+    <string name="success">成功</string>
     <string name="error">错误</string>
 
     <string name="ok">确定</string>
@@ -62,9 +62,8 @@
     <string name="set">设置</string>
     <string name="search">搜索</string>
 
-    <string name="dialog_title">提示</string>
-    <string name="default_first_message">为了您的方便，您需要授权该权限才可以正常使用相关功能哦。</string>
-    <string name="default_always_message">当前应用缺少相应的权限，您需要设置相应的权限后才可正常使用相关功能。</string>
+    <string name="default_first_message">需要您授权以下权限才可以正常使用</string>
+    <string name="default_always_message">缺少相应的权限，您需要设置相应的权限后才可以正常使用</string>
     <string name="permissionFail">权限请求失败</string>
     <string name="permissionSuccess">权限请求成功</string>
 
