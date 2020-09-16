@@ -2,6 +2,9 @@ package com.fy.baselibrary.base.popupwindow;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -18,6 +21,8 @@ import android.widget.PopupWindow;
 import com.fy.baselibrary.base.PopupDismissListner;
 import com.fy.baselibrary.base.ViewHolder;
 import com.fy.baselibrary.base.dialog.CommonDialog;
+import com.fy.baselibrary.dress.DressColor;
+import com.fy.baselibrary.dress.DressUtils;
 import com.fy.baselibrary.utils.DensityUtils;
 import com.fy.baselibrary.utils.ScreenUtils;
 
@@ -69,6 +74,7 @@ public abstract class CommonPopupWindow extends PopupWindow {
 
     /**
      * 绘制 Popup UI
+     * 数据构建完成后，必须调用此方法，不然popupWindow 没有内容
      * @param context
      */
     public CommonPopupWindow onCreateView(Context context) {
@@ -83,7 +89,14 @@ public abstract class CommonPopupWindow extends PopupWindow {
 
         initParams(view);
 
-
+        //使用 colorMatrix
+        DressColor dressColor = DressUtils.getDressColor(context);
+        if (null != dressColor){
+            ColorMatrix cm = dressColor.getColorMatrix();
+            Paint rootPaint = new Paint();
+            rootPaint.setColorFilter(new ColorMatrixColorFilter(cm));
+            view.setLayerType(View.LAYER_TYPE_HARDWARE, rootPaint);
+        }
         return this;
     }
 

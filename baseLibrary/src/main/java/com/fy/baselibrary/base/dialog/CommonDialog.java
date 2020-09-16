@@ -1,6 +1,9 @@
 package com.fy.baselibrary.base.dialog;
 
 import android.content.DialogInterface;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -19,6 +22,8 @@ import android.view.WindowManager;
 import com.fy.baselibrary.R;
 import com.fy.baselibrary.base.PopupDismissListner;
 import com.fy.baselibrary.base.ViewHolder;
+import com.fy.baselibrary.dress.DressColor;
+import com.fy.baselibrary.dress.DressUtils;
 import com.fy.baselibrary.utils.DensityUtils;
 import com.fy.baselibrary.utils.notify.L;
 import com.fy.baselibrary.utils.ScreenUtils;
@@ -116,6 +121,16 @@ public abstract class CommonDialog extends DialogFragment {
                 parent.removeView(mRootView);
             }
         }
+
+        //使用 colorMatrix
+//        DressColor dressColor = DressUtils.getDressColor(getContext());
+//        if (null != dressColor){
+//            ColorMatrix cm = dressColor.getColorMatrix();
+//            Paint rootPaint = new Paint();
+//            rootPaint.setColorFilter(new ColorMatrixColorFilter(cm));
+//            mRootView.setLayerType(View.LAYER_TYPE_HARDWARE, rootPaint);
+//        }
+
         return mRootView;
     }
 
