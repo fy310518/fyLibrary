@@ -123,13 +123,13 @@ public abstract class CommonDialog extends DialogFragment {
         }
 
         //使用 colorMatrix
-//        DressColor dressColor = DressUtils.getDressColor(getContext());
-//        if (null != dressColor){
-//            ColorMatrix cm = dressColor.getColorMatrix();
-//            Paint rootPaint = new Paint();
-//            rootPaint.setColorFilter(new ColorMatrixColorFilter(cm));
-//            mRootView.setLayerType(View.LAYER_TYPE_HARDWARE, rootPaint);
-//        }
+        DressColor dressColor = DressUtils.getDressColor(getContext());
+        if (null != dressColor){
+            ColorMatrix cm = dressColor.getColorMatrix();
+            Paint rootPaint = new Paint();
+            rootPaint.setColorFilter(new ColorMatrixColorFilter(cm));
+            mRootView.setLayerType(View.LAYER_TYPE_HARDWARE, rootPaint);
+        }
 
         return mRootView;
     }
