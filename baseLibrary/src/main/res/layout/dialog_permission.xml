@@ -34,7 +34,7 @@
             android:layout_marginRight="@dimen/spacing_medium_large"
             android:layout_marginBottom="@dimen/spacing_medium_large"
             android:divider="@android:color/transparent"
-            tools:layout_height="100dp" />
+            tools:layout_height="100dp"/>
 
         <TextView
             android:id="@+id/tvPermissionCancel"

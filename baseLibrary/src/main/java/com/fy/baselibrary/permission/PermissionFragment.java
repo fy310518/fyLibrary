@@ -247,7 +247,7 @@ public class PermissionFragment extends BaseFragment {
                         List<String> listData = new ArrayList<>();
                         for (String permission : rationaleList){
                             String group = PermissionUtils.getPermissionGroup(permission);
-                            if (!TextUtils.isEmpty(group)) listData.add(group);
+                            if (!TextUtils.isEmpty(group) && !listData.contains(group)) listData.add(group);
                         }
 
                         ListView lvRefusePermission = holder.getView(R.id.lvRefusePermission);

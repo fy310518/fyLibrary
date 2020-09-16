@@ -62,8 +62,8 @@
     <string name="set">设置</string>
     <string name="search">搜索</string>
 
-    <string name="default_first_message">需要您授权以下权限才可以正常使用</string>
-    <string name="default_always_message">缺少相应的权限，您需要设置相应的权限后才可以正常使用</string>
+    <string name="default_first_message">\u3000需要您授权以下权限才可以正常使用</string>
+    <string name="default_always_message">\u3000缺少相应的权限，您需要设置相应的权限后才可以正常使用</string>
     <string name="permissionFail">权限请求失败</string>
     <string name="permissionSuccess">权限请求成功</string>
 
