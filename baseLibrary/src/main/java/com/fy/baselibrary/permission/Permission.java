@@ -87,4 +87,16 @@ public class Permission {
         put(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission_group.STORAGE);
         put(Manifest.permission.ACCESS_MEDIA_LOCATION, Manifest.permission_group.STORAGE);
     }};
+
+    /**
+     * 特殊权限 用途 说明
+     */
+    public static final ArrayMap<String, String[]> specialPermission = new ArrayMap<String, String[]>(){{
+        put(SYSTEM_ALERT_WINDOW, new String[]{"悬浮窗", "悬浮在其它应用上方"});
+        put(WRITE_SETTINGS, new String[]{"系统设置", "允许应用修改系统的设置数据"});
+        put(NOTIFICATION_SERVICE, new String[]{"通知", "允许应用显示和发送通知"});
+        put(REQUEST_INSTALL_PACKAGES, new String[]{"安装应用", "允许应用调用系统安装器安装应用"});
+        put(MANAGE_EXTERNAL_STORAGE, new String[]{"外部存储", "读写设备上的媒体及文件"});
+    }};
+
 }

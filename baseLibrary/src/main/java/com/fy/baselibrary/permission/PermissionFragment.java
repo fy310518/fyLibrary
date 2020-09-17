@@ -283,6 +283,12 @@ public class PermissionFragment extends BaseFragment {
      * @param specialPermission
      */
     public void showSpecialPermissionDialog(String specialPermission) {
+        String[] info = Permission.specialPermission.get(specialPermission);
+        if (null == info) {
+            removePermission(specialPermission);
+            return;
+        }
+
         NiceDialog.init()
                 .setLayoutId(R.layout.dialog_permission)
                 .setDialogConvertListener(new DialogConvertListener() {
@@ -296,32 +302,18 @@ public class PermissionFragment extends BaseFragment {
                         holder.setVisibility(R.id.lvRefusePermission, false);
                         holder.setVisibility(R.id.txtSpecialPermission, true);
 
-                        String group = PermissionUtils.getPermissionGroup(specialPermission);
+                        String title = ResUtils.getReplaceStr(R.string.default_special_permission, appName, info[0]);
+                        holder.setText(R.id.tvPermissionDescribe, title);//标题
 
-                        try {
-                            String permissionName = ResUtils.getStr(getContext().getPackageManager().getPermissionGroupInfo(group, 0).labelRes);
-                            String title = ResUtils.getReplaceStr(R.string.default_special_permission, appName, permissionName);
-                            holder.setText(R.id.tvPermissionDescribe, title);//标题
-
-                            String description = ResUtils.getStr(getContext().getPackageManager().getPermissionGroupInfo(group, 0).descriptionRes);
-                            String content = ResUtils.getReplaceStr(R.string.default_special_permission_content, permissionName, appName, description);
-                            holder.setText(R.id.txtSpecialPermission, content);//特殊权限用途 说明
-                        } catch (PackageManager.NameNotFoundException e) {
-                            e.printStackTrace();
-                        }
+                        String content = ResUtils.getReplaceStr(R.string.default_special_permission_content, info[0], appName, info[1]);
+                        holder.setText(R.id.txtSpecialPermission, content);//特殊权限用途 说明
 
                         holder.setText(R.id.tvpermissionConfirm, R.string.set);
                         holder.setOnClickListener(R.id.tvpermissionConfirm, v -> {
                             List<String> rationaleList = PermissionUtils.getShouldRationaleList(getActivity(), specialPermission);
                             PermissionUtils.startPermissionActivity(PermissionFragment.this, rationaleList);
 
-                            //从全局 mPermissions 移除 需要申请的特殊权限
-                            List<String> tempList = Arrays.asList(mPermissions);
-                            tempList.remove(specialPermission);
-                            String[] tempStrArray = new String[tempList.size()];
-                            tempList.toArray(tempStrArray);
-                            mPermissions = tempStrArray;
-
+                            removePermission(specialPermission);
                             dialog.dismiss(false);
                         });
 
@@ -337,6 +329,15 @@ public class PermissionFragment extends BaseFragment {
                 .setAnim(R.style.AnimUp)
                 .setKeyBack(true)
                 .show(getFragmentManager(), "PermissionFragment");
+    }
+
+    //从全局 mPermissions 中移除 指定的权限
+    private void removePermission(String permission){
+        List<String> tempList = new ArrayList<>(Arrays.asList(mPermissions));
+        tempList.remove(permission);
+        String[] tempStrArray = new String[tempList.size()];
+        tempList.toArray(tempStrArray);
+        mPermissions = tempStrArray;
     }
 
     /**
