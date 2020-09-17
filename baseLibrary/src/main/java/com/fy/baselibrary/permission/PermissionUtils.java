@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
 import com.fy.baselibrary.BuildConfig;
@@ -275,14 +276,12 @@ public class PermissionUtils {
 
 
     // 如果是被永久拒绝就跳转到应用权限系统设置页面
-    public static int startPermissionActivity(Activity activity, List<String> deniedPermissions) {
-        int requestCode = PermissionFragment.PERMISSION_REQUEST_CODE;
+    public static void startPermissionActivity(Fragment fragment, List<String> deniedPermissions) {
         try {
-            activity.startActivityForResult(getSmartPermissionIntent(activity, deniedPermissions), requestCode);
+            fragment.startActivityForResult(getSmartPermissionIntent(fragment.getContext(), deniedPermissions), PermissionFragment.PERMISSION_REQUEST_CODE);
         } catch (Exception ignored) {
-            activity.startActivityForResult(jumpPermiSettting(activity), requestCode);
+            fragment.startActivityForResult(jumpPermiSettting(fragment.getContext()), PermissionFragment.PERMISSION_REQUEST_CODE);
         }
-        return requestCode;
     }
 
     /**

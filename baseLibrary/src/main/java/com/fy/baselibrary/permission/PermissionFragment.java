@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import com.fy.baselibrary.R;
 import com.fy.baselibrary.aop.annotation.NeedPermission;
+import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.base.ViewHolder;
 import com.fy.baselibrary.base.dialog.CommonDialog;
 import com.fy.baselibrary.base.dialog.DialogConvertListener;
@@ -47,6 +48,7 @@ public class PermissionFragment extends BaseFragment {
     /** 权限请求失败 状态码*/
     public final static int CALL_BACK_RESULE_CODE_FAILURE = 0x03;
 
+    private String appName;
     /** 第一次拒绝该权限的提示信息。 */
     private String mFirstRefuseMessage;
     /** 永久拒绝权限提醒的提示信息 */
@@ -65,7 +67,7 @@ public class PermissionFragment extends BaseFragment {
 
     @Override
     protected void baseInit() {
-        String appName = AppUtils.getAppName(getContext(), AppUtils.getLocalPackageName());
+        appName = AppUtils.getAppName(getContext(), AppUtils.getLocalPackageName());
         mFirstRefuseMessage = getString(R.string.default_always_message);
 
         Bundle bundle = getArguments();
@@ -135,7 +137,7 @@ public class PermissionFragment extends BaseFragment {
     @TargetApi(Build.VERSION_CODES.M)
     public void checkPermission(String... permissions) {
         if (null != permissions) {
-            PermissionUtils.checkPermissions(getActivity(), permissions);
+            if(ConfigUtils.isDEBUG()) PermissionUtils.checkPermissions(getActivity(), permissions);
 
             List<String> requestPermission = PermissionUtils.getRequestPermissionList(getContext(), permissions);
 
@@ -147,8 +149,8 @@ public class PermissionFragment extends BaseFragment {
                     // 当前必须是 Android 11 及以上版本，因为 hasStoragePermission 在旧版本上是拿旧权限做的判断，所以这里需要多判断一次版本
                     if (OSUtils.isAndroid11()) {
                         requestSpecialPermission = isToSettingPermission = true;
-                        // 跳转到存储权限设置界面
-                        startActivityForResult(PermissionUtils.getStoragePermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                        // 存储权限设置界面
+                        showSpecialPermissionDialog(Permission.MANAGE_EXTERNAL_STORAGE);
                     } else {
                         requestPermission.remove(Permission.MANAGE_EXTERNAL_STORAGE);
                         requestPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -159,25 +161,25 @@ public class PermissionFragment extends BaseFragment {
                 if (requestPermission.contains(Permission.REQUEST_INSTALL_PACKAGES) && !PermissionUtils.hasInstallPermission(getActivity())) {
                     requestSpecialPermission = isToSettingPermission = true;
                     // 跳转到安装权限设置界面
-                    startActivityForResult(PermissionUtils.getInstallPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                    showSpecialPermissionDialog(Permission.REQUEST_INSTALL_PACKAGES);
                 }
 
                 if (requestPermission.contains(Permission.SYSTEM_ALERT_WINDOW) && !PermissionUtils.hasWindowPermission(getActivity())) {
                     requestSpecialPermission = isToSettingPermission = true;
                     // 跳转到悬浮窗设置页面
-                    startActivityForResult(PermissionUtils.getWindowPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                    showSpecialPermissionDialog(Permission.SYSTEM_ALERT_WINDOW);
                 }
 
                 if (requestPermission.contains(Permission.NOTIFICATION_SERVICE) && !PermissionUtils.hasNotifyPermission(getActivity())) {
                     requestSpecialPermission = isToSettingPermission = true;
                     // 跳转到通知栏权限设置页面
-                    startActivityForResult(PermissionUtils.getNotifyPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                    showSpecialPermissionDialog(Permission.NOTIFICATION_SERVICE);
                 }
 
                 if (requestPermission.contains(Permission.WRITE_SETTINGS) && !PermissionUtils.hasSettingPermission(getActivity())) {
                     requestSpecialPermission = isToSettingPermission = true;
                     // 跳转到系统设置权限设置页面
-                    startActivityForResult(PermissionUtils.getSettingPermissionIntent(getActivity()), PERMISSION_REQUEST_CODE);
+                    showSpecialPermissionDialog(Permission.WRITE_SETTINGS);
                 }
             }
 
@@ -203,7 +205,7 @@ public class PermissionFragment extends BaseFragment {
         if (isRefuse) {
             isToSettingPermission = true;
             List<String> rationaleList = PermissionUtils.getShouldRationaleList(getActivity(), mPermissions);
-            PermissionUtils.startPermissionActivity(getActivity(), rationaleList);
+            PermissionUtils.startPermissionActivity(this, rationaleList);
         } else {
             checkPermission(mPermissions);
         }
@@ -228,7 +230,7 @@ public class PermissionFragment extends BaseFragment {
 
 
     /**
-     * 自定义弹窗 给予用户提示
+     * 危险权限请求失败 给予用户提示 自定义弹窗
      * @param isAlwaysRefuse    是否勾选了（“不在提示”多选框）
      * @param isAllSuccess      权限请求是否 全部成功
      */
@@ -276,6 +278,66 @@ public class PermissionFragment extends BaseFragment {
                 .show(getFragmentManager(), "PermissionFragment");
     }
 
+    /**
+     * 特殊权限 申请弹窗
+     * @param specialPermission
+     */
+    public void showSpecialPermissionDialog(String specialPermission) {
+        NiceDialog.init()
+                .setLayoutId(R.layout.dialog_permission)
+                .setDialogConvertListener(new DialogConvertListener() {
+                    @Override
+                    protected void convertView(ViewHolder holder, CommonDialog dialog) {
+                        ShapeBuilder.create()
+                                .solid(R.color.white)
+                                .radius(36)
+                                .setBackBg(holder.getView(R.id.permissionLayout));
+
+                        holder.setVisibility(R.id.lvRefusePermission, false);
+                        holder.setVisibility(R.id.txtSpecialPermission, true);
+
+                        String group = PermissionUtils.getPermissionGroup(specialPermission);
+
+                        try {
+                            String permissionName = ResUtils.getStr(getContext().getPackageManager().getPermissionGroupInfo(group, 0).labelRes);
+                            String title = ResUtils.getReplaceStr(R.string.default_special_permission, appName, permissionName);
+                            holder.setText(R.id.tvPermissionDescribe, title);//标题
+
+                            String description = ResUtils.getStr(getContext().getPackageManager().getPermissionGroupInfo(group, 0).descriptionRes);
+                            String content = ResUtils.getReplaceStr(R.string.default_special_permission_content, permissionName, appName, description);
+                            holder.setText(R.id.txtSpecialPermission, content);//特殊权限用途 说明
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        holder.setText(R.id.tvpermissionConfirm, R.string.set);
+                        holder.setOnClickListener(R.id.tvpermissionConfirm, v -> {
+                            List<String> rationaleList = PermissionUtils.getShouldRationaleList(getActivity(), specialPermission);
+                            PermissionUtils.startPermissionActivity(PermissionFragment.this, rationaleList);
+
+                            //从全局 mPermissions 移除 需要申请的特殊权限
+                            List<String> tempList = Arrays.asList(mPermissions);
+                            tempList.remove(specialPermission);
+                            String[] tempStrArray = new String[tempList.size()];
+                            tempList.toArray(tempStrArray);
+                            mPermissions = tempStrArray;
+
+                            dialog.dismiss(false);
+                        });
+
+                        holder.setText(R.id.tvPermissionCancel, R.string.cancel);
+                        holder.setOnClickListener(R.id.tvPermissionCancel, v -> {
+                            permissionEnd(CALL_BACK_RESULE_CODE_FAILURE, false);
+                            dialog.dismiss(false);
+                        });
+                    }
+                })
+                .setWidthPixels(-1)
+                .setGravity(Gravity.BOTTOM)
+                .setAnim(R.style.AnimUp)
+                .setKeyBack(true)
+                .show(getFragmentManager(), "PermissionFragment");
+    }
 
     /**
      * 准备请求权限
