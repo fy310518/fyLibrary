@@ -67,7 +67,7 @@
     <!--  允许 "APP" 启用 通讯录 权限吗？  -->
     <string name="default_special_permission">允许 "%1$s" 启用 %2$s 权限吗？</string>
     <!--  开启通讯录权限，使app 访问通讯录，从而更好为您服务  -->
-    <string name="default_special_permission_content">开启%1$s权限，使%2$s $3$s，从而更好为您服务</string>
+    <string name="default_special_permission_content">开启%1$s权限，使%2$s%3$s，从而更好为您服务</string>
     <string name="permissionFail">权限请求失败</string>
     <string name="permissionSuccess">权限请求成功</string>
 

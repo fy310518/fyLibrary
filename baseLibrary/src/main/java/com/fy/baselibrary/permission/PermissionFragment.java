@@ -310,7 +310,8 @@ public class PermissionFragment extends BaseFragment {
 
                         holder.setText(R.id.tvpermissionConfirm, R.string.set);
                         holder.setOnClickListener(R.id.tvpermissionConfirm, v -> {
-                            List<String> rationaleList = PermissionUtils.getShouldRationaleList(getActivity(), specialPermission);
+                            List<String> rationaleList = new ArrayList<>();
+                            rationaleList.add(specialPermission);
                             PermissionUtils.startPermissionActivity(PermissionFragment.this, rationaleList);
 
                             removePermission(specialPermission);
