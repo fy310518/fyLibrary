@@ -30,6 +30,8 @@
             android:id="@+id/lvRefusePermission"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
+            android:dividerHeight="@dimen/spacing_small_much"
             android:layout_marginLeft="@dimen/spacing_medium_large"
             android:layout_marginRight="@dimen/spacing_medium_large"
             android:layout_marginBottom="@dimen/spacing_medium_large"
