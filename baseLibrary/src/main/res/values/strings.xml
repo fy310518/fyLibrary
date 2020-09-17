@@ -70,6 +70,7 @@
     <string name="default_special_permission_content">开启%1$s权限，使%2$s%3$s，从而更好为您服务</string>
     <string name="permissionFail">权限请求失败</string>
     <string name="permissionSuccess">权限请求成功</string>
+    <string name="permissionAllSuccess">权限没有全部授予</string>
 
 
     <string name="dataNull">没有数据</string>

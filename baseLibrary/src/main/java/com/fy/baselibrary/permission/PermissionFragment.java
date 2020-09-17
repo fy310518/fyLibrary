@@ -148,7 +148,7 @@ public class PermissionFragment extends BaseFragment {
                 if (requestPermission.contains(Permission.MANAGE_EXTERNAL_STORAGE) && !PermissionUtils.hasStoragePermission(getActivity())) {
                     // 当前必须是 Android 11 及以上版本，因为 hasStoragePermission 在旧版本上是拿旧权限做的判断，所以这里需要多判断一次版本
                     if (OSUtils.isAndroid11()) {
-                        requestSpecialPermission = isToSettingPermission = true;
+                        requestSpecialPermission = true;
                         // 存储权限设置界面
                         showSpecialPermissionDialog(Permission.MANAGE_EXTERNAL_STORAGE);
                     } else {
@@ -159,25 +159,25 @@ public class PermissionFragment extends BaseFragment {
                 }
 
                 if (requestPermission.contains(Permission.REQUEST_INSTALL_PACKAGES) && !PermissionUtils.hasInstallPermission(getActivity())) {
-                    requestSpecialPermission = isToSettingPermission = true;
+                    requestSpecialPermission = true;
                     // 跳转到安装权限设置界面
                     showSpecialPermissionDialog(Permission.REQUEST_INSTALL_PACKAGES);
                 }
 
                 if (requestPermission.contains(Permission.SYSTEM_ALERT_WINDOW) && !PermissionUtils.hasWindowPermission(getActivity())) {
-                    requestSpecialPermission = isToSettingPermission = true;
+                    requestSpecialPermission = true;
                     // 跳转到悬浮窗设置页面
                     showSpecialPermissionDialog(Permission.SYSTEM_ALERT_WINDOW);
                 }
 
                 if (requestPermission.contains(Permission.NOTIFICATION_SERVICE) && !PermissionUtils.hasNotifyPermission(getActivity())) {
-                    requestSpecialPermission = isToSettingPermission = true;
+                    requestSpecialPermission = true;
                     // 跳转到通知栏权限设置页面
                     showSpecialPermissionDialog(Permission.NOTIFICATION_SERVICE);
                 }
 
                 if (requestPermission.contains(Permission.WRITE_SETTINGS) && !PermissionUtils.hasSettingPermission(getActivity())) {
-                    requestSpecialPermission = isToSettingPermission = true;
+                    requestSpecialPermission = true;
                     // 跳转到系统设置权限设置页面
                     showSpecialPermissionDialog(Permission.WRITE_SETTINGS);
                 }
@@ -279,7 +279,7 @@ public class PermissionFragment extends BaseFragment {
     }
 
     /**
-     * 特殊权限 申请弹窗
+     * 申请特殊权限 弹窗
      * @param specialPermission
      */
     public void showSpecialPermissionDialog(String specialPermission) {
@@ -313,6 +313,7 @@ public class PermissionFragment extends BaseFragment {
                             List<String> rationaleList = new ArrayList<>();
                             rationaleList.add(specialPermission);
                             PermissionUtils.startPermissionActivity(PermissionFragment.this, rationaleList);
+                            isToSettingPermission = true;
 
                             removePermission(specialPermission);
                             dialog.dismiss(false);
@@ -320,7 +321,9 @@ public class PermissionFragment extends BaseFragment {
 
                         holder.setText(R.id.tvPermissionCancel, R.string.cancel);
                         holder.setOnClickListener(R.id.tvPermissionCancel, v -> {
-                            permissionEnd(CALL_BACK_RESULE_CODE_FAILURE, false);
+                            //请求的权限列表中有特殊权限，如果取消，移除这个特殊权限，继续请求 其它权限
+                            removePermission(specialPermission);
+                            checkPermission(mPermissions);
                             dialog.dismiss(false);
                         });
                     }
