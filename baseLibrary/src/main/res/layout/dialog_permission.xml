@@ -39,9 +39,8 @@
         <TextView
             android:id="@+id/tvPermissionCancel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:gravity="center"
-            android:padding="@dimen/spacing_medium_small"
             android:text="@string/cancel"
             android:textColor="@color/appHeadBg"
             android:textSize="@dimen/txt_medium_small" />
@@ -49,9 +48,8 @@
         <TextView
             android:id="@+id/tvpermissionConfirm"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:gravity="center"
-            android:padding="@dimen/spacing_medium_small"
             android:text="@string/ok"
             android:textColor="@color/appHeadBg"
             android:textSize="@dimen/txt_medium_small" />

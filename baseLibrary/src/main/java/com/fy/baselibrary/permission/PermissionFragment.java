@@ -125,7 +125,7 @@ public class PermissionFragment extends BaseFragment {
                         showPermissionDialog(rationaleList, true, true);//全部永久拒绝
                     }
                 } else {
-                    showPermissionDialog(rationaleList, false, true);
+                    showPermissionDialog(Arrays.asList(permissions), false, true);
                 }
             }
         }
@@ -272,7 +272,7 @@ public class PermissionFragment extends BaseFragment {
                 .setWidthPixels(-1)
                 .setGravity(Gravity.BOTTOM)
                 .setAnim(R.style.AnimUp)
-                .setHide(true)
+                .setKeyBack(true)
                 .show(getFragmentManager(), "PermissionFragment");
     }
 

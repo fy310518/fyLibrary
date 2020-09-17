@@ -62,8 +62,8 @@
     <string name="set">设置</string>
     <string name="search">搜索</string>
 
-    <string name="default_first_message">\u3000需要您授权以下权限才可以正常使用</string>
-    <string name="default_always_message">\u3000缺少相应的权限，您需要设置相应的权限后才可以正常使用</string>
+    <string name="default_first_message">\u3000需要您授予以下权限才可以正常使用</string>
+    <string name="default_always_message">\u3000缺少以下权限，您需要设置对应的权限才可以正常使用</string>
     <string name="permissionFail">权限请求失败</string>
     <string name="permissionSuccess">权限请求成功</string>
 
@@ -84,15 +84,12 @@
     </string-array>
 
 </resources>
+<!--    &#32; == 普通的英文半角空格-->
+<!--    &#160; == &nbsp; == &#xA0; == no-break space （普通的英文半角空格但不换行）-->
+<!--    &#12288; == 中文全角空格 （一个中文宽度）-->
+<!--    &#8194; == &ensp; == en空格 （半个中文宽度）-->
+<!--    &#8195; == &emsp; == em空格 （一个中文宽度）-->
+<!--    &#8197; == 四分之一em空格 （四分之一中文宽度）-->
 
-    <!--&#32; == 普通的英文半角空格-->
-
-    <!--&#160; == &nbsp; == &#xA0; == no-break space （普通的英文半角空格但不换行）-->
-
-    <!--&#12288; == 中文全角空格 （一个中文宽度）-->
-
-    <!--&#8194; == &ensp; == en空格 （半个中文宽度）-->
-
-    <!--&#8195; == &emsp; == em空格 （一个中文宽度）-->
-
-    <!--&#8197; == 四分之一em空格 （四分之一中文宽度）-->
+<!--    \u0020 == 半角空格(英文符号),代码中常用的;-->
+<!--    \u3000 == 全角空格(中文符号),中文文章中使用;-->
