@@ -162,8 +162,7 @@ public class PermissionFragment extends BaseFragment {
                         showSpecialPermissionDialog(Permission.MANAGE_EXTERNAL_STORAGE);
                     } else {
                         requestPermission.remove(Permission.MANAGE_EXTERNAL_STORAGE);
-                        requestPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                        requestPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+                        requestPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);//写权限包含了 读权限
                     }
                 }
 
