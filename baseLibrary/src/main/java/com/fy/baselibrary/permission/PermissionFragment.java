@@ -164,27 +164,19 @@ public class PermissionFragment extends BaseFragment {
                         requestPermission.remove(Permission.MANAGE_EXTERNAL_STORAGE);
                         requestPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);//写权限包含了 读权限
                     }
-                }
-
-                if (requestPermission.contains(Permission.REQUEST_INSTALL_PACKAGES) && !PermissionUtils.hasInstallPermission(getActivity())) {
+                } else if (requestPermission.contains(Permission.REQUEST_INSTALL_PACKAGES) && !PermissionUtils.hasInstallPermission(getActivity())) {
                     requestSpecialPermission = true;
                     // 跳转到安装权限设置界面
                     showSpecialPermissionDialog(Permission.REQUEST_INSTALL_PACKAGES);
-                }
-
-                if (requestPermission.contains(Permission.SYSTEM_ALERT_WINDOW) && !PermissionUtils.hasWindowPermission(getActivity())) {
+                } else if (requestPermission.contains(Permission.SYSTEM_ALERT_WINDOW) && !PermissionUtils.hasWindowPermission(getActivity())) {
                     requestSpecialPermission = true;
                     // 跳转到悬浮窗设置页面
                     showSpecialPermissionDialog(Permission.SYSTEM_ALERT_WINDOW);
-                }
-
-                if (requestPermission.contains(Permission.NOTIFICATION_SERVICE) && !PermissionUtils.hasNotifyPermission(getActivity())) {
+                } else if (requestPermission.contains(Permission.NOTIFICATION_SERVICE) && !PermissionUtils.hasNotifyPermission(getActivity())) {
                     requestSpecialPermission = true;
                     // 跳转到通知栏权限设置页面
                     showSpecialPermissionDialog(Permission.NOTIFICATION_SERVICE);
-                }
-
-                if (requestPermission.contains(Permission.WRITE_SETTINGS) && !PermissionUtils.hasSettingPermission(getActivity())) {
+                } else if (requestPermission.contains(Permission.WRITE_SETTINGS) && !PermissionUtils.hasSettingPermission(getActivity())) {
                     requestSpecialPermission = true;
                     // 跳转到系统设置权限设置页面
                     showSpecialPermissionDialog(Permission.WRITE_SETTINGS);

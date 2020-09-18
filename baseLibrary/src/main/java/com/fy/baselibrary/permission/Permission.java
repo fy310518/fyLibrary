@@ -93,9 +93,9 @@ public class Permission {
      */
     public static final ArrayMap<String, String[]> specialPermission = new ArrayMap<String, String[]>(){{
         put(SYSTEM_ALERT_WINDOW, new String[]{"悬浮窗", "悬浮在其它应用上方"});
-        put(WRITE_SETTINGS, new String[]{"系统设置", "允许应用修改系统的设置数据"});
-        put(NOTIFICATION_SERVICE, new String[]{"通知", "允许应用显示和发送通知"});
-        put(REQUEST_INSTALL_PACKAGES, new String[]{"安装应用", "允许应用调用系统安装器安装应用"});
+        put(WRITE_SETTINGS, new String[]{"系统设置", "修改系统的设置数据"});
+        put(NOTIFICATION_SERVICE, new String[]{"通知", "显示和发送通知"});
+        put(REQUEST_INSTALL_PACKAGES, new String[]{"安装应用", "调用系统安装器安装应用"});
         put(MANAGE_EXTERNAL_STORAGE, new String[]{"外部存储", "读写设备上的媒体及文件"});
     }};
 

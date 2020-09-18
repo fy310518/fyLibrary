@@ -174,25 +174,19 @@ public class PermissionUtils {
         }
     }
 
-    //当前应用 是否开启指定的特殊权限
-    public static boolean isAppSpecialPermission(Context context, String specialPermission){
+    /**
+     * 当前应用 是否开启指定的特殊权限
+     */
+    public static boolean isAppSpecialPermission(Context context, String specialPermission) {
         if (specialPermission.equals(Permission.MANAGE_EXTERNAL_STORAGE)) {
             return PermissionUtils.hasStoragePermission(context);
-        }
-
-        if (specialPermission.equals(Permission.REQUEST_INSTALL_PACKAGES)) {
+        } else if (specialPermission.equals(Permission.REQUEST_INSTALL_PACKAGES)) {
             return PermissionUtils.hasInstallPermission(context);
-        }
-
-        if (specialPermission.equals(Permission.SYSTEM_ALERT_WINDOW)) {
+        } else if (specialPermission.equals(Permission.SYSTEM_ALERT_WINDOW)) {
             return PermissionUtils.hasWindowPermission(context);
-        }
-
-        if (specialPermission.equals(Permission.NOTIFICATION_SERVICE)) {
+        } else if (specialPermission.equals(Permission.NOTIFICATION_SERVICE)) {
             return PermissionUtils.hasNotifyPermission(context);
-        }
-
-        if (specialPermission.equals(Permission.WRITE_SETTINGS)) {
+        } else if (specialPermission.equals(Permission.WRITE_SETTINGS)) {
             return PermissionUtils.hasSettingPermission(context);
         }
 
