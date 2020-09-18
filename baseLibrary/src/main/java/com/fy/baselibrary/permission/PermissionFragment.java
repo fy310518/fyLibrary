@@ -42,7 +42,6 @@ public class PermissionFragment extends BaseFragment {
 
     /** 权限请求 状态码 */
     public final static int PERMISSION_REQUEST_CODE = 0x01;
-
     /** 权限请求成功 状态码 */
     public final static int CALL_BACK_RESULT_CODE_SUCCESS = 0x02;
     /** 权限请求失败 状态码*/
@@ -54,6 +53,8 @@ public class PermissionFragment extends BaseFragment {
     /** 永久拒绝权限提醒的提示信息 */
     private String mAlwaysRefuseMessage;
 
+    private boolean mIsSpecialPermissionStatus = true;//特殊权限是否请求成功
+    private String mSpecialPermission;//特殊权限
     private String[] mPermissions;
 
     private boolean isToSettingPermission;
@@ -96,8 +97,15 @@ public class PermissionFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        //如果是从权限设置界面回来，重新检查权限
+        //如果是从权限设置界面回来
         if (isToSettingPermission) {
+
+            //特殊权限不为空
+            if (!TextUtils.isEmpty(mSpecialPermission) && !PermissionUtils.isAppSpecialPermission(getContext(), mSpecialPermission)){
+                mIsSpecialPermissionStatus = false;//特殊权限开启失败
+            }
+
+            //重新检查权限
             isToSettingPermission = false;
             checkPermission(mPermissions);
         }
@@ -107,7 +115,7 @@ public class PermissionFragment extends BaseFragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PERMISSION_REQUEST_CODE && null != grantResults && grantResults.length > 0) {
+        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length > 0) {
             List<Integer> failurePermissionCount = new ArrayList<>();
             for (int i = 0; i < grantResults.length; i++) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
@@ -116,7 +124,7 @@ public class PermissionFragment extends BaseFragment {
             }
 
             if (failurePermissionCount.size() == 0) {//权限请求失败数为0，则全部成功
-                permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, true);
+                permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, mIsSpecialPermissionStatus);
             } else {
                 //失败
                 List<String> rationaleList = PermissionUtils.getShouldRationaleList(getActivity(), permissions);
@@ -189,11 +197,11 @@ public class PermissionFragment extends BaseFragment {
                 if (requestPermission.size() > 0) {
                     requestPermissions(requestPermission.toArray(new String[0]), PERMISSION_REQUEST_CODE);
                 } else {
-                    permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, true);
+                    permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, mIsSpecialPermissionStatus);
                 }
             }
         } else {
-            permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, true);
+            permissionEnd(CALL_BACK_RESULT_CODE_SUCCESS, mIsSpecialPermissionStatus);
         }
     }
 
@@ -220,6 +228,7 @@ public class PermissionFragment extends BaseFragment {
     public void permissionEnd(int resultCode, boolean isStatus) {
         if (null != call){
             if (resultCode == CALL_BACK_RESULT_CODE_SUCCESS && isStatus) {
+
                 call.hasPermission(Arrays.asList(mPermissions), isStatus);
             } else if (resultCode == CALL_BACK_RESULE_CODE_FAILURE && isStatus){
                 call.noPermission(Arrays.asList(mPermissions));
@@ -284,9 +293,13 @@ public class PermissionFragment extends BaseFragment {
      * @param specialPermission
      */
     public void showSpecialPermissionDialog(String specialPermission) {
+        mSpecialPermission = specialPermission;
+
         String[] info = Permission.specialPermission.get(specialPermission);
         if (null == info) {
+            mIsSpecialPermissionStatus = false;
             removePermission(specialPermission);
+            checkPermission(mPermissions);
             return;
         }
 
@@ -322,6 +335,7 @@ public class PermissionFragment extends BaseFragment {
 
                         holder.setText(R.id.tvPermissionCancel, R.string.cancel);
                         holder.setOnClickListener(R.id.tvPermissionCancel, v -> {
+                            mIsSpecialPermissionStatus = false;
                             //请求的权限列表中有特殊权限，如果取消，移除这个特殊权限，继续请求 其它权限
                             removePermission(specialPermission);
                             checkPermission(mPermissions);
@@ -336,7 +350,7 @@ public class PermissionFragment extends BaseFragment {
                 .show(getFragmentManager(), "PermissionFragment");
     }
 
-    //从全局 mPermissions 中移除 指定的权限
+    //从全局 mPermissions 中移除 特殊权限
     private void removePermission(String permission){
         List<String> tempList = new ArrayList<>(Arrays.asList(mPermissions));
         tempList.remove(permission);
