@@ -127,7 +127,8 @@ public class PermissionFragment extends BaseFragment {
                         showPermissionDialog(rationaleList, true, true);//全部永久拒绝
                     }
                 } else {
-                    showPermissionDialog(Arrays.asList(permissions), false, true);
+                    List<String> requestPermission = PermissionUtils.getRequestPermissionList(getContext(), permissions);
+                    showPermissionDialog(requestPermission, false, true);
                 }
             }
         }
