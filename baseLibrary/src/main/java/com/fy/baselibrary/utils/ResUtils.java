@@ -17,6 +17,7 @@ import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.utils.notify.L;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -135,23 +136,36 @@ public class ResUtils {
     }
 
     /**
-     * 读取 assets 目录下 Json文件内容
-     * @param fileName  文件名称带后缀名
-     * @return
+     * 读取指定文件的 Json内容
+     * @param fileName  文件，带后缀名(手机sd卡 中的文件要传 文件绝对路径，assets 目录下的文件，如果嵌套在 文件夹下，要带 父级文件路径)
+     * @return 返回json 字符串
      */
     public static String getAssetsJson(String fileName) {
-        Context context = ConfigUtils.getAppCtx();
         StringBuilder stringBuilder = new StringBuilder();
+
+        InputStream is = null;
+        BufferedReader bf = null;
         try {
-            AssetManager assetManager = context.getAssets();
-            BufferedReader bf = new BufferedReader(new InputStreamReader(
-                    assetManager.open(fileName)));
+            if (FileUtils.fileIsExist(fileName)) {
+                is = new FileInputStream(fileName);
+            } else {
+                is = ResUtils.getAssetsInputStream(fileName);
+            }
+
+            bf = new BufferedReader(new InputStreamReader(is));
             String line;
             while ((line = bf.readLine()) != null) {
                 stringBuilder.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (null != is) is.close();
+                if (null != bf) bf.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return stringBuilder.toString();
     }
