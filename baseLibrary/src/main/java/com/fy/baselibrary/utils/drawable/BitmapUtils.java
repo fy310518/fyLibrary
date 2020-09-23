@@ -1,10 +1,13 @@
 package com.fy.baselibrary.utils.drawable;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -15,6 +18,7 @@ import com.fy.baselibrary.utils.HanziToPinyin;
 import com.fy.baselibrary.utils.ResUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -155,4 +159,34 @@ public class BitmapUtils {
         return portraitColors[i];
     }
 
+    /**
+     * sd卡 文件 转 drawable
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    public Drawable stringToDrawable(String path) {
+        Drawable drawable = null;
+        FileInputStream input = null;
+        try {
+            input = new FileInputStream(new File(path));
+            //先转换成bitmap
+            Bitmap bmp = BitmapFactory.decodeStream(input);
+
+            //再转换成drawable
+            drawable = new BitmapDrawable(bmp);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != input) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return drawable;
+    }
 }
