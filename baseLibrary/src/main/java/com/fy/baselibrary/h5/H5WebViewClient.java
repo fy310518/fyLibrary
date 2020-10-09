@@ -60,7 +60,7 @@ public abstract class H5WebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-        view.clearHistory();//清空【当前】页面之前的所有记录
+//        view.clearHistory();//重写 onPageFinished 清空【当前】页面之前的所有记录
 
         view.getSettings().setBlockNetworkImage(false);
         if (!view.getSettings().getLoadsImagesAutomatically()) {

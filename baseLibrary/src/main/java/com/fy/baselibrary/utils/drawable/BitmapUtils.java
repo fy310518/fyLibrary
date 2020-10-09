@@ -174,7 +174,7 @@ public class BitmapUtils {
             Bitmap bmp = BitmapFactory.decodeStream(input);
 
             //再转换成drawable
-            drawable = new BitmapDrawable(bmp);
+            drawable = new BitmapDrawable(ConfigUtils.getAppCtx().getResources(), bmp);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
