@@ -1,0 +1,88 @@
+{
+  "line": 2,
+  "row": 4,
+  "iconUri": "coustm_icon.png",
+  "isShowDelBtn": false,
+  "EmoticonBeans": [
+    {
+      "eventType": 2,
+      "iconUri": "1807378345340.gif",
+      "content": "我来了"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807374615328.gif",
+      "content": "我先走了"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807357522113.gif",
+      "content": "机智如我"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807377814855.gif",
+      "content": "最近好吗"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807367933726.gif",
+      "content": "多读书"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807368404775.gif",
+      "content": "我爱读书"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "18073517513580.gif",
+      "content": "出来聊天"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807351751358.gif",
+      "content": "你没事吧"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "18073530369722.gif",
+      "content": "点名了"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807354823352.gif",
+      "content": "帮我签到"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807369690389.gif",
+      "content": "求带饭"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807354038505.gif",
+      "content": "闭嘴"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807353036972.gif",
+      "content": "好想去玩"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807375587144.gif",
+      "content": "宿管查房"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807364645046.gif",
+      "content": "今夜无眠"
+    },
+    {
+      "eventType": 2,
+      "iconUri": "1807375116095.gif",
+      "content": "辛苦了"
+    }
+  ]
+}
