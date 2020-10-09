@@ -165,7 +165,7 @@ public class BitmapUtils {
      * @return
      * @throws IOException
      */
-    public Drawable stringToDrawable(String path) {
+    public static Drawable stringToDrawable(String path) {
         Drawable drawable = null;
         FileInputStream input = null;
         try {
