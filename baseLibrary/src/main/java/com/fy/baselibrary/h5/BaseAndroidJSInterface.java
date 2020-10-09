@@ -1,7 +1,6 @@
 package com.fy.baselibrary.h5;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.ArrayMap;
@@ -252,9 +251,10 @@ public class BaseAndroidJSInterface {
         return new RequestBaseObserver<Object>(progressDialog) {
             @Override
             protected void onSuccess(Object data) {
-                //Android 调用 h5 方法
                 String json = GsonUtils.toJson(data);
+                //Android 调用 h5 方法
                 view.loadUrl("javascript:" + jsMethod + "(\'" + json + "\')");
+//                view.evaluateJavascript(jsMethod + "(\'" + json + "\')", null);//4.4以上，效率更高，可以接收 js方法的返回值
 
                 if (listener != null) {
                     listener.beforH5(url, json, false);
@@ -272,6 +272,7 @@ public class BaseAndroidJSInterface {
     public interface OnOwnOptListener {
         String beforH5(String url, String data, boolean isError);
     }
+
 
     @JavascriptInterface
     public void back() {
