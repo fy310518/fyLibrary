@@ -111,7 +111,7 @@ public abstract class H5WebViewClient extends WebViewClient {
         if (isUseLocalIntercept) return super.shouldInterceptRequest(view, url);
 
         if (isImgUrl(url)){//1、如果是图片
-            webResourceResponse = getImgWebResResponse(url);
+            webResourceResponse = getImgWebResResponse(view, url);
             if (null == webResourceResponse) webResourceResponse = super.shouldInterceptRequest(view, url);
             return webResourceResponse;
         } else if (isWebResUrl(url)){
@@ -184,11 +184,11 @@ public abstract class H5WebViewClient extends WebViewClient {
 //    html:mimeType ="text/html";
 //    jpg/png: mimeType = "image/png";
 //    woff: application/octet-stream
-    private WebResourceResponse getImgWebResResponse(String url){
+    private WebResourceResponse getImgWebResResponse(WebView view, String url){
         WebResourceResponse webResourceResponse = null;
         File imgFile = null;
         try {
-            imgFile = ImgLoadUtils.getImgCachePath(ConfigUtils.getAppCtx(), url);
+            imgFile = ImgLoadUtils.getImgCachePath(view.getContext(), url);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
