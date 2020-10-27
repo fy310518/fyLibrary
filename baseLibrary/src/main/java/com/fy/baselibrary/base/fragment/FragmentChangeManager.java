@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class FragmentChangeManager {
 
-    private FragmentManager mFragmentManager;
+    public FragmentManager mFragmentManager;
     private int mContainerViewId;
 
     private Fragment mCurrentFrgment;//当前显示的fragment
@@ -147,21 +147,23 @@ public class FragmentChangeManager {
      * https://blog.csdn.net/qq_16247851/article/details/52793061
      */
     public void popLastFragment(){
-        setFragments(currentIndex - 1);
-
-        mFragmentManager.popBackStack(null, 0);
         removeFragment(1);
     }
 
     //移除指定数量的 fragment
     public void removeFragment(int count){
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
+
         for (int i = 0; i < count && mFragments.size() > 0; i++) {
+            mFragmentManager.popBackStack(null, 0);
             transaction.remove(mFragments.get(mFragments.size() - 1));
+            transaction.detach(mFragments.get(mFragments.size() - 1));
             mFragments.remove(mFragments.size() - 1);
+            currentIndex--;//每移除一个fragment currentIndex-- 一次【保证移除 多个fragment时候 正常】
         }
 
-        transaction.commitAllowingStateLoss();
+        setFragmentTransition(transaction, currentIndex, currentIndex - 1);
+        transaction.commit();
     }
 
     //进入动画
