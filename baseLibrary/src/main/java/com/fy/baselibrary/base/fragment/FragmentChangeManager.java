@@ -17,10 +17,10 @@ import java.util.List;
  */
 public class FragmentChangeManager {
 
-    public FragmentManager mFragmentManager;
+    private FragmentManager mFragmentManager;
     private int mContainerViewId;
 
-    private Fragment mCurrentFrgment;//当前显示的fragment
+    private Fragment mCurrentFragment;//当前显示的fragment
     private int currentIndex = 0;    //当前显示的fragment的下标
 
     /**
@@ -91,8 +91,8 @@ public class FragmentChangeManager {
         if (null == fragmentTransaction) fragmentTransaction = mFragmentManager.beginTransaction();
 
         //判断当前的Fragment是否为空，不为空则隐藏
-        if (null != mCurrentFrgment) {
-            fragmentTransaction.hide(mCurrentFrgment);
+        if (null != mCurrentFragment) {
+            fragmentTransaction.hide(mCurrentFragment);
         }
 
         if (null == showFragment) return;
@@ -107,7 +107,7 @@ public class FragmentChangeManager {
         }
 
         //保存当前显示的那个Fragment
-        mCurrentFrgment = showFragment;
+        mCurrentFragment = showFragment;
         currentIndex = position;
         fragmentTransaction.commitAllowingStateLoss();
     }
@@ -162,6 +162,7 @@ public class FragmentChangeManager {
             currentIndex--;//每移除一个fragment currentIndex-- 一次【保证移除 多个fragment时候 正常】
         }
 
+        mCurrentFragment = mFragments.get(currentIndex);//mCurrentFragment 重新赋值
         setFragmentTransition(transaction, currentIndex, currentIndex - 1);
         transaction.commit();
     }
@@ -187,7 +188,7 @@ public class FragmentChangeManager {
     }
 
     public Fragment getCurrentFragment() {
-        return mCurrentFrgment;
+        return mCurrentFragment;
     }
 
     public int getFmCount(){
