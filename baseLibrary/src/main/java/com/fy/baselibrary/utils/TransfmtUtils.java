@@ -31,6 +31,26 @@ public class TransfmtUtils {
     }
 
     /**
+     * 计算 文件大小
+     * 使用 String.format 进行格式化
+     * @param size  文件大小 单位：byte
+     * @return
+     */
+    public static String convertFileSize(long size) {
+        long kb = 1024;
+        long mb = kb * 1024;
+        long gb = mb * 1024;
+        if (size < kb)
+            return String.format("%d B", (int) size);
+        else if (size < mb)
+            return String.format("%1$.2f KB", (float) size / kb);
+        else if (size < gb)
+            return String.format("%1$.2f MB", (float) size / mb);
+        else
+            return String.format("%1$.2f G", (float) size / gb);
+    }
+
+    /**
      * 把十进制字符串转化成 16进制字符串 (两两截取转换)
      *
      * String str1=    "07101311"

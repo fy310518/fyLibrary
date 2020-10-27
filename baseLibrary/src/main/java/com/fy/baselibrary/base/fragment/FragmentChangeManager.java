@@ -64,22 +64,21 @@ public class FragmentChangeManager {
         for (int position : positions) {
             Fragment showFragment = mFragments.get(position);
 
-            setCommitTransaction(null, showFragment, position, false, 0);
+            setCommitTransaction(null, showFragment, position);
         }
     }
 
     /**
      * fragment 懒加载 (界面切换控制)
-     *
      * @param position
      */
-    public void setFragments(int position, boolean isRemove, int count) {
+    public void setFragments(int position) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         setFragmentTransition(fragmentTransaction, currentIndex, position);
 
         Fragment showFragment = mFragments.get(position);
 
-        setCommitTransaction(fragmentTransaction, showFragment, position, isRemove, count);
+        setCommitTransaction(fragmentTransaction, showFragment, position);
     }
 
     /**
@@ -87,9 +86,8 @@ public class FragmentChangeManager {
      * @param fragmentTransaction
      * @param showFragment
      * @param position
-     * @param isRemove   是否 移除最后 count 个 fragment
      */
-    private void setCommitTransaction(FragmentTransaction fragmentTransaction, Fragment showFragment, int position, boolean isRemove, int count) {
+    private void setCommitTransaction(FragmentTransaction fragmentTransaction, Fragment showFragment, int position) {
         if (null == fragmentTransaction) fragmentTransaction = mFragmentManager.beginTransaction();
 
         //判断当前的Fragment是否为空，不为空则隐藏
@@ -108,48 +106,62 @@ public class FragmentChangeManager {
             fragmentTransaction.show(showFragment);
         }
 
-        if (isRemove){
-            for (int i = 0; i < count; i++) {
-                fragmentTransaction.remove(mFragments.get(mFragments.size() - 1));
-                mFragments.remove(currentIndex--);
-            }
-        }
-
         //保存当前显示的那个Fragment
         mCurrentFrgment = showFragment;
         currentIndex = position;
         fragmentTransaction.commitAllowingStateLoss();
     }
 
-
-
     /**
      * 设置fragment 转场动画
      *
-     * @param fragmentTransaction 事物
+     * @param transaction 事物
      * @param currentIndex        当前fragment 在事物中的下标
      * @param position            将要显示的fragment的下标
      */
     @SuppressLint("ResourceType")
-    public void setFragmentTransition(FragmentTransaction fragmentTransaction,
-                                      int currentIndex, int position) {
-
+    public void setFragmentTransition(FragmentTransaction transaction, int currentIndex, int position) {
         if (styleResAnim > 0){
-            fragmentTransaction.setTransitionStyle(styleResAnim);
-
+            transaction.setTransitionStyle(styleResAnim);
         } else if (inEnter > 0 && inExit > 0 && outEnter > 0 && outExit > 0) {
             //设置自定义过场动画
             if (currentIndex > position) {
-                fragmentTransaction.setCustomAnimations(
-                        outEnter,
-                        outExit);
+                transaction.setCustomAnimations(outEnter, outExit);
             } else if (currentIndex < position) {
-                fragmentTransaction.setCustomAnimations(
-                        inEnter,
-                        inExit);
+                transaction.setCustomAnimations(inEnter, inExit);
             }
         }
+    }
 
+    /**
+     * 向fragment 管理器 添加一个 fragment 并显示
+     * @param fragment
+     */
+    public void addFragment(Fragment fragment){
+        mFragments.add(fragment);
+        setFragments(mFragments.size() - 1);
+    }
+
+    /**
+     * fragment 回退 删除最后一个 fragment
+     * https://blog.csdn.net/qq_16247851/article/details/52793061
+     */
+    public void popLastFragment(){
+        setFragments(currentIndex - 1);
+
+        mFragmentManager.popBackStack(null, 0);
+        removeFragment(1);
+    }
+
+    //移除指定数量的 fragment
+    public void removeFragment(int count){
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        for (int i = 0; i < count && mFragments.size() > 0; i++) {
+            transaction.remove(mFragments.get(mFragments.size() - 1));
+            mFragments.remove(mFragments.size() - 1);
+        }
+
+        transaction.commitAllowingStateLoss();
     }
 
     //进入动画
@@ -168,26 +180,6 @@ public class FragmentChangeManager {
         this.styleResAnim = styleResAnim;
     }
 
-    /**
-     * 向fragment 管理器 添加一个 fragment 并显示
-     * @param fragment
-     */
-    public void addFragment(Fragment fragment){
-        mFragments.add(fragment);
-        setFragments(mFragments.size() - 1, false, 0);
-    }
-
-    /**
-     * fragment 回退 删除最后一个 fragment
-     * https://blog.csdn.net/qq_16247851/article/details/52793061
-     */
-    public void popLastFragment(){
-        mFragmentManager.popBackStack(null, 0);
-        mFragments.remove(currentIndex--);
-
-        setFragments(currentIndex, false, 0);
-    }
-
     public int getCurrentTab() {
         return currentIndex;
     }
@@ -199,6 +191,5 @@ public class FragmentChangeManager {
     public int getFmCount(){
         return mFragments.size();
     }
-
 
 }
