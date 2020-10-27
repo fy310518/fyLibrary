@@ -31,6 +31,10 @@ public abstract class H5WebFragment extends BaseFragment {
         initWebView();
         initWebViewSetting();
         webViewSetting();
+
+//        webView.loadUrl("file:///storage/emulated/0/index.html");//加载 SD卡下的 html【file:///后面跟html文件完整路径】
+//        webView.loadUrl("file:///android_asset/index.html");//加载 assets 目录下的 html【file:///android_asset后面跟html文件完整路径】
+//        webView.loadUrl("https://www.hao123.com/");//直接加载一个网页
         webView.loadUrl(initializer.getLoadUrl());
     }
 

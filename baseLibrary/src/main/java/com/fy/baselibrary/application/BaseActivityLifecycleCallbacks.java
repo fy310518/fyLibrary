@@ -3,6 +3,7 @@ package com.fy.baselibrary.application;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.fy.baselibrary.R;
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.base.mvp.BaseMVPActivity;
+import com.fy.baselibrary.base.mvvm.BaseViewModel;
 import com.fy.baselibrary.dress.DressUtils;
 import com.fy.baselibrary.dress.widget.DressCleanFrameLayout;
 import com.fy.baselibrary.statuslayout.LoadSirUtils;
@@ -32,6 +34,9 @@ import com.fy.baselibrary.utils.ResUtils;
 import com.fy.baselibrary.utils.cache.SpfAgent;
 import com.fy.baselibrary.utils.media.PlayUtils;
 import com.fy.baselibrary.utils.notify.L;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import butterknife.ButterKnife;
 import io.reactivex.subjects.BehaviorSubject;
@@ -267,4 +272,20 @@ public class BaseActivityLifecycleCallbacks implements Application.ActivityLifec
             res.updateConfiguration(newConfig, res.getDisplayMetrics());
         }
     }
+
+    public void createViewModel(AppCompatActivity act) {
+        if (mViewModel == null) {
+            Class modelClass;
+            Type type = getClass().getGenericSuperclass();
+            if (type instanceof ParameterizedType) {
+                modelClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+            } else {
+                //如果没有指定泛型参数，则默认使用BaseViewModel
+                modelClass = BaseViewModel.class;
+            }
+            mViewModel = (VM) ViewModelProviders.of(act).get(modelClass);
+            mViewModel.setObjectLifecycleTransformer(bindToLifecycle());
+        }
+    }
+
 }

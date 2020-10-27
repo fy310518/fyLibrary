@@ -23,6 +23,10 @@ android {
         }
     }
 
+    dataBinding {
+        enabled = true
+    }
+
     lintOptions {
         abortOnError false
         warning 'InvalidPackage'
@@ -51,6 +55,9 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$var.supportLibraryVersion"
     implementation "com.android.support:design:$var.supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$var.constraintLayout"
+
+    //viewModel and liveData
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
 
     //    butterknife
     implementation "com.jakewharton:butterknife:$var.butterknife"
