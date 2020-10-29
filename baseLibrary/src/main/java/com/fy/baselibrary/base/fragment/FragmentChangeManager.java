@@ -26,7 +26,7 @@ public class FragmentChangeManager {
     /**
      * Fragment切换数组
      */
-    private List<Fragment> mFragments;
+    private List<Fragment> mFragments = new ArrayList<>();
 
     @AnimatorRes
     @AnimRes
@@ -44,7 +44,6 @@ public class FragmentChangeManager {
         this.mFragmentManager = fm;
         this.mContainerViewId = containerViewId;
 
-        mFragments = new ArrayList<>();
         mFragments.add(fragment);
     }
 
@@ -52,7 +51,15 @@ public class FragmentChangeManager {
     public FragmentChangeManager(FragmentManager fm, int containerViewId, List<Fragment> fragments) {
         this.mFragmentManager = fm;
         this.mContainerViewId = containerViewId;
-        this.mFragments = fragments;
+        this.mFragments.addAll(fragments);
+    }
+
+    public void addFragmentList(List<Fragment> fragments){
+        mFragments.addAll(fragments);
+    }
+
+    public void addFragmentList(int position, List<Fragment> fragments){
+        mFragments.addAll(position, fragments);
     }
 
     /**
@@ -148,23 +155,26 @@ public class FragmentChangeManager {
      */
     public void popLastFragment(){
         removeFragment(1);
+
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        mCurrentFragment = mFragments.get(currentIndex);//mCurrentFragment 重新赋值
+        setFragmentTransition(transaction, currentIndex, currentIndex - 1);
+        transaction.commit();
     }
 
     //移除指定数量的 fragment
     public void removeFragment(int count){
+        @SuppressLint("CommitTransaction")
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
 
         for (int i = 0; i < count && mFragments.size() > 0; i++) {
-            mFragmentManager.popBackStack(null, 0);
+            if (!mFragmentManager.isStateSaved()) mFragmentManager.popBackStack(null, 0);
             transaction.remove(mFragments.get(mFragments.size() - 1));
             transaction.detach(mFragments.get(mFragments.size() - 1));
             mFragments.remove(mFragments.size() - 1);
             currentIndex--;//每移除一个fragment currentIndex-- 一次【保证移除 多个fragment时候 正常】
         }
-
-        mCurrentFragment = mFragments.get(currentIndex);//mCurrentFragment 重新赋值
-        setFragmentTransition(transaction, currentIndex, currentIndex - 1);
-        transaction.commit();
+//        transaction.commit();
     }
 
     //进入动画
