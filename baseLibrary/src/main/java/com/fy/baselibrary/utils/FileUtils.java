@@ -1,5 +1,6 @@
 package com.fy.baselibrary.utils;
 
+import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
@@ -51,7 +52,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取 内置SD卡路径
+     * 获取 内置SD卡 根路径
      * Android Q 开始此方法废弃；需要适配分区存储，数据私有化
      * 以下绕过 分配存储步骤
      * 1 配置 requestLegacyExternalStorage=true 直接关闭分区存储 适配 Android Q
@@ -135,6 +136,15 @@ public class FileUtils {
                 .getAbsolutePath() + File.separator;
     }
 
+    /**
+     * 获取某个应用在内部存储中的自定义路径
+     * @return "/data/data/你的应用包名/${path}/"
+     */
+    public static String getDir(String path) {
+        return ConfigUtils.getAppCtx().getDir(path, Context.MODE_PRIVATE)
+                .getAbsolutePath() + File.separator;
+    }
+
 
     /**
      * 到得文件的放置路径
@@ -169,7 +179,7 @@ public class FileUtils {
                     dirpath = new File(getCacheDir(), fDirStr);
                     break;
                 default:
-                    dirpath = new File(getDataDirectoryPath(), fDirStr);
+                    dirpath = new File(getDir(fDirStr));
                     break;
             }
 
