@@ -499,8 +499,9 @@ public class FileUtils {
             fileInputStream = new FileInputStream(source);
             fileOutputStream = new FileOutputStream(target);
             byte[] buffer = new byte[1024];
-            while (fileInputStream.read(buffer) > 0) {
-                fileOutputStream.write(buffer);
+            int len;
+            while ((len = fileInputStream.read(buffer)) > 0) {
+                fileOutputStream.write(buffer, 0, len);
             }
         } catch (Exception e) {
             e.printStackTrace();
