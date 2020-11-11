@@ -11,7 +11,7 @@ allprojects {
 		}
 }
 
-二：在 对应的 library Module下的 build.gradle 文件 增加如下依赖，然后编译即可【tag 表示版本号，最新是 1.7.32】
+二：在 对应的 library Module下的 build.gradle 文件 增加如下依赖，然后编译即可【tag 表示版本号，最新是 1.7.36】
 
 dependencies {
 	        implementation 'com.github.fy310518:fyLibrary:Tag'
