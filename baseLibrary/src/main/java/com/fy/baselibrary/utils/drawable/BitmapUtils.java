@@ -7,16 +7,20 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.text.TextPaint;
 import android.text.TextUtils;
 
 import com.fy.baselibrary.R;
 import com.fy.baselibrary.application.ioc.ConfigUtils;
+import com.fy.baselibrary.utils.DensityUtils;
 import com.fy.baselibrary.utils.FileUtils;
 import com.fy.baselibrary.utils.HanziToPinyin;
 import com.fy.baselibrary.utils.ResUtils;
+import com.fy.baselibrary.utils.ScreenUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -90,7 +94,7 @@ public class BitmapUtils {
     }
 
     /**
-     * 根据字符串 和 颜色 创建 bitmap
+     * 根据字符串 和 颜色 创建 默认的头像 bitmap
      * @param s
      * @param color
      */
@@ -112,6 +116,83 @@ public class BitmapUtils {
         canvas.drawText(s, textLeft, textTop, paint);
 
         return bitmap;
+    }
+
+    public static String saveWaterMar(String userName, String suffix){
+        String fileName = userName + "_" + suffix;
+        String filePath = FileUtils.folderIsExists(FileUtils.headImg, ConfigUtils.getType()).getPath();
+        File file = FileUtils.getTempFile(fileName, filePath);
+
+        String imgFilePath = file.getPath();
+        if (!FileUtils.fileIsExist(file.getPath())){ //文件不存在，则创建文件
+            Bitmap bitmap = createWaterMarkBitmap(userName, suffix);
+
+            imgFilePath = saveBitmap(bitmap, file.getPath());
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
+
+            return imgFilePath;
+        }
+
+        return imgFilePath;
+    }
+
+    /**
+     * 根据用户名和用户 suffix【手机号 或 工号】 创建水印 bitmap
+     * @param userName
+     * @param suffix
+     */
+    public static Bitmap createWaterMarkBitmap(String userName, String suffix) {
+        final int mPaddingRight = DensityUtils.dp2px(100);
+        final int mPaddingBottom = DensityUtils.dp2px(60);
+        final int ROTATION = 20;
+        final int TEXT_SIZE = 30;
+        String mContent = userName + " " + suffix;
+
+        TextPaint paint = new TextPaint();
+        paint.setColor(ResUtils.getColor(R.color.waterMarkContent));
+        paint.setAntiAlias(true);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(TEXT_SIZE);
+
+        Rect rect = new Rect();
+        paint.getTextBounds(mContent, 0, mContent.length(), rect);
+
+        int textWidth = rect.width();
+        int textHeight = rect.height();
+
+        int screenWidth = ScreenUtils.getScreenWidth();
+        int screenHeight = ScreenUtils.getScreenHeight();
+
+        Bitmap mBitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.RGB_565);
+
+        Canvas canvas = new Canvas(mBitmap);
+        canvas.drawColor(ResUtils.getColor(R.color.waterMarkBg));
+
+        double sinRotateAngle = Math.sin(ROTATION);
+        double cosRotateAngle = Math.cos(ROTATION);
+        int canvasHeight = (int) ((screenHeight * cosRotateAngle + screenWidth * sinRotateAngle) * 1.5);
+        int canvasWidth = (int) (screenHeight * sinRotateAngle + screenWidth * cosRotateAngle);
+
+        canvas.rotate(-ROTATION, screenWidth / 2, screenHeight / 2);
+
+        int startX = 0;
+        int startY = 0;
+        int i = 1;
+        for (int positionY = startY; positionY <= canvasHeight; positionY += (textHeight + mPaddingBottom)) {
+            i++;
+            if (i % 2 == 0) {
+                startX = -screenWidth + +textWidth + (mPaddingRight - textWidth) / 2;
+            } else {
+                startX = -screenWidth;
+            }
+            for (float positionX = startX; positionX <= canvasWidth; positionX += (textWidth + mPaddingRight)) {
+                canvas.drawText(mContent, positionX, positionY, paint);
+            }
+        }
+
+        return mBitmap;
     }
 
     /**

@@ -141,6 +141,15 @@ public class Validator {
     }
 
     /**
+     * 校验 字符串是否是整数
+     * @param str
+     * @return
+     */
+    public static boolean isInteger(String str) {
+        return Pattern.matches("^[-\\+]?[\\d]*$", str);
+    }
+
+    /**
      * 校验身份证
      *
      * @param idCard
