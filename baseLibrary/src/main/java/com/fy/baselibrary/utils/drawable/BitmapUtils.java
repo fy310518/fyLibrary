@@ -118,14 +118,14 @@ public class BitmapUtils {
         return bitmap;
     }
 
-    public static String saveWaterMar(String userName, String suffix){
+    public static String saveWaterMar(String userName, String suffix, Bitmap.Config config){
         String fileName = userName + "_" + suffix;
         String filePath = FileUtils.folderIsExists(FileUtils.headImg, ConfigUtils.getType()).getPath();
         File file = FileUtils.getTempFile(fileName, filePath);
 
         String imgFilePath = file.getPath();
         if (!FileUtils.fileIsExist(file.getPath())){ //文件不存在，则创建文件
-            Bitmap bitmap = createWaterMarkBitmap(userName, suffix);
+            Bitmap bitmap = createWaterMarkBitmap(userName, suffix, config);
 
             imgFilePath = saveBitmap(bitmap, file.getPath());
             if (bitmap != null && !bitmap.isRecycled()) {
@@ -143,7 +143,7 @@ public class BitmapUtils {
      * @param userName
      * @param suffix
      */
-    public static Bitmap createWaterMarkBitmap(String userName, String suffix) {
+    public static Bitmap createWaterMarkBitmap(@NonNull String userName, @NonNull String suffix, @NonNull Bitmap.Config config) {
         final int mPaddingRight = DensityUtils.dp2px(100);
         final int mPaddingBottom = DensityUtils.dp2px(60);
         final int ROTATION = 20;
@@ -165,7 +165,7 @@ public class BitmapUtils {
         int screenWidth = ScreenUtils.getScreenWidth();
         int screenHeight = ScreenUtils.getScreenHeight();
 
-        Bitmap mBitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.RGB_565);
+        Bitmap mBitmap = Bitmap.createBitmap(screenWidth, screenHeight, config);
 
         Canvas canvas = new Canvas(mBitmap);
         canvas.drawColor(ResUtils.getColor(R.color.waterMarkBg));
