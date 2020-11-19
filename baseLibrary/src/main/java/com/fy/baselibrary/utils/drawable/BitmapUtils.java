@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -192,6 +191,9 @@ public class BitmapUtils {
             }
         }
 
+        canvas.save();
+        canvas.restore();
+
         return mBitmap;
     }
 
@@ -204,7 +206,7 @@ public class BitmapUtils {
         File file = FileUtils.fileIsExists(imgFilePath);
         try {
             FileOutputStream out = new FileOutputStream(file);
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
         } catch (FileNotFoundException e) {

@@ -53,8 +53,10 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$var.constraintLayout"
 
     //    butterknife
-    implementation "com.jakewharton:butterknife:$var.butterknife"
     annotationProcessor "com.jakewharton:butterknife-compiler:$var.butterknife"
+    implementation("com.jakewharton:butterknife:$var.butterknife") {
+        exclude group: 'com.android.support'
+    }
 
     //    dagger2
     implementation 'com.google.dagger:dagger:2.9'

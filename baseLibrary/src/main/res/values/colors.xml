@@ -47,7 +47,7 @@
 
     <!-- 水印内容颜色 -->
     <color name="waterMarkContent">#DDDDDD</color>
-    <color name="waterMarkBg">#f1f1f1</color>
+    <color name="waterMarkBg">@android:color/transparent</color>
 </resources>
     <!-- 透明度 对比表 (全透明就是00(如：#00000000 即为透明)，完全不透明就是FF) -->
     <!--100% -  00-->
