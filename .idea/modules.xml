@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="fyLibrary/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/baseLibrary/baseLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/baseLibrary/baseLibrary.iml" group="fyLibrary/baseLibrary" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/fyLibrary.iml" filepath="$PROJECT_DIR$/.idea/fyLibrary.iml" group="fyLibrary" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mapLibrary/mapLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/mapLibrary/mapLibrary.iml" group="fyLibrary/mapLibrary" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/plugin/plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/plugin/plugin.iml" group="fyLibrary/plugin" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="fyLibrary/app" />
+      <module fileurl="file://$PROJECT_DIR$/baseLibrary/baseLibrary.iml" filepath="$PROJECT_DIR$/baseLibrary/baseLibrary.iml" group="fyLibrary/baseLibrary" />
+      <module fileurl="file://$PROJECT_DIR$/fyLibrary.iml" filepath="$PROJECT_DIR$/fyLibrary.iml" group="fyLibrary" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/baseLibrary/github.com.fy310518-baseLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/baseLibrary/github.com.fy310518-baseLibrary.iml" group="fyLibrary/baseLibrary" />
+      <module fileurl="file://$PROJECT_DIR$/mapLibrary/mapLibrary.iml" filepath="$PROJECT_DIR$/mapLibrary/mapLibrary.iml" group="fyLibrary/mapLibrary" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/plugin.iml" filepath="$PROJECT_DIR$/plugin/plugin.iml" group="fyLibrary/plugin" />
     </modules>
   </component>
 </project>
