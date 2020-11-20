@@ -140,7 +140,7 @@ public abstract class H5WebViewClient extends WebViewClient {
         super.onReceivedHttpError(view, request, errorResponse);
 //        view.loadUrl(blank);// 避免出现默认的错误界面
         int statusCode = errorResponse.getStatusCode();
-        if (400 == statusCode && request.getUrl().toString().toLowerCase().endsWith("favicon.ico")) return;//说明网页没有配置 网页 图标
+        if (request.getUrl().toString().toLowerCase().endsWith("favicon.ico")) return;//说明网页没有配置 网页 图标
         if (400 == statusCode || 401 == statusCode || 404 == statusCode || 500 == statusCode) {
             setTips(Constant.LAYOUT_ERROR_ID);
         }

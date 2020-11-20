@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WorkSpace-fyLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/WorkSpace-fyLibrary.iml" group="fyLibrary" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="fyLibrary/app" />
       <module fileurl="file://$PROJECT_DIR$/baseLibrary/baseLibrary.iml" filepath="$PROJECT_DIR$/baseLibrary/baseLibrary.iml" group="fyLibrary/baseLibrary" />
       <module fileurl="file://$PROJECT_DIR$/fyLibrary.iml" filepath="$PROJECT_DIR$/fyLibrary.iml" group="fyLibrary" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/fyLibrary-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/fyLibrary-app.iml" group="fyLibrary/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/baseLibrary/fyLibrary-baseLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/baseLibrary/fyLibrary-baseLibrary.iml" group="fyLibrary/baseLibrary" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mapLibrary/fyLibrary-mapLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/mapLibrary/fyLibrary-mapLibrary.iml" group="fyLibrary/mapLibrary" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/plugin/fyLibrary-plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/plugin/fyLibrary-plugin.iml" group="fyLibrary/plugin" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/baseLibrary/github.com.fy310518-baseLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/baseLibrary/github.com.fy310518-baseLibrary.iml" group="fyLibrary/baseLibrary" />
       <module fileurl="file://$PROJECT_DIR$/mapLibrary/mapLibrary.iml" filepath="$PROJECT_DIR$/mapLibrary/mapLibrary.iml" group="fyLibrary/mapLibrary" />
       <module fileurl="file://$PROJECT_DIR$/plugin/plugin.iml" filepath="$PROJECT_DIR$/plugin/plugin.iml" group="fyLibrary/plugin" />
