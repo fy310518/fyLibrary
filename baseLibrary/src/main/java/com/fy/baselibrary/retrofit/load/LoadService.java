@@ -98,13 +98,13 @@ public interface LoadService {
 
     /**
      * 断点下载
-     *
      * @param downParam 下载参数，传下载区间使用 "bytes=" + startPos + "-"
+     *                  【IF-RANGE 如果服务器不支持分段下载，则直接下载整个文件】
      * @param url
      * @return
      */
     @Streaming
     @GET
-    Observable<ResponseBody> download(@Header("RANGE") String downParam, @Url String url);
+    Observable<ResponseBody> download(@Header("IF-RANGE") String downParam, @Url String url);
 
 }

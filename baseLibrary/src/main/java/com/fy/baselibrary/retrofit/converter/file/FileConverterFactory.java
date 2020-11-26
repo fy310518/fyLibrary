@@ -19,6 +19,8 @@ import retrofit2.Retrofit;
  */
 public class FileConverterFactory extends Converter.Factory {
 
+    private FileConverterFactory() {}
+
     public static FileConverterFactory create(){
         return new FileConverterFactory();
     }
@@ -42,7 +44,6 @@ public class FileConverterFactory extends Converter.Factory {
 
     @Override
     public Converter<ResponseBody, File> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-//        return new FileResponseBodyConverter();
         return null;
     }
 }

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
-import javax.net.ssl.SSLSocketFactory;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,7 +49,7 @@ public class RequestModule {
             gsonConverterFactory, OkHttpClient.Builder okBuilder) {
         return new Retrofit.Builder()
                 .addCallAdapterFactory(callAdapterFactory)
-                .addConverterFactory(new FileConverterFactory())
+                .addConverterFactory(FileConverterFactory.create())
                 .addConverterFactory(gsonConverterFactory)
                 .baseUrl(ConfigUtils.getBaseUrl())
                 .client(okBuilder.build())

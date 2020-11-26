@@ -71,7 +71,7 @@ public class FileRequestBodyConverter implements Converter<ArrayMap<String, Obje
 
         long sumLeng = 0L;
         File file;
-//        此种方式只是为了应对 战友圈上传图片
+//        此种方式只是为了应对 特定服务器上传图片
         for (int i = 0; i < files.size(); i++){
             T t = files.get(i);
             if (t instanceof File) file = (File) t;
