@@ -11,6 +11,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.AppGlideModule;
 import com.fy.baselibrary.retrofit.RequestUtils;
+import com.fy.baselibrary.utils.security.SSLUtil;
 
 import java.io.InputStream;
 
@@ -29,6 +30,9 @@ public class OkHttpLibraryGlideModule extends AppGlideModule {
         //添加拦截器到Glide
         OkHttpClient.Builder builder = RequestUtils.getOkBuilder();
         builder.addInterceptor(new ProgressInterceptor());
+        //加载图片 信任所有证书
+        builder.sslSocketFactory(SSLUtil.createSSLSocketFactory());
+        builder.hostnameVerifier(SSLUtil.DO_NOT_VERIFY);
         OkHttpClient okHttpClient = builder.build();
 
         //原来的是  new OkHttpUrlLoader.Factory()；
