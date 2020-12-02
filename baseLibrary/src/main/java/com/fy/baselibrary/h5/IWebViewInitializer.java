@@ -12,6 +12,14 @@ public interface IWebViewInitializer {
 
     /**
      * 获取 网页 加载 url
+     * 方式1：加载一个网页
+     * webView.loadUrl("http://www.google.com/");
+     *
+     * 方式2：加载apk包中 assets 目录下的html页面
+     * webView.loadUrl("file:///android_asset/test.html");
+     *
+     * 方式3：加载手机SD卡 html页面
+     * webView.loadUrl("file:///sdcard/test.html");
      */
     String getLoadUrl();
 
