@@ -163,6 +163,11 @@ public abstract class RequestBaseObserver<V> implements Observer<V> {
     protected abstract void onSuccess(V t);
 
     /**
+     * 请求失败
+     */
+    protected void onFail(){}
+
+    /**
      * 更新activity 界面（多状态视图）
      * 可根据flag 判断请求失败
      * @param flag 请求状态flag
@@ -171,21 +176,6 @@ public abstract class RequestBaseObserver<V> implements Observer<V> {
         if (context instanceof OnSetStatusView) {
             ((OnSetStatusView)context).showHideViewFlag(flag);
         }
-    }
-
-    /**
-     * 请求失败
-     */
-    protected void onFail(){
-
-    }
-
-    /**
-     * 上传、下载 需重写此方法，更新进度
-     * @param percent 进度百分比 数
-     */
-    protected void onProgress(String percent){
-
     }
 
 }

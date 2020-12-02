@@ -6,10 +6,10 @@ import android.support.annotation.Nullable;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.converter.file.FileResponseBodyConverter;
-import com.fy.baselibrary.retrofit.observer.CallBack;
 import com.fy.baselibrary.retrofit.load.LoadOnSubscribe;
 import com.fy.baselibrary.retrofit.load.LoadService;
 import com.fy.baselibrary.retrofit.load.down.DownLoadListener;
+import com.fy.baselibrary.retrofit.observer.FileCallBack;
 import com.fy.baselibrary.retrofit.observer.IProgressDialog;
 import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.FileUtils;
@@ -33,7 +33,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 
 /**
@@ -148,6 +147,7 @@ public class RequestUtils {
         final File tempFile = FileUtils.getTempFile(url, filePath);
 
         LoadOnSubscribe loadOnSubscribe = new LoadOnSubscribe();
+        FileResponseBodyConverter.addListener(url, loadOnSubscribe);
 
         Observable<File> downloadObservable = Observable.just(url)
                 .map(new Function<String, String>() {
@@ -157,83 +157,39 @@ public class RequestUtils {
                         File targetFile = FileUtils.getFile(downUrl, filePath);
                         if (targetFile.exists()) {
                             SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 4).commit(false);//下载完成
-                            return "文件已下载";
+                            return targetFile.getPath();
                         } else {
                             return "bytes=" + tempFile.length() + "-";
                         }
                     }
                 })
-                .flatMap(new Function<String, ObservableSource<ResponseBody>>() {
+                .flatMap(new Function<String, ObservableSource<File>>() {
                     @Override
-                    public ObservableSource<ResponseBody> apply(String downParam) throws Exception {
+                    public ObservableSource<File> apply(String downParam) throws Exception {
                         L.e("fy_file_FileDownInterceptor", "文件下载开始---" + Thread.currentThread().getName());
                         if (downParam.startsWith("bytes=")) {
                             return RequestUtils.create(LoadService.class).download(downParam, url);
                         } else {
                             SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 4).commit(false);
-                            return null;
-                        }
-                    }
-                })
-                .flatMap(new Function<ResponseBody, ObservableSource<File>>() {
-                    @Override
-                    public ObservableSource<File> apply(ResponseBody responseBody) throws Exception {
-                        L.e("fy_file_FileDownInterceptor", "文件下载 响应返回---" + Thread.currentThread().getName());
-                        File file = FileResponseBodyConverter.saveFile(loadOnSubscribe, responseBody, url, filePath);
-                        if (null != file){
-                            return Observable.just(file);
-                        } else {
-                            return Observable.error(new ServerException("下载失败", -99));
+                            return Observable.just(new File(downParam));
                         }
                     }
                 });
 
-
         Observable.merge(Observable.create(loadOnSubscribe), downloadObservable)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new CallBack<Object>(pDialog) {
+                .subscribe(new FileCallBack(url, pDialog) {
                     @Override
-                    protected void onProgress(String percent) {
+                    protected void downSuccess(File file) {
+                        loadListener.onProgress("100");
+                        runUiThread(() -> {
+                            loadListener.onSuccess((File) file);//已在主线程中，可以更新UI
+                        });
+                    }
+
+                    @Override
+                    protected void downProgress(String percent) {
                         loadListener.onProgress(percent);
-                    }
-
-                    @Override
-                    protected void onSuccess(Object file) {
-                        if (file instanceof File) {
-                            loadListener.onProgress("100");
-
-                            runUiThread(() -> {
-                                loadListener.onSuccess((File) file);//已在主线程中，可以更新UI
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        int FileDownStatus = SpfAgent.init("").getInt(tempFile.getName() + Constant.FileDownStatus);
-                        if (FileDownStatus == 4) {
-                            File targetFile = FileUtils.getFile(url, filePath);
-                            loadListener.onProgress("100");
-                            runUiThread(() -> {
-                                loadListener.onSuccess(targetFile);
-                            });
-                        } else {
-                            SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 3).commit(false);
-                            runUiThread(loadListener::onFail);
-                        }
-                        super.dismissProgress();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        super.onComplete();
-
-                        int fileDownStatus = SpfAgent.init("").getInt(tempFile.getName() + Constant.FileDownStatus);
-                        if (fileDownStatus != 4){
-                            SpfAgent.init("")
-                                    .saveInt(tempFile.getName() + Constant.FileDownStatus, 3)
-                                    .commit(false);
-                        }
                     }
                 });
     }

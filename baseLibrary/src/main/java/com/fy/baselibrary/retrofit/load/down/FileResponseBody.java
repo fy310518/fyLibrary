@@ -1,7 +1,7 @@
 package com.fy.baselibrary.retrofit.load.down;
 
-import android.support.annotation.NonNull;
-
+import com.fy.baselibrary.retrofit.interceptor.FileDownInterceptor;
+import com.fy.baselibrary.utils.imgload.imgprogress.ProgressListener;
 import com.fy.baselibrary.utils.notify.L;
 
 import java.io.IOException;
@@ -15,16 +15,26 @@ import okio.Okio;
 import okio.Source;
 
 /**
- * describe: 文件下载 ResponseBody
+ * describe: 文件下载 计算进度 ResponseBody
  * Created by fangs on 2019/10/8 21:21.
  */
 public class FileResponseBody extends ResponseBody {
+    private static final String TAG = "FileResponseBody";
+    /**
+     * 文件请求url
+     */
+    private String requestUrl;
 
     private final ResponseBody responseBody;
     private BufferedSource bufferedSource;
 
-    public FileResponseBody(ResponseBody responseBody) {
+    private ProgressListener listener;
+
+    public FileResponseBody(ResponseBody responseBody, String requestUrl) {
         this.responseBody = responseBody;
+        this.requestUrl = requestUrl;
+
+        listener = FileDownInterceptor.LISTENER_MAP.get(requestUrl);
         L.e("文件长度", responseBody.contentLength() + "---文件下载---" + Thread.currentThread().getName());
     }
 
@@ -42,23 +52,47 @@ public class FileResponseBody extends ResponseBody {
     @Override
     public BufferedSource source() {
         if (bufferedSource == null) {
-            bufferedSource = Okio.buffer(getSource(responseBody.source()));
+            bufferedSource = Okio.buffer(new ProgressSource(responseBody.source()));
         }
         return bufferedSource;
     }
 
-    private Source getSource(Source source) {
-        return new ForwardingSource(source) {
-            long downloadBytes = 0L;
+    private class ProgressSource extends ForwardingSource {
+        private long fullLength;
+        private long totalBytesRead = 0L;
+        private int currentProgress;
 
-            @Override
-            public long read(@NonNull Buffer buffer, long byteCount) throws IOException {
-                long singleRead = super.read(buffer, byteCount);
-                if (-1 != singleRead) {
-                    downloadBytes += singleRead;
-                }
-                return singleRead;
+        ProgressSource(Source source) {
+            super(source);
+            fullLength = responseBody.contentLength();
+        }
+
+        @Override
+        public long read(Buffer sink, long byteCount) throws IOException {
+            long bytesRead = super.read(sink, byteCount);
+
+            if (bytesRead == -1) {
+                totalBytesRead = fullLength;
+            } else {
+                totalBytesRead += bytesRead;
             }
-        };
+
+            int progress = (int) (100f * totalBytesRead / fullLength);
+            L.e(TAG, "download progress is " + progress);
+
+            if (listener != null && progress != currentProgress) {
+                listener.onProgress(progress);
+            }
+            if (listener != null && totalBytesRead == fullLength) {
+                listener = null;
+            }
+
+            currentProgress = progress;
+            return bytesRead;
+        }
+    }
+
+    public String getRequestUrl() {
+        return requestUrl == null ? "" : requestUrl;
     }
 }

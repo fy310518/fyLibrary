@@ -4,30 +4,62 @@ import android.annotation.SuppressLint;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.load.LoadOnSubscribe;
+import com.fy.baselibrary.retrofit.load.down.FileResponseBody;
 import com.fy.baselibrary.utils.Constant;
 import com.fy.baselibrary.utils.FileUtils;
 import com.fy.baselibrary.utils.cache.SpfAgent;
+import com.fy.baselibrary.utils.imgload.imgprogress.ProgressListener;
 import com.fy.baselibrary.utils.notify.L;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
 /**
- * describe: 文件下载
+ * describe: 文件下载 转换器
  * Created by fangs on 2019/8/28 22:03.
  */
 public class FileResponseBodyConverter implements Converter<ResponseBody, File> {
 
+    public static final Map<String, LoadOnSubscribe> LISTENER_MAP = new HashMap<>();
+
+    //添加 进度发射器
+    public static void addListener(String url, LoadOnSubscribe loadOnSubscribe) {
+        LISTENER_MAP.put(url, loadOnSubscribe);
+    }
+
+    //取消注册下载监听
+    public static void removeListener(String url) {
+        LISTENER_MAP.remove(url);
+    }
+
     @Override
     public File convert(ResponseBody responseBody) throws IOException {
-        String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
-        String url = "http://acj3.pc6.com/pc6_soure/2018-11/com.tencent.mobileqqi_6600.apk";
-        return saveFile(null, responseBody, url, filePath);
+        String requestUrl = null;
+        try {
+            //使用反射获得我们自定义的response
+            Class aClass = responseBody.getClass();
+            Field field = aClass.getDeclaredField("delegate");
+            field.setAccessible(true);
+            ResponseBody body = (ResponseBody) field.get(responseBody);
+            if (body instanceof FileResponseBody) {
+                FileResponseBody fileResponseBody = (FileResponseBody) body;
+                requestUrl = fileResponseBody.getRequestUrl();
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
+        final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
+        return saveFile(LISTENER_MAP.get(requestUrl), responseBody, requestUrl, filePath);
     }
 
 
@@ -53,6 +85,7 @@ public class FileResponseBodyConverter implements Converter<ResponseBody, File> 
 
         } catch (Exception e) {
             e.printStackTrace();
+            loadOnSubscribe.onError(e);
         }
 
         return file;
@@ -67,9 +100,8 @@ public class FileResponseBodyConverter implements Converter<ResponseBody, File> 
      * @throws IOException
      */
     @SuppressLint("DefaultLocale")
-    public static File writeFileToDisk(LoadOnSubscribe loadOnSubscribe, ResponseBody responseBody, String filePath) throws IOException {
+    public static File writeFileToDisk(LoadOnSubscribe loadOnSubscribe, ResponseBody responseBody, String filePath) throws Exception {
         long totalByte = responseBody.contentLength();
-
         L.e("fy_file_FileDownInterceptor", "文件下载 写数据" + "---" + Thread.currentThread().getName());
 
         File file = new File(filePath);
@@ -113,6 +145,7 @@ public class FileResponseBodyConverter implements Converter<ResponseBody, File> 
 
         is.close();
         randomAccessFile.close();
+        responseBody.close();
 
         return file;
     }

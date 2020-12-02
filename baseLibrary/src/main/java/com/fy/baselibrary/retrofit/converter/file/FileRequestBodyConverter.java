@@ -17,7 +17,7 @@ import okhttp3.RequestBody;
 import retrofit2.Converter;
 
 /**
- * 上传文件 请求转换器
+ * 文件上传 转换器
  * Created by fangs on 2018/11/12.
  */
 public class FileRequestBodyConverter implements Converter<ArrayMap<String, Object>, RequestBody> {

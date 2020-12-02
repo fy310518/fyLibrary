@@ -3,6 +3,7 @@ package com.fy.baselibrary.utils;
 import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
@@ -335,7 +336,7 @@ public class FileUtils {
      * @param filePath
      * @return
      */
-    public static File getTempFile(String url, String filePath) {
+    public static File getTempFile(@NonNull String url, @NonNull String filePath) {
         String md5 = EncryptUtils.getMD5(url) + ".temp";
         return new File(filePath + "/" + md5);
     }

@@ -2,14 +2,11 @@ package com.fy.baselibrary.utils.imgload;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -19,8 +16,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.fy.baselibrary.retrofit.RequestUtils;
+import com.fy.baselibrary.retrofit.interceptor.FileDownInterceptor;
 import com.fy.baselibrary.utils.imgload.imgprogress.ImgLoadCallBack;
-import com.fy.baselibrary.utils.imgload.imgprogress.ProgressInterceptor;
 import com.fy.baselibrary.utils.imgload.imgprogress.ProgressListener;
 import com.fy.baselibrary.utils.notify.L;
 
@@ -131,7 +128,7 @@ public class ImgLoadUtils {
      */
     public static void loadImgProgress(String url, int errorId, ImageView imageView, ImgLoadCallBack<Drawable> callBack) {
         if (imageView == null) return;
-        ProgressInterceptor.addListener(url, new ProgressListener() {
+        FileDownInterceptor.addListener(url, new ProgressListener() {
             @Override
             public void onProgress(int progress) {
                 L.e("glide", progress + "%");
@@ -158,7 +155,7 @@ public class ImgLoadUtils {
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        ProgressInterceptor.removeListener(url);
+                        FileDownInterceptor.removeListener(url);
                         if (null != callBack)
                             callBack.onLoadFailed(e, model, target, isFirstResource);
                         return false;
@@ -166,7 +163,7 @@ public class ImgLoadUtils {
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        ProgressInterceptor.removeListener(url);
+                        FileDownInterceptor.removeListener(url);
                         if (null != callBack)
                             callBack.onResourceReady(resource, model, target, dataSource, isFirstResource);
                         return false;

@@ -29,7 +29,7 @@ public class OkHttpLibraryGlideModule extends AppGlideModule {
 
         //添加拦截器到Glide
         OkHttpClient.Builder builder = RequestUtils.getOkBuilder();
-        builder.addInterceptor(new ProgressInterceptor());
+
         //加载图片 信任所有证书
         builder.sslSocketFactory(SSLUtil.createSSLSocketFactory());
         builder.hostnameVerifier(SSLUtil.DO_NOT_VERIFY);
