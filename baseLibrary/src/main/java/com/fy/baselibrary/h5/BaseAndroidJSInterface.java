@@ -89,21 +89,15 @@ public class BaseAndroidJSInterface {
         ArrayMap<String, Object> oneParams = new ArrayMap<>();
         ArrayMap<String, Object> params = request.getParams();
 
-        if (!defaultParams.isEmpty()) {
-            for (String key : defaultParams.keySet()) {
-                oneParams.put(key, defaultParams.get(key));
-            }
+        for (String key : defaultParams.keySet()) {
+            oneParams.put(key, defaultParams.get(key));
         }
 
-        if (!params.isEmpty()) {
-            for (String key : params.keySet()) {
-                //params.get(key) 不为空 并且 defaultParams map 中存在这个key 则 不添加
-                if (TextUtils.isEmpty((CharSequence) params.get(key)) && defaultParams.containsKey(key)) {
-                    continue;
-                }
+        for (String key : params.keySet()) {
+            //params.get(key) 为空 或者 defaultParams map 中存在这个key 则 不添加
+            if (null == params.get(key) || defaultParams.containsKey(key)) continue;
 
-                oneParams.put(key, params.get(key));
-            }
+            oneParams.put(key, params.get(key));
         }
 
         return oneParams;
@@ -148,11 +142,7 @@ public class BaseAndroidJSInterface {
             request = GsonUtils.fromJson(requestContent, H5RequestBean.class);
         } catch (Exception e) {
             e.printStackTrace();
-            return "{错误提示}";//todo 返回 json格式 错误信息
-        }
-
-        if (TextUtils.isEmpty(request.getUrl())) {
-            return "{错误提示}";//todo 返回 json格式 错误信息
+            return "requestContent 格式错误";//返回 json格式 错误信息
         }
 
         String method = request.getRequestMethod();
