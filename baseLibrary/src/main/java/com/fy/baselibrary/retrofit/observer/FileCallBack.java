@@ -64,20 +64,23 @@ public abstract class FileCallBack extends RequestBaseObserver<Object> {
 
     @Override
     public void onError(Throwable e) {
-        super.dismissProgress();
+        if (!TextUtils.isEmpty(fileDownUrl)) {
+            dismissProgress();
+            int FileDownStatus = SpfAgent.init("").getInt(tempFile.getName() + Constant.FileDownStatus);
+            if (FileDownStatus == 4) {
+                File targetFile = FileUtils.getFile(fileDownUrl, filePath);
+                downProgress("100");
+                downSuccess(targetFile);
+            } else {
+                SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 3).commit(false);
+                onFail();
+            }
 
-        if (TextUtils.isEmpty(fileDownUrl)) return;
-        int FileDownStatus = SpfAgent.init("").getInt(tempFile.getName() + Constant.FileDownStatus);
-        if (FileDownStatus == 4) {
-            File targetFile = FileUtils.getFile(fileDownUrl, filePath);
-            downProgress("100");
-            downSuccess(targetFile);
+            FileResponseBodyConverter.removeListener(fileDownUrl);
         } else {
-            SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 3).commit(false);
-            onFail();
+            super.onError(e);
         }
 
-        FileResponseBodyConverter.removeListener(fileDownUrl);
     }
 
     @Override
