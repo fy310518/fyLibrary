@@ -11,6 +11,13 @@ public class SwitchIconTask {
     private long presetTime;                    // 预设时间 【预设时间 要 小于 过期时间】
     private long outDateTime;                   // 过期时间
 
+    public SwitchIconTask(String launcherComponentClassName, String aliasComponentClassName, long presetTime, long outDateTime) {
+        this.launcherComponentClassName = launcherComponentClassName;
+        this.aliasComponentClassName = aliasComponentClassName;
+        this.presetTime = presetTime;
+        this.outDateTime = outDateTime;
+    }
+
     public String getLauncherComponentClassName() {
         return launcherComponentClassName == null ? "" : launcherComponentClassName;
     }
