@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -236,6 +238,19 @@ public class AppUtils {
         return packageNames.contains(packageName);
     }
 
+    /**
+     * 获取作为启动页的Activity名
+     * @param context
+     * @return
+     */
+    public static String getLauncherActivityName(Context context) {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setPackage(context.getPackageName());
+
+        List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentActivities(intent, 0);
+        return resolveInfoList.isEmpty() ? resolveInfoList.get(0).activityInfo.name : null;
+    }
 
     /**
      * 返回应用程序的签名

@@ -44,7 +44,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * 注意：使用本框架 activity 与 activity 之间传递数据 统一使用 Bundle
  * Created by fangs on 2017/5/18.
  */
-public class BaseActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+public class BaseActivityLifecycleCallbacks extends BaseLifecycleCallback {
     public static final String TAG = "lifeCycle --> ";
     public static int actNum;
 
