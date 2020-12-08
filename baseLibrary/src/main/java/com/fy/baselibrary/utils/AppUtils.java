@@ -249,7 +249,7 @@ public class AppUtils {
         intent.setPackage(context.getPackageName());
 
         List<ResolveInfo> resolveInfoList = context.getPackageManager().queryIntentActivities(intent, 0);
-        return resolveInfoList.isEmpty() ? resolveInfoList.get(0).activityInfo.name : null;
+        return resolveInfoList.isEmpty() ? "" : resolveInfoList.get(0).activityInfo.name;
     }
 
     /**

@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.fy.baselibrary.application.BaseLifecycleCallback;
 import com.fy.baselibrary.utils.AppUtils;
@@ -102,6 +103,7 @@ public class LauncherIconManager {
      * @param className 组件类名
      */
     private static void enableComponent(Context context, String className) {
+        if (TextUtils.isEmpty(className)) return;
         ComponentName componentName = new ComponentName(context, className);
 
         if (isComponentEnabled(context, componentName)) return; //已经启用
@@ -119,6 +121,7 @@ public class LauncherIconManager {
      * @param className 组件类名
      */
     private static void disableComponent(Context context, String className) {
+        if (TextUtils.isEmpty(className)) return;
         ComponentName componentName = new ComponentName(context, className);
 
         if (isComponentDisabled(context, componentName)) return;  // 已经禁用
