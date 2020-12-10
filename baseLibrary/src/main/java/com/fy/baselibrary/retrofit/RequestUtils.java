@@ -142,14 +142,11 @@ public class RequestUtils {
      * @param pDialog
      * @param loadListener
      */
-    public static void downLoadFile(String url, @Nullable IProgressDialog pDialog, DownLoadListener<File> loadListener){
+    public static void downLoadFile(final String url, @Nullable IProgressDialog pDialog, DownLoadListener<File> loadListener){
         final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
         final File tempFile = FileUtils.getTempFile(url, filePath);
 
-        LoadOnSubscribe loadOnSubscribe = new LoadOnSubscribe();
-        FileResponseBodyConverter.addListener(url, loadOnSubscribe);
-
-        Observable<File> downloadObservable = Observable.just(url)
+        Observable.just(url)
                 .map(new Function<String, String>() {
                     @Override
                     public String apply(String downUrl) throws Exception {
@@ -163,20 +160,21 @@ public class RequestUtils {
                         }
                     }
                 })
-                .flatMap(new Function<String, ObservableSource<File>>() {
+                .flatMap(new Function<String, ObservableSource<Object>>() {
                     @Override
-                    public ObservableSource<File> apply(String downParam) throws Exception {
+                    public ObservableSource<Object> apply(String downParam) throws Exception {
                         L.e("fy_file_FileDownInterceptor", "文件下载开始---" + Thread.currentThread().getName());
                         if (downParam.startsWith("bytes=")) {
-                            return RequestUtils.create(LoadService.class).download(downParam, url);
+//                            return RequestUtils.create(LoadService.class).download(downParam, url);
+                            LoadOnSubscribe loadOnSubscribe = new LoadOnSubscribe();
+                            FileResponseBodyConverter.addListener(url, loadOnSubscribe);
+                            return Observable.merge(Observable.create(loadOnSubscribe), RequestUtils.create(LoadService.class).download(downParam, url));
                         } else {
                             SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 4).commit(false);
                             return Observable.just(new File(downParam));
                         }
                     }
-                });
-
-        Observable.merge(Observable.create(loadOnSubscribe), downloadObservable)
+                })
                 .subscribeOn(Schedulers.io())
                 .subscribe(new FileCallBack(url, pDialog) {
                     @Override
