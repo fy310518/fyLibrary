@@ -1,6 +1,7 @@
 package com.fy.baselibrary.application.ioc;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.fy.baselibrary.dress.DressColor;
@@ -69,8 +70,8 @@ public class ConfigUtils {
         return configComponent.getConfigBiuder().cer;
     }
 
-    public static String getCerFileName() {
-        return configComponent.getConfigBiuder().cerFileName;
+    public static List<String> getCerFileName() {
+        return configComponent.getConfigBiuder().cerFileNames;
     }
 
     public static int getTitleColor(){
@@ -113,8 +114,8 @@ public class ConfigUtils {
         String BASE_URL = "";
         /** https 公钥证书字符串 */
         String cer = "";
-        /** https 公钥证书 文件字符串（放在 assets 目录下） */
-        String cerFileName = "";
+        /** https 公钥证书 文件名字符串【带后缀名】集合（放在 assets 目录下） */
+        List<String> cerFileNames = new ArrayList<>();
 
         /** 是否  启用缓存拦截器 */
         boolean isEnableCacheInterceptor;
@@ -154,8 +155,8 @@ public class ConfigUtils {
             return this;
         }
 
-        public ConfigBiuder setCerFileName(String cerFileName) {
-            this.cerFileName = cerFileName == null ? "" : cerFileName;
+        public ConfigBiuder addCerFileName(@NonNull String cerFileName) {
+            this.cerFileNames.add(cerFileName);
             return this;
         }
 

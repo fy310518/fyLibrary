@@ -107,15 +107,9 @@ public class RequestModule {
             builder.addInterceptor(interceptor);
         }
 
-        InputStream is = null;
-        if (!TextUtils.isEmpty(ConfigUtils.getCer())){
-            is = new Buffer().writeUtf8(ConfigUtils.getCer()).inputStream();
-        } else if (!TextUtils.isEmpty(ConfigUtils.getCerFileName())){
-            is = ResUtils.getAssetsInputStream(ConfigUtils.getCerFileName());
-        }
-
-        if (null != is){
-            builder.sslSocketFactory(SSLUtil.getSSLSocketFactory(is));
+        List<String> cerFileNames = ConfigUtils.getCerFileName();
+        if (!cerFileNames.isEmpty()){
+            builder.sslSocketFactory(SSLUtil.getSSLSocketFactory(cerFileNames.toArray(new String[]{})));
         } else {
             builder.sslSocketFactory(SSLUtil.createSSLSocketFactory());
             builder.hostnameVerifier(SSLUtil.DO_NOT_VERIFY);

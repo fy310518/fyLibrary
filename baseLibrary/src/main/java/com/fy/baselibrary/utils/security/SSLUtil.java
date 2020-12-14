@@ -3,6 +3,9 @@ package com.fy.baselibrary.utils.security;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import com.fy.baselibrary.application.ioc.ConfigUtils;
+import com.fy.baselibrary.utils.ResUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -38,6 +41,10 @@ public class SSLUtil {
     //使用命令keytool -printcert -rfc -file srca.cer 导出证书为字符串，
     // 然后将字符串转换为输入流，如果使用的是okhttp可以直接使用 new Buffer().writeUtf8(s).inputStream()
 
+    public static SSLSocketFactory getSSLSocketFactory(String... crtFileName){
+        return getSSLSocketFactory(null, crtFileName);
+    }
+
     /**
      * 返回SSLSocketFactory
      *
@@ -55,18 +62,27 @@ public class SSLUtil {
      * @param certificates 证书的输入流
      * @return SSLSocketFactory
      */
-    public static SSLSocketFactory getSSLSocketFactory(KeyManager[] keyManagers, InputStream... certificates) {
+    public static <T> SSLSocketFactory getSSLSocketFactory(KeyManager[] keyManagers, T... certificates) {
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null);
             int index = 0;
-            for (InputStream certificate : certificates) {
+            InputStream crtIs = null;
+            for (T certificate : certificates) {
                 String certificateAlias = Integer.toString(index++);
-                keyStore.setCertificateEntry(certificateAlias, certificateFactory.generateCertificate(certificate));
+
+                if (certificate instanceof InputStream){
+                    crtIs = (InputStream) certificate;
+                } else if (certificate instanceof String){
+                    crtIs = ResUtils.getAssetsInputStream((String) certificate);
+                }
+
+                if (null == crtIs) continue;
+
+                keyStore.setCertificateEntry(certificateAlias, certificateFactory.generateCertificate(crtIs));
                 try {
-                    if (certificate != null)
-                        certificate.close();
+                    crtIs.close();
                 } catch (IOException e) {
                 }
             }
@@ -74,8 +90,7 @@ public class SSLUtil {
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(keyStore);
             sslContext.init(keyManagers, trustManagerFactory.getTrustManagers(), new SecureRandom());
-            SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-            return socketFactory;
+            return sslContext.getSocketFactory();
         } catch (Exception e) {
             e.printStackTrace();
         }
