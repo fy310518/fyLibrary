@@ -3,7 +3,6 @@ package com.fy.baselibrary.utils.security;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
-import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.utils.ResUtils;
 
 import java.io.IOException;
@@ -16,6 +15,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
@@ -41,7 +41,7 @@ public class SSLUtil {
     //使用命令keytool -printcert -rfc -file srca.cer 导出证书为字符串，
     // 然后将字符串转换为输入流，如果使用的是okhttp可以直接使用 new Buffer().writeUtf8(s).inputStream()
 
-    public static SSLSocketFactory getSSLSocketFactory(String... crtFileName){
+    public static Object[] getSSLSocketFactory(String... crtFileName){
         return getSSLSocketFactory(null, crtFileName);
     }
 
@@ -51,7 +51,7 @@ public class SSLUtil {
      * @param certificates 证书的输入流
      * @return SSLSocketFactory
      */
-    public static SSLSocketFactory getSSLSocketFactory(InputStream... certificates) {
+    public static Object[] getSSLSocketFactory(InputStream... certificates) {
         return getSSLSocketFactory(null, certificates);
     }
 
@@ -62,7 +62,7 @@ public class SSLUtil {
      * @param certificates 证书的输入流
      * @return SSLSocketFactory
      */
-    public static <T> SSLSocketFactory getSSLSocketFactory(KeyManager[] keyManagers, T... certificates) {
+    public static <T> Object[] getSSLSocketFactory(KeyManager[] keyManagers, T... certificates) {
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -86,11 +86,24 @@ public class SSLUtil {
                 } catch (IOException e) {
                 }
             }
-            SSLContext sslContext = SSLContext.getInstance("TLS");
+
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(keyStore);
+            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                throw new IllegalStateException("Unexpected default trust managers:" + Arrays.toString(trustManagers));
+            }
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagers, trustManagerFactory.getTrustManagers(), new SecureRandom());
-            return sslContext.getSocketFactory();
+
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
+
+            Object[] result = new Object[2];
+            result[0] = sslSocketFactory;
+            result[1] = trustManager;
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }
