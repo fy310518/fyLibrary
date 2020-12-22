@@ -1,12 +1,23 @@
 package com.fy.baselibrary.utils.security;
 
+import android.support.annotation.NonNull;
 import android.util.Base64;
 
+import com.fy.baselibrary.utils.FileUtils;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.Key;
 import java.security.MessageDigest;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -95,5 +106,105 @@ public class EncryptUtils {
 		}
 	}
 
+
+	//文件加密的实现方法
+	public void encryptFile(@NonNull String filePathName, @NonNull String encryptedFilePathName, String password) {
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		CipherInputStream cis = null;
+
+		try {
+			FileUtils.fileIsExists(encryptedFilePathName);
+
+			fis = new FileInputStream(filePathName);
+			fos = new FileOutputStream(encryptedFilePathName);
+
+			//秘钥自动生成
+			KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+			keyGenerator.init(128);
+			Key key = keyGenerator.generateKey();
+
+
+			byte[] keyValue = key.getEncoded();
+
+			fos.write(keyValue);//记录输入的加密密码的消息摘要
+
+			SecretKeySpec encryptKey = new SecretKeySpec(keyValue, "AES");//加密秘钥
+
+			byte[] ivValue = new byte[16];
+			Random random = new Random(System.currentTimeMillis());
+			random.nextBytes(ivValue);
+			IvParameterSpec iv = new IvParameterSpec(ivValue);//获取系统时间作为IV
+
+			fos.write(password.getBytes());//文件标识符
+
+			fos.write(ivValue);    //记录IV
+			Cipher cipher = Cipher.getInstance("AES/CFB/PKCS5Padding");
+			cipher.init(Cipher.ENCRYPT_MODE, encryptKey, iv);
+
+			cis = new CipherInputStream(fis, cipher);
+
+			byte[] buffer = new byte[1024];
+			int n = 0;
+			while ((n = cis.read(buffer)) != -1) {
+				fos.write(buffer, 0, n);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (null != cis) cis.close();
+				if (null != fos) fos.close();
+				if (null != fis) fis.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	//文件解密的实现代码
+	public void decryptedFile(@NonNull String encryptedFilePathName, @NonNull String decryptedFilePathName, String password) {
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		CipherInputStream cis = null;
+		try {
+			FileUtils.fileIsExists(decryptedFilePathName);
+
+			fis = new FileInputStream(encryptedFilePathName);
+			fos = new FileOutputStream(decryptedFilePathName);
+
+			byte[] fileIdentifier = new byte[15];
+
+			byte[] keyValue = new byte[16];
+			fis.read(keyValue);//读记录的文件加密密码的消息摘要
+			fis.read(fileIdentifier);
+			if (new String(fileIdentifier).equals(password)) {
+				SecretKeySpec key = new SecretKeySpec(keyValue, "AES");
+				byte[] ivValue = new byte[16];
+				fis.read(ivValue);//获取IV值
+				IvParameterSpec iv = new IvParameterSpec(ivValue);
+				Cipher cipher = Cipher.getInstance("AES/CFB/PKCS5Padding");
+				cipher.init(Cipher.DECRYPT_MODE, key, iv);
+
+				cis = new CipherInputStream(fis, cipher);
+				byte[] buffer = new byte[1024];
+				int n = 0;
+				while ((n = cis.read(buffer)) != -1) {
+					fos.write(buffer, 0, n);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (null != cis) cis.close();
+				if (null != fos) fos.close();
+				if (null != fis) fis.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 }

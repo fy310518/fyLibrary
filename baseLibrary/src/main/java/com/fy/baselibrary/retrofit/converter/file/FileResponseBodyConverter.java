@@ -85,7 +85,6 @@ public class FileResponseBodyConverter implements Converter<ResponseBody, File> 
 
         } catch (Exception e) {
             e.printStackTrace();
-            loadOnSubscribe.onError(e);
         }
 
         return file;

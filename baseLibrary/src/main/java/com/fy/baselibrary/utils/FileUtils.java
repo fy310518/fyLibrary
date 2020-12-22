@@ -26,17 +26,17 @@ import java.util.List;
 public class FileUtils {
 
     /** 网络请求缓存目录 */
-    public static String cache = ConfigUtils.getFilePath() + ".ok-cache";
+    public static String cache = ConfigUtils.getFilePath() + "/.ok-cache";
     /** 图片保存目录 */
-    public static String IMG = ConfigUtils.getFilePath() + ".picture";
+    public static String IMG = ConfigUtils.getFilePath() + "/.picture";
     /** 头像保存目录 */
-    public static String headImg = ConfigUtils.getFilePath() + ".headImg";
+    public static String headImg = ConfigUtils.getFilePath() + "/.headImg";
     /** 压缩文件目录 */
-    public static String ZIP = ConfigUtils.getFilePath() + ".zip";
+    public static String ZIP = ConfigUtils.getFilePath() + "/.zip";
     /** 录制音频，视频目录 */
-    public static String record = ConfigUtils.getFilePath() + ".record";
+    public static String record = ConfigUtils.getFilePath() + "/.record";
     /** 文件下载目录 */
-    public static String DOWN = ConfigUtils.getFilePath() + ".down";
+    public static String DOWN = ConfigUtils.getFilePath() + "/.down";
 
     private FileUtils() {
         /* cannot be instantiated */
@@ -150,13 +150,13 @@ public class FileUtils {
     /**
      * 到得文件的放置路径
      *
-     * @param aModuleName 模块名字 (如："head.img.temp")
+     * @param aModuleName 模块名字 (如："head/img/temp")
      * @param type        类型 0：应用私有存储路径；1：应用私有缓存路径 （是否存在SD卡，存在则表示 应用SD卡，否则表示应用内部存储）
      * @return
      */
     public static String getPath(String aModuleName, int type) {
-        String modulePath = aModuleName.replace(".", File.separator);
-        String fDirStr = File.separator + modulePath + File.separator;
+//        String modulePath = aModuleName.replace(".", File.separator);
+        String fDirStr = File.separator + aModuleName + File.separator;
 
         File dirpath;
         if (isSDCardEnable())
