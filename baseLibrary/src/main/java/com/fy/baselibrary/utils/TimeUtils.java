@@ -1,6 +1,7 @@
 package com.fy.baselibrary.utils;
 
 import android.text.TextUtils;
+import android.util.ArrayMap;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -81,12 +82,27 @@ public class TimeUtils {
      * @return
      */
     public static String Data2String(Date date, String format){
-
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.CHINA);
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+08"));
         return sdf.format(date);
     }
 
+    /**
+     * 获取 指定时间戳，指定 时间间隔， 的时间戳【如：获取当前时间点 后 50年3个月2天0时3分的 时间戳】
+     * @param time
+     * @param fieldMap key：日历字段。value：增加的时间【calendar.add(Calendar.YEAR, 50)】
+     */
+    public static long getTimeInterval(long time, ArrayMap<Integer, Integer> fieldMap){
+        Calendar calendar = Calendar.getInstance();// 获取当前日期
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+08"));
+        calendar.setTimeInMillis(time);
+
+        for (ArrayMap.Entry<Integer, Integer> entry : fieldMap.entrySet()){
+            calendar.add(entry.getKey(), entry.getValue());
+        }
+
+        return calendar.getTimeInMillis();
+    }
 
     /**
      * 获得给定时间戳表示的日期 零时零分零秒零毫秒的时间戳
@@ -94,6 +110,7 @@ public class TimeUtils {
      */
     public static long initDateByDay(long time){
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+08"));
         calendar.setTimeInMillis(time);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
