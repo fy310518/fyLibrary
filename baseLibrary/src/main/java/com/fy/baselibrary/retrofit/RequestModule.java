@@ -14,6 +14,7 @@ import com.fy.baselibrary.utils.notify.L;
 import com.fy.baselibrary.utils.security.SSLUtil;
 import com.google.gson.GsonBuilder;
 
+import java.net.Proxy;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -87,6 +88,7 @@ public class RequestModule {
                 .hostnameVerifier((hostname, session) -> {
                     return true;//强行返回true 即验证成功
                 })
+                .proxy(Proxy.NO_PROXY)
                 .protocols(Collections.singletonList(Protocol.HTTP_1_1));
 
         if (ConfigUtils.isEnableCacheInterceptor()) {//是否 添加缓存拦截器
