@@ -9,7 +9,6 @@ import java.io.File;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -111,4 +110,15 @@ public interface LoadService {
     @GET
     Observable<File> download(@Header("IF-RANGE") String downParam, @Url String url);
 
+    /**
+     * webService 请求
+     * @param requestEnvelope
+     * @return
+     */
+//    @Headers({
+//            "Content-Type: text/xml; charset=utf-8",
+//            "SOAPAction: http://tempuri.org/AssetMaterialInfo"
+//    })
+//    @POST("GetService.asmx")
+//    Observable<ResponseEnvelope> getAssetInfo(@Body RequestEnvelope requestEnvelope);
 }
