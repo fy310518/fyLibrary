@@ -75,6 +75,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     //编译时有效 不参与打包
+    compileOnly 'org.jsoup:jsoup:1.10.3'
     compileOnly('com.squareup.retrofit2:converter-simplexml:2.1.0'){
         exclude group:'xpp3',module:'xpp3'
         exclude group:'stax',module:'stax-api'

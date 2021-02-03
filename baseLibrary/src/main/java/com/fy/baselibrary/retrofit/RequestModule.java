@@ -2,6 +2,7 @@ package com.fy.baselibrary.retrofit;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.converter.file.FileConverterFactory;
+import com.fy.baselibrary.retrofit.converter.html.HtmlConverterFactory;
 import com.fy.baselibrary.retrofit.interceptor.FileDownInterceptor;
 import com.fy.baselibrary.retrofit.interceptor.RequestHeaderInterceptor;
 import com.fy.baselibrary.retrofit.interceptor.cache.CacheNetworkInterceptor;
@@ -49,6 +50,7 @@ public class RequestModule {
                 .addCallAdapterFactory(callAdapterFactory)
                 .addConverterFactory(FileConverterFactory.create())
                 .addConverterFactory(gsonConverterFactory)
+                .addConverterFactory(HtmlConverterFactory.create())
                 .baseUrl(ConfigUtils.getBaseUrl())
                 .client(okBuilder.build())
                 .build();
