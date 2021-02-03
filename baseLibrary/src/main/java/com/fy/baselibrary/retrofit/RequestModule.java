@@ -47,10 +47,10 @@ public class RequestModule {
     protected Retrofit getService(RxJava2CallAdapterFactory callAdapterFactory, GsonConverterFactory
             gsonConverterFactory, OkHttpClient.Builder okBuilder) {
         return new Retrofit.Builder()
-                .addCallAdapterFactory(callAdapterFactory)
                 .addConverterFactory(FileConverterFactory.create())
-                .addConverterFactory(gsonConverterFactory)
                 .addConverterFactory(HtmlConverterFactory.create())
+                .addCallAdapterFactory(callAdapterFactory)
+                .addConverterFactory(gsonConverterFactory)
                 .baseUrl(ConfigUtils.getBaseUrl())
                 .client(okBuilder.build())
                 .build();
