@@ -136,6 +136,13 @@ public class RequestUtils {
         }
     }
 
+    //取消所有下载
+    public static void cancelAllDownLoad() {
+        for (String key : FileResponseBodyConverter.LISTENER_MAP.keySet()) {
+            cancelDownLoad(key);
+        }
+    }
+
     /**
      * 暂停下载
      * @param url 文件下载地址
