@@ -163,23 +163,22 @@ public abstract class RvCommonAdapter<Item> extends RecyclerView.Adapter<ViewHol
      */
     protected void bindOnClick(ViewHolder viewHolder) {
 //        避免 在onBindViewHolder里面频繁创建事件回调，应该在 onCreateViewHolder()中每次为新建的 View 设置一次即可
-        if (null != itemClickListener) {
-//            需要在 convert() 最后使用 holder.itemView.setTag(Item)
-            viewHolder.itemView.setOnClickListener(this);
-        }
+//        需要在 convert() 最后使用 holder.itemView.setTag(Item)
+        viewHolder.itemView.setOnClickListener(this);
 
-        if (null != itemLongClickListener) viewHolder.itemView.setOnLongClickListener(this);
+        viewHolder.itemView.setOnLongClickListener(this);
     }
 
     @ClickFilter()
     @Override
     public void onClick(View v) {
-        itemClickListener.onItemClick(v);
+        if (null != itemClickListener) itemClickListener.onItemClick(v);
     }
 
     @Override
     public boolean onLongClick(View v) {
-        return itemLongClickListener.onLongClick(v);
+        if (null != itemLongClickListener) return itemLongClickListener.onLongClick(v);
+        else return false;
     }
 
     public List<Item> getmDatas() {

@@ -75,26 +75,8 @@ public abstract class FileCallBack extends RequestBaseObserver<Object> {
                 SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 3).commit(false);
                 onFail();
             }
-
-            FileResponseBodyConverter.removeListener(fileDownUrl);
         } else {
             super.onError(e);
-        }
-
-    }
-
-    @Override
-    public void onComplete() {
-        super.onComplete();
-
-        if (TextUtils.isEmpty(fileDownUrl)) return;
-        FileResponseBodyConverter.removeListener(fileDownUrl);
-
-        int fileDownStatus = SpfAgent.init("").getInt(tempFile.getName() + Constant.FileDownStatus);
-        if (fileDownStatus != 4) {
-            SpfAgent.init("")
-                    .saveInt(tempFile.getName() + Constant.FileDownStatus, 3)
-                    .commit(false);
         }
     }
 
@@ -104,6 +86,7 @@ public abstract class FileCallBack extends RequestBaseObserver<Object> {
             upLoadSuccess((UpLoadType) obj);
         } else {
             downSuccess((File) obj);
+            FileResponseBodyConverter.removeListener(fileDownUrl);
         }
     }
 

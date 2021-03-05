@@ -129,6 +129,35 @@ public class RequestUtils {
         return Observable.concat(fromCache, fromNetwork);
     }
 
+    //暂停所有下载任务
+    public static void pauseAllDownLoad(){
+        for (String key : FileResponseBodyConverter.LISTENER_MAP.keySet()) {
+            pauseDownLoad(key);
+        }
+    }
+
+    /**
+     * 暂停下载
+     * @param url 文件下载地址
+     */
+    public static void pauseDownLoad(String url){
+        final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
+        final File tempFile = FileUtils.getTempFile(url, filePath);
+
+        SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 2).commit(false);//暂停下载
+    }
+
+    /**
+     * 取消下载
+     * @param url 文件下载地址
+     */
+    public static void cancelDownLoad(String url){
+        final String filePath = FileUtils.folderIsExists(FileUtils.DOWN, ConfigUtils.getType()).getPath();
+        final File tempFile = FileUtils.getTempFile(url, filePath);
+
+        SpfAgent.init("").saveInt(tempFile.getName() + Constant.FileDownStatus, 3).commit(false);//取消下载
+    }
+
     /**
      * 文件下载
      */

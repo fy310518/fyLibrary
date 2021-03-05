@@ -23,7 +23,7 @@ public class Constant {
 
     /**
      * 下载状态 key
-     * 1：正在下载；2：暂停；3：取消下载；4：下载完成 or 已下载
+     * 1：正在下载；2：暂停；3：取消下载【下载失败】；4：下载完成 or 已下载
      */
     public static final String FileDownStatus = "FileDownStatus";
 

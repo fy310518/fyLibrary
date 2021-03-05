@@ -1,6 +1,7 @@
 package com.fy.baselibrary.retrofit.converter.file;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.retrofit.load.LoadOnSubscribe;
@@ -28,6 +29,7 @@ import retrofit2.Converter;
  */
 public class FileResponseBodyConverter implements Converter<ResponseBody, File> {
 
+    private static final long CALL_BACK_LENGTH = 1024 * 1024;
     public static final Map<String, LoadOnSubscribe> LISTENER_MAP = new HashMap<>();
 
     //添加 进度发射器
@@ -37,7 +39,7 @@ public class FileResponseBodyConverter implements Converter<ResponseBody, File> 
 
     //取消注册下载监听
     public static void removeListener(String url) {
-        LISTENER_MAP.remove(url);
+        if (!TextUtils.isEmpty(url)) LISTENER_MAP.remove(url);
     }
 
     @Override
@@ -81,6 +83,8 @@ public class FileResponseBodyConverter implements Converter<ResponseBody, File> 
             if (FileDownStatus == 4) {
                 boolean renameSuccess = FileUtils.reNameFile(url, tempFile.getPath());
                 return FileUtils.getFile(url, filePath);
+            } else if (FileDownStatus == 3){//取消下载则 删除下载内容
+                FileUtils.deleteFileSafely(tempFile);
             }
 
         } catch (Exception e) {
@@ -139,7 +143,10 @@ public class FileResponseBodyConverter implements Converter<ResponseBody, File> 
             randomAccessFile.write(buffer, 0, len);
             downloadByte += len;
 
-            if (null != loadOnSubscribe) loadOnSubscribe.onRead(len);
+            if (null != loadOnSubscribe && downloadByte >= CALL_BACK_LENGTH) {//避免每写4096字节，就回调一次，那未免太奢侈了，所以设定一个常量每1mb回调一次
+                loadOnSubscribe.onRead(len);
+                downloadByte = 0;
+            }
         }
 
         is.close();
