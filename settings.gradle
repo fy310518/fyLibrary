@@ -1,4 +1,1 @@
-include ':app',':baseLibrary',
-        ':mapLibrary'
-
-include ':plugin'
+include ':baseLibrary'

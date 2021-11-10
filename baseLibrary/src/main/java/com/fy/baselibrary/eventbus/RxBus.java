@@ -54,6 +54,10 @@ public class RxBus {
     //取消订阅
     public void dispose(String type){
         Disposable disposable = disposables.get(type);
-        if (null != disposable && !disposable.isDisposed()) disposable.dispose();
+        if (null != disposable && !disposable.isDisposed()) {
+            disposable.dispose();
+        }
+
+        disposables.remove(type);
     }
 }

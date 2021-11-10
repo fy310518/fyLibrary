@@ -28,7 +28,7 @@ public class AnimUtils {
     /**
      * 省略号动画
      */
-    public static void setTxtEllipsisAnim(TextView txt, @StringRes int id) {
+    public static ValueAnimator setTxtEllipsisAnim(TextView txt, @StringRes int id) {
         String[] scoreText = {"     ", ".    ", ". .  ", ". . ."};
         ValueAnimator valueAnimator = ValueAnimator.ofInt(0, 4).setDuration(1500);
         valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
@@ -40,6 +40,7 @@ public class AnimUtils {
             }
         });
         valueAnimator.start();
+        return valueAnimator;
     }
 
     /**

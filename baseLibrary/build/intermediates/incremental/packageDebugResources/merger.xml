@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res"/><source path="D:\Android\WorkSpace\fyLibrary\baseLibrary\build\generated\res\rs\debug"/><source path="D:\Android\WorkSpace\fyLibrary\baseLibrary\build\generated\res\resValues\debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res"><file name="anim_loading" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\anim_loading.xml" qualifiers="" type="anim"/><file name="anim_slide_bottom_in" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\anim_slide_bottom_in.xml" qualifiers="" type="anim"/><file name="anim_slide_bottom_out" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\anim_slide_bottom_out.xml" qualifiers="" type="anim"/><file name="anim_slide_left_in" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\anim_slide_left_in.xml" qualifiers="" type="anim"/><file name="anim_slide_left_out" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\anim_slide_left_out.xml" qualifiers="" type="anim"/><file name="anim_slide_right_in" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\anim_slide_right_in.xml" qualifiers="" type="anim"/><file name="anim_slide_right_out" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\anim_slide_right_out.xml" qualifiers="" type="anim"/><file name="push_scale_bottom_in" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\push_scale_bottom_in.xml" qualifiers="" type="anim"/><file name="push_scale_bottom_out" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\push_scale_bottom_out.xml" qualifiers="" type="anim"/><file name="push_scale_left_in" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\push_scale_left_in.xml" qualifiers="" type="anim"/><file name="push_scale_left_out" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\push_scale_left_out.xml" qualifiers="" type="anim"/><file name="push_scale_right_in" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\push_scale_right_in.xml" qualifiers="" type="anim"/><file name="push_scale_right_out" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\push_scale_right_out.xml" qualifiers="" type="anim"/><file name="push_scale_top_in" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\push_scale_top_in.xml" qualifiers="" type="anim"/><file name="push_scale_top_out" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\anim\push_scale_top_out.xml" qualifiers="" type="anim"/><file name="refresh_rotate" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\animator\refresh_rotate.xml" qualifiers="" type="animator"/><file name="svg_arrow" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\drawable\svg_arrow.xml" qualifiers="" type="drawable"/><file name="svg_refresh" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\drawable\svg_refresh.xml" qualifiers="" type="drawable"/><file name="activity_head" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\layout\activity_head.xml" qualifiers="" type="layout"/><file name="dialog_permission" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\layout\dialog_permission.xml" qualifiers="" type="layout"/><file name="dialog_permission_item" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\layout\dialog_permission_item.xml" qualifiers="" type="layout"/><file name="state_include_emptydata" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\layout\state_include_emptydata.xml" qualifiers="" type="layout"/><file name="state_include_error" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\layout\state_include_error.xml" qualifiers="" type="layout"/><file name="state_include_networkerror" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\layout\state_include_networkerror.xml" qualifiers="" type="layout"/><file name="view_load_more" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\layout\view_load_more.xml" qualifiers="" type="layout"/><file name="view_top_refresh" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\layout\view_top_refresh.xml" qualifiers="" type="layout"/><file name="img_loading" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\mipmap-xhdpi\img_loading.png" qualifiers="xhdpi-v4" type="mipmap"/><file name="img_load_default" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\mipmap-xhdpi\img_load_default.png" qualifiers="xhdpi-v4" type="mipmap"/><file name="img_load_error" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\mipmap-xhdpi\img_load_error.png" qualifiers="xhdpi-v4" type="mipmap"/><file path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\values\attrs.xml" qualifiers=""><declare-styleable name="EasyPullLayout">
+        
+        <attr format="dimension" name="trigger_offset_left"/>
+        <attr format="dimension" name="trigger_offset_top"/>
+        <attr format="dimension" name="trigger_offset_right"/>
+        <attr format="dimension" name="trigger_offset_bottom"/>
+
+        
+        <attr format="dimension" name="max_offset_left"/>
+        <attr format="dimension" name="max_offset_top"/>
+        <attr format="dimension" name="max_offset_right"/>
+        <attr format="dimension" name="max_offset_bottom"/>
+
+        
+        <attr format="boolean" name="fixed_content_left"/>
+        <attr format="boolean" name="fixed_content_top"/>
+        <attr format="boolean" name="fixed_content_right"/>
+        <attr format="boolean" name="fixed_content_bottom"/>
+
+        
+        <attr format="integer" name="roll_back_duration"/>
+        <attr format="float" name="sticky_factor"/>
+
+
+        
+        <attr format="string" name="pull_animator_left"/>
+        <attr format="string" name="pull_animator_top"/>
+        <attr format="string" name="pull_animator_right"/>
+        <attr format="string" name="pull_animator_bottom"/>
+    </declare-styleable><declare-styleable name="EasyPullLayout_LayoutParams">
+        
+        <attr format="enum" name="layout_type">
+            
+            <enum name="content" value="4"/>
+        </attr>
+    </declare-styleable><declare-styleable name="svgCompat">
+        
+        <attr format="reference" name="svgDrawable"/>
+        
+        <attr format="color" name="svgTintColor"/>
+        
+        <attr format="enum" name="drawableType">
+            <enum name="imgType" value="0"/>
+            <enum name="svgType" value="1"/>
+        </attr>
+
+        
+        <attr format="enum" name="iconLocationType">
+            <enum name="background" value="0"/>
+            <enum name="locationLeft" value="1"/>
+            <enum name="locationTop" value="2"/>
+            <enum name="locationRight" value="3"/>
+            <enum name="locationBottom" value="4"/>
+        </attr>
+    </declare-styleable><declare-styleable name="circleProgressBar">
+        <attr format="dimension" name="circleWidth"/>
+        <attr format="integer" name="betaAngle"/>
+        <attr format="color" name="firstColor"/>
+        <attr format="color" name="secondColor"/>
+    </declare-styleable><declare-styleable name="pickerview">
+        <attr name="wheelview_gravity">
+            <enum name="center" value="17"/>
+            <enum name="left" value="3"/>
+            <enum name="right" value="5"/>
+        </attr>
+        <attr format="dimension" name="wheelview_textSize"/>
+        <attr format="color" name="wheelview_textColorOut"/>
+        <attr format="color" name="wheelview_textColorCenter"/>
+        <attr format="color" name="wheelview_dividerColor"/>
+        <attr format="dimension" name="wheelview_dividerWidth"/>
+        <attr format="float" name="wheelview_lineSpacingMultiplier"/>
+    </declare-styleable></file><file path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\values\colors.xml" qualifiers=""><color name="colorAccent">#FF4081</color><color name="red">#e84c3d</color><color name="pink">#EF8994</color><color name="orange">#f39b39</color><color name="green">#93cc2f</color><color name="lblue">#7ec4f5</color><color name="blue">#3ec2d9</color><color name="white">#ffffff</color><color name="personal_title_bg">#f5f5f5</color><color name="black">#000000</color><color name="transparent">#00000000</color><color name="alphaBlack">#80000000</color><color name="appHeadBg">#177ee6</color><color name="txtSuperColor">#333333</color><color name="txtSecondColor">#666666</color><color name="txtLight">#999999</color><color name="stroke">#cacaca</color><color name="transforTop">#333333</color><color name="state_background">#f1f1f1</color><color name="waterMarkContent">#DDDDDD</color><color name="waterMarkBg">@android:color/transparent</color></file><file path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\values\dimens.xml" qualifiers=""><dimen name="activity_horizontal_margin">16dp</dimen><dimen name="activity_vertical_margin">16dp</dimen><dimen name="txt_small_mi_much">10sp</dimen><dimen name="txt_small_much">12sp</dimen><dimen name="txt_small">14sp</dimen><dimen name="txt_medium_small">16sp</dimen><dimen name="txt_medium">18sp</dimen><dimen name="txt_large">22sp</dimen><dimen name="spacing_small_much">4dp</dimen><dimen name="spacing_small">8dp</dimen><dimen name="spacing_medium_small">12dp</dimen><dimen name="spacing_medium">16dp</dimen><dimen name="spacing_medium_large">20dp</dimen><dimen name="spacing__large">30dp</dimen><dimen name="rv_divider_height">4dp</dimen><dimen name="itemSplit_line">1dp</dimen><dimen name="shape_Stroke">1dp</dimen><dimen name="load_anim">60dp</dimen><dimen name="refreshHeight">75dp</dimen><dimen name="loadMoreHeight">40dp</dimen><dimen name="max_offset">120dp</dimen><dimen name="load_more_max_offset">50dp</dimen><dimen name="rvDropDown">50dp</dimen><dimen name="rvRefreshAnim">30dp</dimen><dimen name="pickerview_textsize">20sp</dimen></file><file path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\values\strings.xml" qualifiers=""><string name="easyPullAnimatorTop">com.fy.baselibrary.widget.refresh.EasyTopRefreshView</string><string name="easyPullAnimatorBottom">com.fy.baselibrary.widget.refresh.EasyBottomLoadMoreView</string><string name="srartUpTitle">欢迎</string><string name="permission">权限管理</string><string name="skip">%1$sS 后跳过</string><string name="idle">下拉有惊喜!!!</string><string name="ready">松开刷新!!!</string><string name="space">%1$s   </string><string name="loadProgress">%1$d%%\n正在加载…</string><string name="data_loading">正在加载…</string><string name="upLoading">正在上传…</string><string name="publish_loading">正在发表…</string><string name="loading_modify">正在修改…</string><string name="loading_save">正在保存…</string><string name="loading_get">正在获取…</string><string name="register_loading">正在注册…</string><string name="user_login">正在登录…</string><string name="exit_loading">正在退出…</string><string name="loading_success">加载成功</string><string name="modify_success">修改成功</string><string name="get_success">获取成功</string><string name="numPass">账号密码不能为空!!!</string><string name="phoenError">手机号码错误！</string><string name="inputContentNoNull">输入内容不能为空！！！</string><string name="passError">密码错误！</string><string name="login_success">登录成功</string><string name="exit_app">再按一次退出程序！</string><string name="back">返回</string><string name="complete">完成</string><string name="save">保存</string><string name="delete">删除</string><string name="photograph">拍照</string><string name="album_selection">相册选择</string><string name="man">男</string><string name="woman">女</string><string name="daytimeMode">日间模式</string><string name="nightMode">夜间模式</string><string name="success">成功</string><string name="error">错误</string><string name="ok">确定</string><string name="cancel">取消</string><string name="set">设置</string><string name="search">搜索</string><string name="default_first_message">\u3000需要您授予以下权限才可以正常使用</string><string name="default_always_message">\u3000缺少以下权限，您需要设置对应的权限才可以正常使用</string><string name="default_special_permission">允许 "%1$s" 启用 %2$s 权限吗？</string><string name="default_special_permission_content">开启%1$s权限，让%2$s%3$s，从而更好为您服务</string><string name="permissionFail">权限请求失败</string><string name="permissionSuccess">权限请求成功</string><string name="permissionAllSuccess">权限没有全部授予</string><string name="dataNull">没有数据</string><string name="accessError">访问出错</string><string name="clickRetry">点击空白区域重试</string><string name="internetError">网络错误</string><string name="confirmInternetRetry">请确认网络连接后点击空白区域重试</string><string-array name="imgHeadBgColor">
+        <item>#3A91F3</item>
+        <item>#F14E7D</item>
+        <item>#5585A5</item>
+        <item>#F9CB4F</item>
+        <item>#F56B2F</item>
+    </string-array></file><file path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\values\styles.xml" qualifiers=""><style name="BaseAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        
+        <item name="colorPrimary">@android:color/transparent</item>     
+        <item name="colorPrimaryDark">@android:color/transparent</item> 
+        <item name="colorAccent">@color/colorAccent</item>    
+        <item name="android:textAllCaps">false</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="android:colorBackgroundCacheHint">@null</item>
+         
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+        <item name="android:windowAnimationStyle">@style/animfade</item>
+
+        
+        <item name="android:windowContentOverlay">@android:color/transparent</item>
+    </style><style name="SplashTheme" parent="BaseAppTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+
+        
+        <item name="android:windowIsTranslucent">true</item>
+        
+        <item name="android:windowContentOverlay">@android:color/transparent</item>
+    </style><style name="appBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        
+        
+    </style><style name="appBarStyle">
+        <item name="titleTextColor">@color/white</item>
+        
+        <item name="contentInsetStartWithNavigation">0dp</item>
+    </style><style name="commonDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
+        <item name="android:windowIsFloating">true</item>
+
+        <item name="android:windowFrame">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style><style name="animfade" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/anim_slide_left_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/anim_slide_left_out</item>
+
+        <item name="android:activityCloseEnterAnimation">@anim/anim_slide_right_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/anim_slide_right_out</item>
+    </style><style name="WindowAnimationFadeInOut">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@null</item>
+    </style><style name="AnimUp" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_slide_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_slide_bottom_out</item>
+    </style><style name="AnimTop" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_top_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_top_out</item>
+    </style><style name="AnimDown" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_bottom_out</item>
+    </style><style name="AnimLeft" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_left_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_left_out</item>
+    </style><style name="AnimRight" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_scale_right_in</item>
+        <item name="android:windowExitAnimation">@anim/push_scale_right_out</item>
+    </style></file><file name="network_security_config" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\xml\network_security_config.xml" qualifiers="" type="xml"/><file name="provider_paths" path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\main\res\xml\provider_paths.xml" qualifiers="" type="xml"/></source><source path="D:\Android\WorkSpace\fyLibrary\baseLibrary\build\generated\res\rs\debug"/><source path="D:\Android\WorkSpace\fyLibrary\baseLibrary\build\generated\res\resValues\debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\debug\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="D:\Android\WorkSpace\fyLibrary\baseLibrary\src\debug\res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="circleProgressBar">
+        <attr format="dimension" name="circleWidth"/>
+        <attr format="integer" name="betaAngle"/>
+        <attr format="color" name="firstColor"/>
+        <attr format="color" name="secondColor"/>
+    </declare-styleable><declare-styleable name="EasyPullLayout_LayoutParams">
+        
+        <attr format="enum" name="layout_type">
+            
+            <enum name="content" value="4"/>
+        </attr>
+    </declare-styleable><declare-styleable name="svgCompat">
+        
+        <attr format="reference" name="svgDrawable"/>
+        
+        <attr format="color" name="svgTintColor"/>
+        
+        <attr format="enum" name="drawableType">
+            <enum name="imgType" value="0"/>
+            <enum name="svgType" value="1"/>
+        </attr>
+
+        
+        <attr format="enum" name="iconLocationType">
+            <enum name="background" value="0"/>
+            <enum name="locationLeft" value="1"/>
+            <enum name="locationTop" value="2"/>
+            <enum name="locationRight" value="3"/>
+            <enum name="locationBottom" value="4"/>
+        </attr>
+    </declare-styleable><declare-styleable name="pickerview">
+        <attr name="wheelview_gravity">
+            <enum name="center" value="17"/>
+            <enum name="left" value="3"/>
+            <enum name="right" value="5"/>
+        </attr>
+        <attr format="dimension" name="wheelview_textSize"/>
+        <attr format="color" name="wheelview_textColorOut"/>
+        <attr format="color" name="wheelview_textColorCenter"/>
+        <attr format="color" name="wheelview_dividerColor"/>
+        <attr format="dimension" name="wheelview_dividerWidth"/>
+        <attr format="float" name="wheelview_lineSpacingMultiplier"/>
+    </declare-styleable><declare-styleable name="EasyPullLayout">
+        
+        <attr format="dimension" name="trigger_offset_left"/>
+        <attr format="dimension" name="trigger_offset_top"/>
+        <attr format="dimension" name="trigger_offset_right"/>
+        <attr format="dimension" name="trigger_offset_bottom"/>
+
+        
+        <attr format="dimension" name="max_offset_left"/>
+        <attr format="dimension" name="max_offset_top"/>
+        <attr format="dimension" name="max_offset_right"/>
+        <attr format="dimension" name="max_offset_bottom"/>
+
+        
+        <attr format="boolean" name="fixed_content_left"/>
+        <attr format="boolean" name="fixed_content_top"/>
+        <attr format="boolean" name="fixed_content_right"/>
+        <attr format="boolean" name="fixed_content_bottom"/>
+
+        
+        <attr format="integer" name="roll_back_duration"/>
+        <attr format="float" name="sticky_factor"/>
+
+
+        
+        <attr format="string" name="pull_animator_left"/>
+        <attr format="string" name="pull_animator_top"/>
+        <attr format="string" name="pull_animator_right"/>
+        <attr format="string" name="pull_animator_bottom"/>
+    </declare-styleable></configuration></mergedItems></merger>

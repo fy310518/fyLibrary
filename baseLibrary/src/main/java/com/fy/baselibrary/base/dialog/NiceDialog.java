@@ -11,17 +11,20 @@ import com.fy.baselibrary.base.ViewHolder;
  */
 public class NiceDialog extends CommonDialog {
     private static final String LISTENER = "ViewConvertListener";
+    private static final String DestroyLISTENER = "ViewDestroyListener";
 
     private DialogConvertListener dialogConvertListener;
+    private DialogDestroyListener dialogDestroyListener;
 
+    private ViewHolder holder;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (null != savedInstanceState) {
             dialogConvertListener = savedInstanceState.getParcelable(LISTENER);
+            dialogDestroyListener = savedInstanceState.getParcelable(DestroyLISTENER);
         }
     }
-
 
     @Override
     protected int initLayoutId() {
@@ -30,9 +33,18 @@ public class NiceDialog extends CommonDialog {
 
     @Override
     public void convertView(ViewHolder holder, CommonDialog dialog) {
+        this.holder = holder;
         if (null != dialogConvertListener) {
             dialogConvertListener.convertView(holder, dialog);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (null != dialogDestroyListener) {
+            dialogDestroyListener.destroyView(holder, this);
+        }
+        super.onDestroy();
     }
 
     /**
@@ -54,9 +66,17 @@ public class NiceDialog extends CommonDialog {
         return this;
     }
 
+    public NiceDialog setDialogDestroyListener(DialogDestroyListener dialogDestroyListener) {
+        this.dialogDestroyListener = dialogDestroyListener;
+        return this;
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(LISTENER, dialogConvertListener);
+        if (null != dialogDestroyListener){
+            outState.putParcelable(DestroyLISTENER, dialogDestroyListener);
+        }
     }
 }
