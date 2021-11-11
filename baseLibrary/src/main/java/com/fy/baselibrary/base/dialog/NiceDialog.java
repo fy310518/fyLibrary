@@ -16,7 +16,6 @@ public class NiceDialog extends CommonDialog {
     private DialogConvertListener dialogConvertListener;
     private DialogDestroyListener dialogDestroyListener;
 
-    private ViewHolder holder;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +32,6 @@ public class NiceDialog extends CommonDialog {
 
     @Override
     public void convertView(ViewHolder holder, CommonDialog dialog) {
-        this.holder = holder;
         if (null != dialogConvertListener) {
             dialogConvertListener.convertView(holder, dialog);
         }
@@ -42,7 +40,7 @@ public class NiceDialog extends CommonDialog {
     @Override
     public void onDestroy() {
         if (null != dialogDestroyListener) {
-            dialogDestroyListener.destroyView(holder, this);
+            dialogDestroyListener.destroyView(this);
         }
         super.onDestroy();
     }

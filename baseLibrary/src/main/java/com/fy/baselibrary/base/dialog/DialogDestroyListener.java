@@ -11,7 +11,7 @@ import com.fy.baselibrary.base.ViewHolder;
  */
 public abstract class DialogDestroyListener implements Parcelable {
 
-    protected abstract void destroyView(ViewHolder holder, CommonDialog dialog);
+    protected abstract void destroyView(CommonDialog dialog);
 
 
     @Override
@@ -34,7 +34,7 @@ public abstract class DialogDestroyListener implements Parcelable {
         public DialogDestroyListener createFromParcel(Parcel source) {
             return new DialogDestroyListener(source) {
                 @Override
-                protected void destroyView(ViewHolder holder, CommonDialog dialog) {
+                protected void destroyView(CommonDialog dialog) {
 
                 }
             };
