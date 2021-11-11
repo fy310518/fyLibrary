@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DESCRIPTION：fragment 管理类
+ * DESCRIPTION：fragment 管理类；注意在 onDestroy 调用 clean()
  * Created by fangs on 2019/5/5 10:21.
  */
 public class FragmentChangeManager {
@@ -205,4 +205,9 @@ public class FragmentChangeManager {
         return mFragments.size();
     }
 
+    // 清理
+    public void clean(){
+        mFragments.clear();
+        mCurrentFragment = null;
+    }
 }
