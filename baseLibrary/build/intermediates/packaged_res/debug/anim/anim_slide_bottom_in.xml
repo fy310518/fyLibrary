@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 菜单dialog 进入动画 -->
-<set xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <translate android:fromYDelta="100%p" android:toYDelta="0%p" android:duration="200"/>
-    <!-- %p指相对于父容器 -->
-    <!--fromYDelta: Y轴方向开始位置，可以是%，也可以是具体的像素-->
-    <!--toYDelta:   Y轴方向结束位置，可以是%，也可以是具体的像素-->
-</set>

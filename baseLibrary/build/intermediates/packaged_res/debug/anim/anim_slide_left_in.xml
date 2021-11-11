@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<set xmlns:android="http://schemas.android.com/apk/res/android">
-    <translate android:fromXDelta="100%p" android:toXDelta="0%p" android:duration="200"/>
-
-    <!--<alpha android:fromAlpha="0.5" android:toAlpha="1.0" android:duration="200"/>-->
-
-    <!--fromXDelta: X轴方向开始位置，可以是%，也可以是具体的像素 具体见图-->
-    <!--toXDelta:   X轴方向结束位置，可以是%，也可以是具体的像素-->
-</set>
