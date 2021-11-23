@@ -21,7 +21,6 @@ import android.support.annotation.RawRes;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.fy.baselibrary.application.ioc.ConfigUtils;
 import com.fy.baselibrary.utils.AppUtils;
@@ -222,19 +221,22 @@ public class N {
      * @param channel
      */
     private static int getLowVersionPriority(Channel channel) {
-        int importance;
+        int importance = NotificationCompat.PRIORITY_MIN;
         switch (channel.importance) {
+            case NotificationManager.IMPORTANCE_MAX:
+                importance = NotificationCompat.PRIORITY_MAX;
+                break;
             case NotificationManager.IMPORTANCE_HIGH:
                 importance = NotificationCompat.PRIORITY_HIGH;
+                break;
+            case NotificationManager.IMPORTANCE_DEFAULT:
+                importance = NotificationCompat.PRIORITY_DEFAULT;
                 break;
             case NotificationManager.IMPORTANCE_LOW:
                 importance = NotificationCompat.PRIORITY_LOW;
                 break;
             case NotificationManager.IMPORTANCE_MIN:
                 importance = NotificationCompat.PRIORITY_MIN;
-                break;
-            default:
-                importance = NotificationCompat.PRIORITY_DEFAULT;
                 break;
         }
 
@@ -258,9 +260,6 @@ public class N {
         private RemoteViews remoteViews;
 
         private PendingIntent pendingIntent;
-
-        private NotificationCompat.Builder mBuilder;
-        private NotificationManager manager;
 
         public static NotifyBuild init() {
             NotifyBuild build = new NotifyBuild();
@@ -318,7 +317,7 @@ public class N {
         /** 描述 */
         private String description;
 
-        /** 重要性级别 */
+        /** 重要性级别 【1 - 5】*/
         private int importance = NotificationManager.IMPORTANCE_DEFAULT;
         /** 锁定屏幕公开范围 */
         private int lockScreenVisibility = NotificationCompat.VISIBILITY_SECRET;
