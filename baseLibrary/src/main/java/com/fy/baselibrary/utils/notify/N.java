@@ -101,6 +101,7 @@ public class N {
             if (null != channel.sound) builder.setSound(channel.sound); //通知 提示音
             if (null != channel.vibrate) builder.setVibrate(channel.vibrate); //通知 震动
             builder.setLights(Color.GREEN, 1000, 2000); //通知栏消息闪灯(亮一秒间隔两秒再亮)
+            builder.setDefaults(NotificationCompat.DEFAULT_ALL);
         } else {
             builder.setDefaults(channel.defaults);
         }
