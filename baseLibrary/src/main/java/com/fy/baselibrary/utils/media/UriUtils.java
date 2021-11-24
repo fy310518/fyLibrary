@@ -1,6 +1,7 @@
 package com.fy.baselibrary.utils.media;
 
 import android.annotation.TargetApi;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -9,7 +10,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.IdRes;
 import android.support.v4.content.FileProvider;
 
 import com.fy.baselibrary.utils.AppUtils;
@@ -45,11 +45,10 @@ public class UriUtils {
 
     /**
      * 获取资源 Uri
-     * @param context
      * @param resId
      */
-    public static Uri getResUri(Context context, int resId){
-        return Uri.parse("android.resource://" + context.getPackageName() + "/" + resId);
+    public static Uri getResUri(int resId){
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + AppUtils.getLocalPackageName() + "/" + resId);
     }
 
     /**
