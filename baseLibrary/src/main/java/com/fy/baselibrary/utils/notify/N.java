@@ -385,7 +385,7 @@ public class N {
 
         /** 设置 raw 资源中的 提示音效 */
         public Channel setSoundFilePath(@RawRes int soundFilePath) {
-            this.sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + AppUtils.getLocalPackageName() + "/raw/" + soundFilePath);
+            this.sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + AppUtils.getLocalPackageName() + "/" + soundFilePath);
             return this;
         }
     }
