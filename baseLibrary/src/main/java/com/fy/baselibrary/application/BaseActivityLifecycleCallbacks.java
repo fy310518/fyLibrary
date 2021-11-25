@@ -155,15 +155,11 @@ public class BaseActivityLifecycleCallbacks extends BaseLifecycleCallback {
     public void onActivityPaused(Activity activity) {
         String simpleName = activity.getClass().getSimpleName();
         L.e(TAG + simpleName, "--Pause()");
-
-        PlayUtils.getInstance().pause();
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
         L.e(TAG + activity.getClass().getSimpleName(), "--Stop()");
-
-        PlayUtils.getInstance().stop();
     }
 
     @Override
@@ -174,6 +170,8 @@ public class BaseActivityLifecycleCallbacks extends BaseLifecycleCallback {
     @Override
     public void onActivityDestroyed(Activity activity) {
         L.e(TAG + activity.getClass().getSimpleName(), "--Destroy()");
+        PlayUtils.getInstance().pause();
+        PlayUtils.getInstance().stop();
         PlayUtils.getInstance().release();
 
         BaseActivityBean activityBean = (BaseActivityBean) activity.getIntent()
