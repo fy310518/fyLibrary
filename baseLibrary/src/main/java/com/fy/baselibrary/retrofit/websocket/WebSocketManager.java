@@ -19,17 +19,17 @@ import okio.ByteString;
 public class WebSocketManager {
     private final static String TAG = "WebSocketManager";
 
-    private final static int MAX_NUM = 5;       // 最大重连数
+    private final static int MAX_NUM = 100;       // 最大重连数
     private final static int MILLIS = 5000;     // 重连间隔时间，毫秒
+    private int connectNum = 0;//记录 重连次数
+    private boolean isConnect = false;//是否连接成功
+
     private volatile static WebSocketManager manager;
 
     private OkHttpClient client;
     private Request request;
     private IReceiveMessage receiveMessage;
     private WebSocket mWebSocket;
-
-    private boolean isConnect = false;
-    private int connectNum = 0;
 
     private WebSocketManager() {
     }
@@ -47,7 +47,7 @@ public class WebSocketManager {
 
     public void init(String url, IReceiveMessage message) {
         client = RequestUtils.getOkBuilder()
-                .pingInterval(40, TimeUnit.SECONDS) // 设置 PING 帧发送间隔;
+                .pingInterval(59, TimeUnit.SECONDS) // 设置 PING 帧发送间隔;
                 .build();
 
         request = new Request.Builder().url(url).build();
@@ -72,7 +72,7 @@ public class WebSocketManager {
     public void reconnect() {
         if (connectNum <= MAX_NUM) {
             try {
-                Thread.sleep(MILLIS);
+                Thread.sleep(connectNum * MILLIS);
                 connect();
                 connectNum++;
             } catch (InterruptedException e) {
@@ -120,6 +120,9 @@ public class WebSocketManager {
             mWebSocket.cancel();
             mWebSocket.close(1001, "客户端主动关闭连接");
         }
+
+        connectNum = 0;
+        isConnect = false;
     }
 
     private WebSocketListener createListener() {
@@ -127,13 +130,15 @@ public class WebSocketManager {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
                 super.onOpen(webSocket, response);
-                L.d(TAG, "open:" + response.toString());
+                L.e(TAG, "open:" + response.toString());
+
                 mWebSocket = webSocket;
                 isConnect = response.code() == 101;
                 if (!isConnect) {
                     reconnect();
                 } else {
-                    L.i(TAG, "connect success.");
+                    connectNum = 0;
+                    L.e(TAG, "connect success.");
                     if (receiveMessage != null) {
                         receiveMessage.onConnectSuccess();
                     }
@@ -170,23 +175,21 @@ public class WebSocketManager {
             public void onClosed(WebSocket webSocket, int code, String reason) {
                 super.onClosed(webSocket, code, reason);
                 mWebSocket = null;
+
+                connectNum = 0;
                 isConnect = false;
-                if (receiveMessage != null) {
-                    receiveMessage.onClose();
-                }
+                if (receiveMessage != null) receiveMessage.onClose();
             }
 
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                 super.onFailure(webSocket, t, response);
-                if (response != null) {
-                    L.i(TAG, "connect failed：" + response.message());
-                }
-                L.i(TAG, "connect failed throwable：" + t.getMessage());
+                L.e(TAG, "connect failed throwable：" + t.getMessage());
+                if (response != null) L.e(TAG, "connect failed：" + response.message());
+
+                if (receiveMessage != null) receiveMessage.onConnectFailed();
+
                 isConnect = false;
-                if (receiveMessage != null) {
-                    receiveMessage.onConnectFailed();
-                }
                 reconnect();
             }
         };
