@@ -102,7 +102,7 @@ public class ImgLoadUtils {
      * 预加载 （把指定URL地址的图片 的原始尺寸保存到缓存中）
      * @param url
      */
-    public static void preloadImg(Context context, String url) {
+    public static void preloadImg(String url, Context context) {
         Glide.with(context)
                 .load(url)
                 .preload();
@@ -114,7 +114,7 @@ public class ImgLoadUtils {
      * @param url
      */
     @SuppressLint("CheckResult")
-    public static File getImgCachePath(Context context, String url) throws ExecutionException, InterruptedException {
+    public static File getImgCachePath(String url, Context context) throws ExecutionException, InterruptedException {
         FutureTarget<File> target = Glide.with(context)
                 .asFile()
                 .load(url)
