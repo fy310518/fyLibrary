@@ -2,6 +2,7 @@ package com.fy.baselibrary.statuslayout;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,12 +119,12 @@ public class StatusLayoutManager implements Serializable{
                 break;
         }
 
-        retryLoad(layoutSparseArray.get(id), id);
+        if (null != layoutSparseArray.get(id)) retryLoad(layoutSparseArray.get(id), id);
         return isShow;
     }
 
     /** 重试加载 */
-    public void retryLoad(View view, int id) {
+    public void retryLoad(@NonNull View view, int id) {
         View retryView = view.findViewById(retryViewId != 0 ? retryViewId : id);
 
         if (retryView == null || onRetryListener == null) return;
