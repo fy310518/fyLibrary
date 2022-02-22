@@ -117,12 +117,8 @@ public class WebSocketManager {
      */
     public void close() {
         if (isConnect()) {
-            mWebSocket.cancel();
             mWebSocket.close(1001, "客户端主动关闭连接");
         }
-
-        connectNum = 0;
-        isConnect = false;
     }
 
     private WebSocketListener createListener() {
@@ -164,7 +160,7 @@ public class WebSocketManager {
             @Override
             public void onClosing(WebSocket webSocket, int code, String reason) {
                 super.onClosing(webSocket, code, reason);
-                mWebSocket = null;
+
                 isConnect = false;
                 if (receiveMessage != null) {
                     receiveMessage.onClose();
@@ -174,11 +170,13 @@ public class WebSocketManager {
             @Override
             public void onClosed(WebSocket webSocket, int code, String reason) {
                 super.onClosed(webSocket, code, reason);
-                mWebSocket = null;
 
                 connectNum = 0;
                 isConnect = false;
                 if (receiveMessage != null) receiveMessage.onClose();
+
+                if (null != mWebSocket) mWebSocket = null;
+                if (null != manager) manager = null;
             }
 
             @Override
