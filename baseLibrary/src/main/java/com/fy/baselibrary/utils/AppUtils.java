@@ -443,7 +443,7 @@ public class AppUtils {
     /**
      * 收集设备信息
      */
-    public StringBuffer collectPhoneInfo(StringBuffer sb) {
+    public static StringBuffer collectPhoneInfo(StringBuffer sb) {
         Context ctx = ConfigUtils.getAppCtx();
         PackageManager pm = ctx.getPackageManager();
 
